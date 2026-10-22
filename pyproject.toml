@@ -1,11 +1,12 @@
 [tool.poetry]
 name = "filings-rfb"
-version = "0.0.1"
-description = "Simple and efficient Python library to interact with Secretariat of Federal Revenuel of Brazil (Receita Federal Brasileira) public data"
+version = "0.0.0"
+description = "Simple and efficient Python library to interact with Secretariat of Federal Revenue of Brazil (Receita Federal Brasileira) public data"
 authors = ["guilhermegor"]
 readme = "README.md"
 license = "MIT"
-homepage = "https://example.com/filings-rfb"
+homepage = "https://guilhermegor.github.io/filings-rfb/"
+documentation = "https://guilhermegor.github.io/filings-rfb/"
 repository = "https://github.com/guilhermegor/filings-rfb"
 keywords = ["filings-rfb", "python", "library"]
 packages = [{ include = "filings_rfb", from = "src" }]
@@ -23,6 +24,7 @@ classifiers = [
 [tool.poetry.urls]
 "Bug Reports" = "https://github.com/guilhermegor/filings-rfb/issues"
 "Source" = "https://github.com/guilhermegor/filings-rfb"
+"Documentation" = "https://guilhermegor.github.io/filings-rfb/"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
@@ -63,6 +65,15 @@ mike = ">=2.1.0"
 [tool.deptry.per_rule_ignores]
 DEP002 = ["openpyxl"]
 
+[tool.poetry-dynamic-versioning]
+# Published version is derived from the latest git tag matching `v$version` (e.g. v0.2.0). On
+# an exact tag the build is clean (0.2.0); off-tag builds get a PEP 440 dev version. The CI
+# release workflows pass POETRY_DYNAMIC_VERSIONING_BYPASS to build a specific version. Needs
+# `python -m build` (a PEP 517 frontend), not `poetry build` (which ignores the backend).
+enable = true
+vcs = "git"
+style = "pep440"
+
 [build-system]
-requires = ["poetry-core>=1.7.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.7.0", "poetry-dynamic-versioning>=1.4.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
