@@ -1,0 +1,164 @@
+line-length = 99
+indent-width = 4
+target-version = "py310"
+exclude = [
+    ".bzr",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".svn",
+
+    "__pycache__",
+    "__pypackages__",
+    ".eggs",
+    "*.egg",
+    "*.egg-info",
+    "*.pyc",
+    "*.pyo",
+    "*.pyd",
+
+    ".direnv",
+    ".env",
+    ".mypy_cache",
+    ".nox",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "venv",
+    "site-packages",
+
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+
+    ".ipynb_checkpoints",
+    ".vscode",
+
+    "migrations",
+    "src/*/_internal/utils/typing",
+
+    ".pants.d",
+    ".pyenv",
+    "node_modules",
+    "*.log",
+]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = false
+docstring-code-line-length = 79
+
+[lint]
+preview = true
+
+select = [
+    "UP",
+    "E",
+    "F",
+    "ANN",
+    "B",
+    "SIM",
+    "I",
+    "AIR",
+    "ERA",
+    "S",
+    "PD",
+    "D",
+    "TID",
+    "W",
+    "PL",
+    "PT",
+    "RET",
+    "A",
+    "BLE",
+    "N",
+    "PLR1702",
+]
+ignore = [
+
+    "PLR6301",
+    "PLC1901",
+    "S404",
+    "PLC0415",
+    "PLC2701",
+    "PLR6201",
+    "PLC0207",
+    "PLR0917",
+    "PLR0916",
+    "PLR0914",
+]
+fixable = ["I"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[lint.flake8-tidy-imports.banned-api]
+"pandas.read_excel".msg = "Use utils.tabular_reader.read_table (enforces contract + dtypes)."
+"pandas.read_csv".msg = "Use utils.tabular_reader.read_table (enforces contract + dtypes)."
+"pandas.read_json".msg = "Use utils.tabular_reader.read_table (enforces contract + dtypes)."
+"pandas.read_table".msg = "Use utils.tabular_reader.read_table (enforces contract + dtypes)."
+"pandas.read_parquet".msg = "Use utils.tabular_reader.read_table (enforces contract + dtypes)."
+"pandas.read_sql".msg = "Use utils.tabular_reader.read_query (enforces contract + dtypes)."
+"pandas.read_sql_query".msg = "Use utils.tabular_reader.read_query (enforces contract + dtypes)."
+"pandas.read_sql_table".msg = "Use utils.tabular_reader.read_query (enforces contract + dtypes)."
+"pandas.ExcelFile".msg = "Use utils.tabular_reader.read_table (enforces contract + dtypes)."
+"utils.tabular_reader.FileContract".msg = "Construct contracts only in config/contracts/; import the instance."
+"config.contracts.FileContract".msg = "Construct contracts only in config/contracts/; import the instance."
+
+[lint.isort]
+known-first-party = [
+    "app",
+    "capabilities",
+    "chassis",
+    "config",
+    "controller",
+    "model",
+    "utils",
+    "view",
+]
+force-single-line = false
+combine-as-imports = true
+split-on-trailing-comma = true
+force-sort-within-sections = true
+lines-after-imports = 2
+
+[lint.pylint]
+max-args = 8
+
+[lint.pydocstyle]
+convention = "numpy"
+
+[lint.flake8-annotations]
+suppress-none-returning = false
+suppress-dummy-args = false
+ignore-fully-untyped = false
+allow-star-arg-any = false
+
+[lint.per-file-ignores]
+"bin/*.py" = [
+    "ERA001",
+    "E101",
+]
+
+"src/chassis/db_wschema/infrastructure/joblib_handler.py" = ["E101"]
+"src/chassis/db_wschema/infrastructure/sanity_check.py" = ["ANN401"]
+
+"tests/**/*.py" = [
+    "S101",
+    "PLR2004",
+    "TID251",
+    "N802",
+]
+"src/utils/tabular_reader.py" = ["TID251"]
+"src/config/contracts/*.py" = ["TID251"]
+"src/config/connection_db.py" = ["ANN401"]
+"src/model/example_entity.py" = ["ANN401"]
+"src/utils/typing/**/*.py" = ["ANN401"]
+"src/chassis/typing/**/*.py" = ["ANN401"]
+"src/chassis/db_schema/infrastructure/*_handler.py" = ["ANN401"]
+"src/*/_internal/utils/tabular_reader.py" = ["TID251"]
+"src/*/_internal/config/contracts/*.py" = ["TID251"]
+"src/utils/xml_reader.py" = ["N813"]
+"src/*/_internal/utils/xml_reader.py" = ["N813"]

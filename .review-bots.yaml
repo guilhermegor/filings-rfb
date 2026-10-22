@@ -1,0 +1,34 @@
+reviewers:
+  - login: coderabbitai[bot]
+    posts: threads
+    note: >-
+      Resolves its own threads on seeing the fix ("Addressed in commit <sha>"), which is why
+      isResolved cannot be the signal — measured on blueprintx#170, all 14 threads read
+      resolved while 11 held no author reply.
+
+  - login: greptile-apps[bot]
+    posts: threads
+    note: Posts inline review threads with a severity badge; reviews only when asked, autoReview is empty.
+
+  - login: graphite-app[bot]
+    posts: threads
+    note: >-
+      Posts a COMMENTED review with inline comments; a clean review leaves only the
+      "Graphite / AI Reviews" check run. Reviews only when the review:graphite label is added.
+
+  - login: github-actions[bot]
+    posts: status
+    note: Workflow output, never a review finding.
+
+  - login: copilot-pull-request-reviewer[bot]
+    posts: threads
+    note: GitHub's built-in reviewer; enabled per-repo by enable_repo_rules.sh.
+
+  - kind: comment-marker
+    marker: "Fallback review — runtime:"
+    posters: []
+    note: >-
+      The reviewer ladder's attribution line. Counts as a review only in a comment authored by
+      a login in `posters:` and posted after the head commit (docs/faq.md). The author
+      association is never consulted, so the PR author cannot forge it (blueprintx#761).
+      Empty means no marker is accepted; list the ladder App's login here.

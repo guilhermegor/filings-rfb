@@ -1,0 +1,66 @@
+site_name: filings-rfb
+site_description: Documentation for filings-rfb
+repo_url: https://github.com/guilhermegor/filings-rfb
+nav:
+  - Home: index.md
+  - Guide:
+      - Usage: usage.md
+      - Examples: examples.md
+  - API Reference:
+      - Overview: api/index.md
+      - Reference: api/reference.md
+  - Project:
+      - FAQ: faq.md
+      - Contributing: contributing.md
+      - Changelog: changelog.md
+      - Incidents: incidents.md
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+  language: pt-BR
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/white-balance-sunny
+        name: Switch to light mode
+extra:
+  version:
+    provider: mike
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.snippets:
+      base_path:
+        - .
+
+exclude_docs: |
+  superpowers/
+  CLAUDE.md
+  blueprintx-lessons.md
+  dotfiles-dev-lessons.md
+  checkpoints.md
+  blueprintx-lessons.md
+
+validation:
+  nav:
+    omitted_files: warn

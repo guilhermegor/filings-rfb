@@ -1,0 +1,9 @@
+*.sh text eol=lf
+*.bash text eol=lf
+
+bin/lib/common.sh text eol=lf
+
+poetry.lock linguist-generated=true
+package-lock.json linguist-generated=true
+requirements-lock.txt linguist-generated=true
+coverage.svg linguist-generated=true

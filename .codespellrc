@@ -1,0 +1,5 @@
+[codespell]
+skip = *.po,*.csv,*.json,*.xml,*.txt,.git,*.pyc,__pycache__,*.egg-info,.pytest_cache,.ruff_cache,.mypy_cache,node_modules,poetry.lock,htmlcov,coverage.svg,coverage.xml,*.diff,*-lessons.md
+count =
+quiet-level = 3
+ignore-words-list = nd,fpr,strat,enty,filetest,nome,zar,fro,hsi,wege,smll,classe,erro,serie,emiss,termo,indx,atual,nomes,caracteres,caractere,prefere,meu,ser,vai,sinal,notin,mis,falso,unparseable,persistance

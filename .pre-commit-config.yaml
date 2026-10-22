@@ -1,0 +1,414 @@
+default_stages:
+  - pre-commit
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: forbid-new-submodules
+      - id: detect-private-key
+      - id: detect-aws-credentials
+        args:
+          - --allow-missing-credentials
+      - id: check-merge-conflict
+      - id: no-commit-to-branch
+        args:
+          - --branch=main
+      - id: trailing-whitespace
+        args:
+          - --markdown-linebreak-ext=md
+        exclude: ^tests/fixtures/
+      - id: end-of-file-fixer
+        exclude: ^tests/fixtures/
+      - id: check-xml
+      - id: check-yaml
+        args:
+          - --unsafe
+      - id: check-toml
+      - id: check-json
+        exclude: ^\.vscode/.*\.json$
+      - id: check-symlinks
+      - id: debug-statements
+      - id: check-added-large-files
+        args:
+          - --maxkb=500
+        exclude: (?i)^(data/large/.*|poetry\.lock)$
+      - id: check-illegal-windows-names
+      - id: check-case-conflict
+      - id: name-tests-test
+        args:
+          - --pytest-test-first
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.8.3
+    hooks:
+      - id: commitizen
+        stages:
+          - commit-msg
+          - manual
+        always_run: true
+
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+      - id: gitlint
+        stages:
+          - commit-msg
+          - manual
+        always_run: true
+
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 6.3.0
+    hooks:
+      - id: pydocstyle
+        name: pydocstyle (docstring conventions)
+        args:
+          - --select=D412,D417
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.13
+    hooks:
+      - id: ruff
+        name: ruff check
+        args:
+          - --config=ruff.toml
+      - id: ruff-format
+        name: ruff format
+        args:
+          - --config=ruff.toml
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        name: codespell check
+        args:
+          - --config=.codespellrc
+
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        name: lint dockerfiles
+        files: (?i).*dockerfile
+
+  - repo: local
+    hooks:
+      - id: check-unix-filenames
+        name: check unix/linux filename validity
+        entry: bash bin/check_unix_filenames.sh
+        language: system
+        types:
+          - file
+
+      - id: check-docstrings
+        name: docstring type/raises consistency check
+        entry: bash bin/poetry_exec.sh run python bin/check_docstrings.py
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: check-typing
+        name: runtime type-checker application check
+        entry: bash bin/poetry_exec.sh run python bin/check_typing.py
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: check-provenance
+        name: ingestion provenance stamp check
+        entry: bash bin/poetry_exec.sh run python bin/check_provenance.py
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: function-length
+        name: function length (60 lines, docstring excluded)
+        entry: bash bin/poetry_exec.sh run python bin/check_function_length.py
+        language: system
+        files: \.(py|sh)$
+        pass_filenames: false
+
+      - id: specs-structure
+        name: .specs/ structure guard
+        entry: bash bin/check_specs_structure.sh --root .
+        language: system
+        files: ^\.specs/|^bin/check_specs_structure\.sh$
+        pass_filenames: false
+
+      - id: readme-structure
+        name: README structure (plain headings, slug sections, Authors links)
+        entry: bash bin/check_readme_structure.sh README.md
+        language: system
+        files: ^(README\.md|bin/check_readme_structure\.sh|bin/lib/md_structure\.sh)$
+        pass_filenames: false
+
+      - id: required-checks-sync
+        name: required checks are all unconditional PR jobs (blueprintx#164)
+        entry: bash bin/poetry_exec.sh run python bin/check_required_checks_sync.py --required-list bin/required-checks.txt
+        language: system
+        files: ^(\.github/workflows/.*\.ya?ml|bin/required-checks\.txt|bin/check_required_checks_sync\.py)$
+        pass_filenames: false
+
+      - id: docs-boundary
+        name: docs/ boundary guard (working material belongs in .specs/, blueprintx#576)
+        entry: bash bin/check_docs_boundary.sh --root .
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: identifier-masking
+        name: identifier masking (masked CPF/CNPJ in a comparison)
+        entry: bash bin/poetry_exec.sh run python bin/check_identifier_masking.py
+        language: system
+        files: \.(py|sql)$
+        pass_filenames: false
+
+      - id: fixture-scope
+        name: fixture scope (non-function scope needs a written reason)
+        entry: bash bin/poetry_exec.sh run python bin/check_fixture_scope.py
+        language: system
+        files: ^tests/.*\.py$
+        pass_filenames: false
+
+      - id: gate-integrity
+        name: gate integrity (a PR must not weaken a check without saying why)
+        entry: bash bin/poetry_exec.sh run python bin/check_gate_integrity.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: check-complexity
+        name: cyclomatic complexity (tests 1, src 2, bin 8)
+        entry: bash bin/check_complexity.sh
+        language: system
+        files: \.py$
+        pass_filenames: false
+
+      - id: one-assert
+        name: one assertion site per unit test (zero asserts fails anywhere)
+        entry: bash bin/poetry_exec.sh run python bin/check_one_assert.py
+        language: system
+        files: \.py$
+        pass_filenames: false
+
+      - id: check-secrets
+        name: secret scan (gitleaks)
+        entry: bash bin/check_secrets.sh --staged
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: check-all-exports
+        name: __all__ names every public member
+        entry: bash bin/poetry_exec.sh run python bin/check_all_exports.py
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: check-dtypes
+        name: numeric dtype policy check (no binary floats)
+        entry: bash bin/poetry_exec.sh run python bin/check_dtypes.py
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: check-rmw-race
+        name: read-modify-write race (arithmetic write on an ORM-read row, no lock)
+        entry: bash bin/poetry_exec.sh run python bin/check_rmw_race.py
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: check-layer-imports
+        name: layer import policy (vendors live behind a seam)
+        entry: bash bin/poetry_exec.sh run python bin/check_layer_imports.py
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: check-sql-guards
+        name: SQL guards (WHERE-less mutations, NOLOCK)
+        entry: bash bin/poetry_exec.sh run python bin/check_sql_guards.py
+        language: system
+        files: \.(py|sql)$
+        pass_filenames: false
+
+      - id: check-migration-slugs
+        name: migration slug convention (leading verb)
+        entry: bash bin/poetry_exec.sh run python bin/check_migration_slugs.py
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: check-orm-model-guards
+        name: ORM model-definition guards (bitwise filter, two Base, duplicate constraint)
+        entry: bash bin/poetry_exec.sh run python bin/check_orm_model_guards.py
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: check-docs-sections
+        name: docs skeleton (slug + nav) check
+        entry: bash bin/poetry_exec.sh run python bin/check_docs_sections.py
+        language: system
+        files: ^(mkdocs\.yml|docs/)
+        pass_filenames: false
+
+      - id: docs-gap
+        name: docs gap (pages registered in nav, nav ceiling, blueprintx#860)
+        entry: python bin/check_docs_gap.py --root .
+        language: python
+        additional_dependencies: [pathspec, pyyaml]
+        files: ^(mkdocs\.yml|docs/)
+        pass_filenames: false
+
+      - id: check-docs-code-refs
+        name: docs code references (symbols + import paths)
+        entry: bash bin/poetry_exec.sh run python bin/check_docs_code_refs.py
+        language: system
+        files: ^(docs/|README\.md|src/)
+        pass_filenames: false
+
+      - id: check-backlog-ledger
+        name: work-ledger (.specs/backlog) check
+        entry: bash bin/poetry_exec.sh run python bin/check_backlog_ledger.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: check-comment-language
+        name: documentation-language boundary (code is English)
+        entry: bash bin/poetry_exec.sh run python bin/check_comment_language.py
+        language: system
+        files: \.(py|ya?ml|sql|sh|toml|cfg|ini)$|\.env\.example$
+        exclude: ^docs/
+
+      - id: check-comment-budget
+        name: comment budget (long runs + decorative banners)
+        entry: bash bin/poetry_exec.sh run python bin/check_comment_budget.py --require-baseline
+        language: system
+        pass_filenames: false
+
+      - id: check-env-docs-sync
+        name: .env.example and docs/configuration.md list the same variables
+        entry: bash bin/poetry_exec.sh run python bin/check_env_docs_sync.py
+        language: system
+        pass_filenames: false
+        files: (^|/)(\.env\.example|configuration\.md|check_env_docs_sync\.py)$
+
+      - id: mypy
+        name: mypy (static type check)
+        entry: bash -c 'cd src && bash ../bin/poetry_exec.sh run mypy --config-file ../mypy.ini .'
+        language: system
+        types:
+          - python
+        pass_filenames: false
+
+      - id: lint-shell
+        name: shellcheck + shfmt (shell lint)
+        entry: bash bin/lint_shell.sh --check
+        language: system
+        types:
+          - shell
+        pass_filenames: false
+
+      - id: lint-yaml
+        name: yamllint (yaml style)
+        entry: bash bin/lint_yaml.sh
+        language: system
+        types:
+          - yaml
+        pass_filenames: false
+
+      - id: lint-sql
+        name: sqlfluff (sql lint)
+        entry: bash bin/lint_sql.sh
+        language: system
+        types:
+          - sql
+        pass_filenames: false
+
+      - id: lint-actions
+        name: actionlint (github actions workflows)
+        entry: bash bin/lint_actions.sh
+        language: system
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+        pass_filenames: false
+
+      - id: lint-deps
+        name: deptry (every imported package is a direct dependency)
+        entry: bash bin/lint_deps.sh
+        language: system
+        files: ^(pyproject\.toml|src/.*\.py)$
+        pass_filenames: false
+
+      - id: unit-tests
+        name: checking unit tests
+        entry: bash -c "bash bin/poetry_exec.sh run pytest tests/unit/ || [ $? -eq 5 ]"
+        language: system
+        types:
+          - file
+        pass_filenames: false
+
+      - id: integration-tests
+        name: checking integration tests
+        entry: bash -c "bash bin/poetry_exec.sh run pytest tests/integration/ || [ $? -eq 5 ]"
+        language: system
+        types:
+          - file
+        pass_filenames: false
+
+      - id: check-clean-index
+        name: pre-push — index must be empty (a rejected commit leaves it populated)
+        entry: bash bin/check_clean_index.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages:
+          - pre-push
+
+      - id: coverage-floor
+        name: coverage floor (omit list must not swallow capability logic)
+        entry: bash bin/poetry_exec.sh run python bin/check_coverage_floor.py
+        language: system
+        files: ^(\.coveragerc|src/capabilities/.*\.py)$
+        pass_filenames: false
+
+      - id: coverage-check
+        name: test coverage check
+        entry: bash -c "bash bin/poetry_exec.sh run pytest tests/unit/ --cov=src --cov-report=term-missing"
+        language: system
+        types:
+          - python
+        pass_filenames: false
+        verbose: true
+        stages:
+          - pre-push
+
+      - id: coverage-badge
+        name: coverage badge
+        entry: bash -c "bash bin/poetry_exec.sh run pytest tests/unit/ --cov=src && bash bin/poetry_exec.sh run coverage xml -o coverage.xml && bash bin/poetry_exec.sh run genbadge coverage --local -i coverage.xml -o coverage.svg"
+        language: system
+        types:
+          - python
+        pass_filenames: false
+        stages:
+          - manual
+
+      - id: check-urls
+        name: check urls in docstrings
+        entry: bash bin/test_urls_docstrings.sh
+        language: system
+        types:
+          - file
+        verbose: true

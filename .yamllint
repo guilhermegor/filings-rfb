@@ -1,0 +1,19 @@
+extends: default
+
+rules:
+  line-length: disable
+  document-start: disable
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: -1
+  truthy:
+    check-keys: false
+  indentation:
+    spaces: 2
+    indent-sequences: true
+  comments:
+    min-spaces-from-content: 1
+
+ignore: |
+  .venv/
+  daily_infos/

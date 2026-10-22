@@ -1,0 +1,12 @@
+[run]
+source = src/
+branch = True
+omit =
+    src/*/_internal/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if TYPE_CHECKING:
+    @abstractmethod
+    \.\.\.

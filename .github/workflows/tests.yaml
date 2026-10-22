@@ -1,0 +1,258 @@
+name: Run Tests
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+a[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+b[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+rc[0-9]+"
+
+jobs:
+
+  test:
+    name: Run Automated Tests (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+
+      - name: Set Up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@a783c322200f0519c7926aa6faa857c4e23e9263 # v1.4.2
+        with:
+          virtualenvs-in-project: true
+          virtualenvs-create: true
+          version: 2.2.1
+
+      - name: Check lockfile is in sync
+        run: |
+          if ! poetry check --lock; then
+            echo "::error::poetry.lock is out of sync with pyproject.toml — run 'poetry lock' locally and commit the result." >&2
+            exit 1
+          fi
+
+      - name: Load Cached Virtual Environment
+        id: cached-venv
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock', 'pyproject.toml') }}
+
+      - name: Install Dependencies
+        if: steps.cached-venv.outputs.cache-hit != 'true'
+        run: |
+          cp pyproject.toml pyproject.original.toml
+          cat pyproject.original.toml | python -c '
+          import sys, re, os as _os
+          content = sys.stdin.read()
+          if _os.name != "nt":
+              content = re.sub(r".*platform\s*=\s*\"win32\".*", "", content)
+              content = re.sub(r"pywin32\s*=.*\n", "", content)
+          print(content)
+          ' > pyproject.toml
+
+          echo "No groups to exclude, installing all dependencies"
+          poetry install --no-interaction --no-root
+
+          mv pyproject.original.toml pyproject.toml
+          poetry env activate
+
+      - name: Run Spell Check (codespell)
+        if: runner.os == 'Linux'
+        run: |
+          poetry run codespell .
+          if [ $? -ne 0 ]; then
+            echo "Typos found! Run 'codespell .' locally to see them."
+            exit 1
+          fi
+
+      - name: Run Docstring Type Consistency Check
+        if: runner.os == 'Linux'
+        run: |
+          poetry run python -m pydocstyle --select=D412,D417 --match="(src|tests).*\\.py" src/ tests/
+          poetry run python bin/check_docstrings.py
+
+      - name: Run Runtime Type-Checking Enforcement
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_typing.py
+
+      - name: Run Ingestion Provenance Enforcement
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_provenance.py
+
+      - name: Run __all__ Export Completeness Check
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_all_exports.py
+
+      - name: Run Numeric Dtype Policy Enforcement
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_dtypes.py
+
+      - name: Run Direct-Dependency Gate
+        if: runner.os == 'Linux'
+        run: bash bin/lint_deps.sh
+
+      - name: Run Layer Import Policy Enforcement
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_layer_imports.py
+
+      - name: Run ORM Model-Definition Guards
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_orm_model_guards.py
+
+      - name: Run Documentation-Language Boundary Enforcement
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_comment_language.py
+
+      - name: Run Comment Budget Ratchet
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_comment_budget.py --require-baseline
+
+      - name: Run Gate Integrity Enforcement
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_gate_integrity.py
+
+      - name: Run Function Length Gate
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_function_length.py
+
+      - name: Run Specs Structure Gate
+        if: runner.os == 'Linux'
+        run: bash bin/check_specs_structure.sh --root .
+
+      - name: Run Required Checks Sync Gate
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_required_checks_sync.py --required-list bin/required-checks.txt
+
+      - name: Run Docs Boundary Gate
+        if: runner.os == 'Linux'
+        run: bash bin/check_docs_boundary.sh --root .
+
+      - name: Run Fixture Scope Gate
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_fixture_scope.py
+
+      - name: Run Complexity Gate
+        if: runner.os == 'Linux'
+        run: bash bin/check_complexity.sh
+
+      - name: Run Identifier Masking Gate
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_identifier_masking.py
+
+      - name: Run SQL Guards Gate
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_sql_guards.py
+
+      - name: Run Coverage Floor Gate
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_coverage_floor.py
+
+      - name: Run Migration Graph Gate
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_migration_graph.py
+
+      - name: Run Secret Scan (gitleaks)
+        if: runner.os == 'Linux'
+        env:
+          GITLEAKS_VERSION: "8.30.1"
+          GITLEAKS_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+          GITLEAKS_REQUIRED: "1"
+        run: |
+          curl -fsSL -o /tmp/gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  /tmp/gitleaks.tar.gz" | sha256sum -c -
+          sudo tar -xzf /tmp/gitleaks.tar.gz -C /usr/local/bin gitleaks
+          bash bin/check_secrets.sh
+
+      - name: Run Docs Skeleton Enforcement
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_docs_sections.py
+
+      - name: Run Docs Code-Reference Enforcement
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_docs_code_refs.py
+
+      - name: Run Work-Ledger Enforcement
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_backlog_ledger.py
+
+      - name: Run Ruff Linting
+        if: runner.os == 'Linux'
+        run: |
+          poetry run ruff check src/ tests/ --config=ruff.toml
+          if [ $? -ne 0 ]; then
+            echo "Ruff found issues! Run 'ruff check src/ tests/' locally see details."
+            echo "To fix automatically, run: poetry run ruff check --fix src/ tests/"
+            exit 1
+          fi
+
+      - name: Run Ruff Format Check
+        if: runner.os == 'Linux'
+        run: poetry run ruff format --check src/ tests/ --config=ruff.toml
+
+      - name: Run Static Type Check (mypy)
+        if: runner.os == 'Linux'
+        run: cd src && poetry run mypy --config-file ../mypy.ini .
+
+      - name: Run Non-Python Lint Gates (shell, sql, yaml, actions, filenames, docker)
+        if: runner.os == 'Linux'
+        env:
+          ACTIONLINT_VERSION: "1.7.7"
+          ACTIONLINT_SHA256: "023070a287cd8cccd71515fedc843f1985bf96c436b7effaecce67290e7e0757"
+        run: |
+          command -v shellcheck >/dev/null || { sudo apt-get update && sudo apt-get install -y shellcheck; }
+          poetry run pip install shfmt-py >/dev/null 2>&1 || true
+          curl -fsSL -o /tmp/actionlint.tar.gz \
+            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          echo "${ACTIONLINT_SHA256}  /tmp/actionlint.tar.gz" | sha256sum -c -
+          sudo tar -xzf /tmp/actionlint.tar.gz -C /usr/local/bin actionlint
+          bash bin/lint_shell.sh --check
+          bash bin/lint_sql.sh
+          bash bin/lint_yaml.sh
+          LINT_ACTIONS_REQUIRED=1 bash bin/lint_actions.sh
+          bash bin/check_unix_filenames.sh
+          LINT_DOCKER_REQUIRED=1 bash bin/lint_docker.sh
+
+      - name: Run Integration Tests
+        run: poetry run pytest tests/integration/ -v || [ $? -eq 5 ]
+
+      - name: Run Unit Tests
+        run: poetry run pytest tests/unit/ || [ $? -eq 5 ]
+
+      - name: Run Coverage Gate
+        if: runner.os == 'Linux'
+        run: poetry run pytest tests/unit/ --cov=src --cov-report=term-missing || [ $? -eq 5 ]
+
+      - name: Run Coverage Report
+        if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          poetry run pytest --cov=src --cov-report=xml --no-header -q tests/unit/
+          poetry run genbadge coverage --local -i coverage.xml -o coverage.svg
+
+      - name: Upload Badge
+        if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: coverage-badge-${{ matrix.os }}-${{ matrix.python-version }}
+          path: coverage.svg

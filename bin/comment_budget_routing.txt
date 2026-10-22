@@ -1,0 +1,4 @@
+security notes and threat assumptions -> SECURITY.md
+setup and usage -> README.md
+rationale and conventions -> CONTRIBUTING.md
+behaviour and configuration a user reads -> docs/

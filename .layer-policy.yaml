@@ -1,0 +1,43 @@
+first_party_extra:
+  - chassis
+
+annotation_only:
+  pandas: >-
+    Annotation only. Build a frame with utils.frames.from_cursor; read one with
+    utils.tabular_reader.read_table / read_query (they enforce a FileContract + dtypes).
+
+src_prefix_depth: 2
+
+layers:
+  __root__:
+    allow: {}
+
+  utils:
+    allow:
+      pandas: "the seam layer owns the pandas surface (frames, dtypes, tabular_reader)"
+      wwdates: "BR business-day calendar, wrapped by utils.dates"
+      win32com: "Outlook COM automation, wrapped by utils.ms_office.outlook_gateway (Windows only)"
+      requests: "HTTP transport, wrapped by utils.http_downloader"
+      urllib3: "retry/backoff policy used by the download seam"
+      defusedxml: "hardened XML parsing at the ingestion trust boundary"
+      beartype: "runtime type-checking engine behind utils.typing"
+      numpy: >-
+        Optional widening for the runtime type-checker: utils/typing/policy.py accepts
+        numpy integers where int is annotated when WIDEN_INT_TO_NUMPY is on, probed with a
+        guarded import so a tier without numpy still loads. Legitimate here precisely
+        because utils/ IS the seam layer.
+      opentelemetry: "OTLP log export, wrapped by utils.otel_logging (opt-in, blueprintx#438)"
+    deny_layers:
+      config: >-
+        The seam layer must not depend on the composition root that configures it. The other
+        direction already exists (config/startup.py imports utils), so this one would close a
+        real cycle rather than a hypothetical one.
+
+  config:
+    allow:
+      dotenv: "loads .env at startup; this is the layer that owns environment resolution"
+      yaml: "parses inputs.yaml / outputs.yaml"
+      psycopg: "PostgreSQL driver, imported lazily by the configured DB_BACKEND"
+      pyodbc: "SQL Server driver, imported lazily by the configured DB_BACKEND"
+      oracledb: "Oracle driver, imported lazily by the configured DB_BACKEND"
+      mysql: "MySQL/MariaDB driver, imported lazily by the configured DB_BACKEND"

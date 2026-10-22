@@ -1,0 +1,12 @@
+[sqlfluff]
+dialect = sqlite
+templater = placeholder
+max_line_length = 120
+indent_unit = tab
+exclude_rules = layout, structure, aliasing, capitalisation.identifiers
+
+[sqlfluff:templater:placeholder]
+param_style = question_mark
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = upper

@@ -1,0 +1,31 @@
+name: PR Reconcile
+
+on:
+  pull_request:
+    types: [closed]
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+jobs:
+  reconcile:
+    name: Close linked issues of merged PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Reconcile
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          EVENT_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged && github.event.pull_request.number || '' }}
+          SWEEP_LIMIT: "30"
+        run: bash bin/pr_reconcile.sh

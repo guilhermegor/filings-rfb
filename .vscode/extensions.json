@@ -1,0 +1,11 @@
+{
+	// Extensions VS Code offers to install when the project is first opened. These
+	// back the settings in settings.json: Ruff is the format-on-save + lint provider,
+	// Pylance provides the strict as-you-type type checking, and the Python extension
+	// wires the interpreter, pytest, and the Poetry env manager.
+	"recommendations": [
+		"charliermarsh.ruff",
+		"ms-python.python",
+		"ms-python.vscode-pylance"
+	]
+}
