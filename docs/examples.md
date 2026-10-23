@@ -27,3 +27,23 @@ Add one `##` section per recipe. Comments in the code should explain **why**, no
 ```python
 # Replace with a second illustrative example.
 ```
+
+## Recipe: read a CNPJ lookup table
+
+Turn a downloaded lookup ZIP into a typed frame. The `ETag` comes from the share listing and is
+stamped on every row, so a stored table says which upstream version produced it.
+
+```python
+from pathlib import Path
+
+from filings_rfb import read_lookup
+
+
+df_cnaes = read_lookup(
+    "Cnaes",
+    Path("Cnaes.zip"),
+    "https://arquivos.receitafederal.gov.br/public.php/dav/files/<token>/2026-10/Cnaes.zip",
+    '"17e2f9b2f51164f0e35a0e6011551c63"',
+)
+print(df_cnaes[["code", "description"]].head())
+```
