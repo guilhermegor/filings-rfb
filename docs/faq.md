@@ -35,3 +35,12 @@ See the `python = "..."` constraint in `pyproject.toml`; CI runs the test matrix
 
 The version is the **git tag** (via poetry-dynamic-versioning); `pyproject.toml` holds a `0.0.0`
 placeholder. Cut a release from the release workflow — see [Contributing](contributing.md).
+
+## What is the `cnpj.tar.gz` at the root of the RFB share, and does the library use it?
+
+No, the library ignores it. It is a 63,954,782,749-byte (59.6 GiB) single-stream gzip of a
+tar, last modified 2026-01-28 and never refreshed since. It holds only the nine monthly
+folders `2025-05` to `2026-01`, byte-identical to the per-month zips that remain on the
+share, so it adds no data, cannot back-fill anything before `2025-05`, and cannot be
+read selectively (a gzip stream has no seek points). Download the `YYYY-MM/<file>.zip`
+parts you need instead. The evidence is in `.specs/features/cnpj-tarball/design.md`.
