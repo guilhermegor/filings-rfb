@@ -15,7 +15,7 @@ export_deps() {
 	local str_output
 	local int_status
 
-	print_status "info" "Exporting locked dependencies to ${path_out##*/} ..."
+	print_status "info" "Exporting locked dependencies to ${path_out##*[/\\]} ..."
 	set +e
 	str_output="$(run_poetry export \
 		--format requirements.txt \
@@ -27,7 +27,7 @@ export_deps() {
 	if [[ "$int_status" -eq 0 ]]; then
 		local int_lines
 		int_lines="$(wc -l <"$path_out" | tr -d ' ')"
-		print_status "success" "Wrote ${path_out##*/} ($int_lines requirement lines)"
+		print_status "success" "Wrote ${path_out##*[/\\]} ($int_lines requirement lines)"
 		return 0
 	fi
 
