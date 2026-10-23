@@ -56,6 +56,37 @@ poe lint          # ruff check + ruff format + codespell + pydocstyle
 
 ---
 
+## Downloading multi-GB archives
+
+The RFB CNPJ archives reach 2.3 GB each (`Estabelecimentos0.zip`), so they must never be held
+in memory. `download_file_streaming` writes the body to disk in fixed-size chunks and can
+resume an interrupted transfer:
+
+```python
+from pathlib import Path
+
+from filings_rfb._internal.utils.stream_downloader import download_file_streaming
+
+path_zip, str_etag = download_file_streaming(
+    "https://example.org/Estabelecimentos0.zip",
+    Path("data/raw/Estabelecimentos0.zip"),
+)
+```
+
+- The body is streamed into `<dest>.part`; only after the byte count matches `Content-Length`
+  is it renamed onto the destination, so the final path never holds a partial file.
+- The server `ETag` is stored next to the partial file (`<dest>.part.etag`). A retry, or a
+  later call after a crash, continues with `Range: bytes=<n>-` and `If-Range: <etag>`. If the
+  `ETag` changed, or the leftover has no recorded `ETag`, the download restarts from zero.
+- The returned `str_etag` (empty when the server sends none) is for provenance.
+- A body shorter than `Content-Length` raises `OSError` after the bounded retries, keeping the
+  partial file for the next attempt; a response without `Content-Length` raises `ValueError`.
+- It shares the guards of `http_downloader` (http/https only, public hosts only, redirects
+  refused, bounded retries). `download_file` there still buffers the whole body: use it only
+  for small files.
+
+---
+
 ## Publishing to PyPI
 
 Two GitHub Actions workflows handle releases (present when the repo has a GitHub remote):
