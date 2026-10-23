@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
+import contextlib
 from dataclasses import dataclass, field
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -55,7 +56,7 @@ class _Handler(BaseHTTPRequestHandler):
             Ignored.
         """
 
-    def do_GET(self) -> None:  # noqa: N802
+    def do_GET(self) -> None:  # noqa: N802  # complexity-ok: stub server protocol branching
         """Answer a GET: redirect, full body, or a (possibly cut) range."""
         cls_state: _StubState = self.server.state  # type: ignore[attr-defined]
         cls_state.list_requests.append(dict(self.headers))
@@ -71,11 +72,15 @@ class _Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(cls_state.body) - int_start))
         if int_start:
             int_last = len(cls_state.body) - 1
-            self.send_header("Content-Range", f"bytes {int_start}-{int_last}/{len(cls_state.body)}")
+            self.send_header(
+                "Content-Range", f"bytes {int_start}-{int_last}/{len(cls_state.body)}"
+            )
         self.end_headers()
         self.wfile.write(self._payload(cls_state, int_start))
 
-    def _resolve_start(self, cls_state: _StubState) -> int:
+    def _resolve_start(  # complexity-ok: stub server protocol branch (Range / If-Range)
+        self, cls_state: _StubState
+    ) -> int:
         """Return the byte offset to serve from (0 when the range is not honoured).
 
         Parameters
@@ -96,7 +101,9 @@ class _Handler(BaseHTTPRequestHandler):
         return 0
 
     @staticmethod
-    def _payload(cls_state: _StubState, int_start: int) -> bytes:
+    def _payload(  # complexity-ok: stub server protocol branch (cut vs full body)
+        cls_state: _StubState, int_start: int
+    ) -> bytes:
         """Return the bytes to write, cut short while ``int_cuts_left`` remains.
 
         Parameters
@@ -198,8 +205,8 @@ def path_part(path_dest: Path) -> Path:
     return path_dest.with_name(path_dest.name + ".part")
 
 
-def _seed_partial(path_part: Path, bytes_old: bytes, str_etag: str | None) -> None:
-    """Pre-create a leftover partial download (and its ETag sidecar when given).
+def _seed_partial(path_part: Path, bytes_old: bytes, str_etag: str) -> None:
+    """Pre-create a leftover partial download together with its ETag sidecar.
 
     Parameters
     ----------
@@ -207,13 +214,12 @@ def _seed_partial(path_part: Path, bytes_old: bytes, str_etag: str | None) -> No
         The partial-file path.
     bytes_old : bytes
         The leftover bytes.
-    str_etag : str | None
-        The ETag recorded with them, or ``None`` for no sidecar.
+    str_etag : str
+        The ETag recorded with them.
     """
     path_part.parent.mkdir(parents=True, exist_ok=True)
     path_part.write_bytes(bytes_old)
-    if str_etag is not None:
-        path_part.with_name(path_part.name + ".etag").write_text(str_etag)
+    path_part.with_name(path_part.name + ".etag").write_text(str_etag)
 
 
 def test_download_streaming_full_body_matches_source(stub: _Stub, path_dest: Path) -> None:
@@ -362,7 +368,8 @@ def test_download_streaming_partial_without_etag_restarts(
     path_part : pathlib.Path
         The partial-file path.
     """
-    _seed_partial(path_part, b"UNKNOWN-ORIGIN", None)
+    path_part.parent.mkdir(parents=True)
+    path_part.write_bytes(b"UNKNOWN-ORIGIN")
 
     download_file_streaming(stub.str_url, path_dest)
 
@@ -380,15 +387,15 @@ def test_download_streaming_size_mismatch_raises(stub: _Stub, path_dest: Path) -
         The destination path.
     """
     stub.cls_state.int_cuts_left = 99
+    stub.cls_state.int_cut_after = 100
 
     with pytest.raises(OSError, match="truncated"):
         download_file_streaming(stub.str_url, path_dest)
 
 
-def test_download_streaming_size_mismatch_leaves_nothing_at_dest(
-    stub: _Stub, path_dest: Path
-) -> None:
-    """A failed download never leaves a file at the final path.
+@pytest.fixture
+def failed_download(stub: _Stub, path_dest: Path) -> None:
+    """Run a download whose body never completes, swallowing the final error.
 
     Parameters
     ----------
@@ -398,10 +405,20 @@ def test_download_streaming_size_mismatch_leaves_nothing_at_dest(
         The destination path.
     """
     stub.cls_state.int_cuts_left = 99
-
-    with pytest.raises(OSError, match="truncated"):
+    stub.cls_state.int_cut_after = 100
+    with contextlib.suppress(OSError):
         download_file_streaming(stub.str_url, path_dest)
 
+
+@pytest.mark.usefixtures("failed_download")
+def test_download_streaming_size_mismatch_leaves_nothing_at_dest(path_dest: Path) -> None:
+    """A failed download never leaves a file at the final path.
+
+    Parameters
+    ----------
+    path_dest : pathlib.Path
+        The destination path.
+    """
     assert not path_dest.exists()
 
 

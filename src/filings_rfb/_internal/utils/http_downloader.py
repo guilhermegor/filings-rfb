@@ -15,7 +15,7 @@ NOT followed (a redirect could hop to an internal target that bypasses the up-fr
 
 from __future__ import annotations
 
-from http.client import HTTPMessage
+from http.client import HTTPMessage, HTTPResponse
 import ipaddress
 from pathlib import Path
 import socket
@@ -63,7 +63,7 @@ class _NoRedirectHandler(request.HTTPRedirectHandler, metaclass=TypeChecker):
     def redirect_request(
         self,
         req: request.Request,
-        fp: IO[bytes],
+        fp: IO[bytes] | HTTPResponse,
         code: int,
         msg: str,
         headers: HTTPMessage,
@@ -75,8 +75,8 @@ class _NoRedirectHandler(request.HTTPRedirectHandler, metaclass=TypeChecker):
         ----------
         req : urllib.request.Request
             The original request.
-        fp : IO[bytes]
-            The response file object.
+        fp : IO[bytes] | http.client.HTTPResponse
+            The response file object (``urllib`` passes an ``HTTPResponse``).
         code : int
             The 3xx status code.
         msg : str
