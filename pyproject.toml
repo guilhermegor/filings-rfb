@@ -55,6 +55,7 @@ yamllint = ">=1.35.0"
 shfmt-py = ">=3.7.0"
 shellcheck-py = ">=0.10.0"
 deptry = ">=0.20"
+tomli = { version = ">=2.0.1", python = "<3.11" }
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = ">=1.6.0"
