@@ -77,7 +77,6 @@ jobs:
           mv pyproject.original.toml pyproject.toml
           poetry env activate
 
-      # macOS ships bash 3.2, which has no `declare -A`; bin/ scripts need bash >= 4.
       - name: Install modern bash (macOS)
         if: runner.os == 'macOS'
         run: |

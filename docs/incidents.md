@@ -22,7 +22,8 @@ This page ships in the published docs site, same as [Usage](usage.md). An incide
 production detail (a hostname, a query, a customer-facing symptom) that should not reach a
 public site — redact or generalize it before committing the entry, the way an external
 postmortem omits internal specifics. If this project's site is genuinely public and entries
-cannot stay redacted, exclude `incidents.md` via `exclude_docs` in `mkdocs.yml` instead of
+cannot stay redacted, exclude `incidents.md` via `exclude_docs` in `mkdocs.yml` — and remove its
+`Incidents` entry from `nav` in the same change, or `mkdocs build --strict` fails — instead of
 leaving it half-written.
 
 ## Format
