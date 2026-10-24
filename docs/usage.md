@@ -30,6 +30,38 @@ main()
 
 ---
 
+## Cataloguing the RFB CNPJ share
+
+The Receita Federal publishes the CNPJ open data as one folder per reference month
+(`YYYY-MM`) on a public WebDAV share. `filings_rfb.ingestion.cnpj._share` lists what is
+there, without authentication, so a reader never builds a URL by hand:
+
+```python
+from filings_rfb.ingestion.cnpj._share import (
+    file_url,
+    latest_reference_month,
+    list_files,
+    list_reference_months,
+)
+
+list_reference_months()          # ['2023-05', ..., '2026-10']
+str_month = latest_reference_month()
+
+for cls_file in list_files(str_month):
+    print(cls_file.str_name, cls_file.int_size, cls_file.str_etag, cls_file.dt_last_modified)
+
+file_url(str_month, "Empresas0.zip")   # plain-GET download URL, no redirect
+```
+
+- `list_files` returns one `WebdavEntry` per file: `str_name`, `int_size` (bytes),
+  `str_etag` (as the server sends it, quotes included) and `dt_last_modified` (UTC).
+- Requesting a month the share does not publish raises `ValueError`; there is no silent
+  fallback to another month.
+- Every listing is a live request, so it reflects what RFB publishes now. If RFB rotates the
+  share, change `SHARE_TOKEN` in `_share.py` and nothing else.
+
+---
+
 ## Running from the Makefile
 
 ```bash
