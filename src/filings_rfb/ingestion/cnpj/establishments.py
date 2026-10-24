@@ -25,6 +25,9 @@ from filings_rfb.ingestion.cnpj._multipart import DEFAULT_CHUNK_ROWS, iter_part_
 __all__ = ["read_establishments"]
 
 _PREFIX: str = "Estabelecimentos"
+_LEN_BASICO: int = 8
+_LEN_ORDEM: int = 4
+_LEN_DV: int = 2
 _DATE_COLS: tuple[str, ...] = (
     "data_situacao_cadastral",
     "data_inicio_atividade",
@@ -94,8 +97,29 @@ def _assemble_cnpj_and_dates(df_chunk: pd.DataFrame) -> pd.DataFrame:
     series_cnpj = df_chunk["cnpj_basico"] + df_chunk["cnpj_ordem"] + df_chunk["cnpj_dv"]
     df_out = df_chunk.assign(
         cnpj_completo=series_cnpj,
-        cnpj_valido=[is_valid_cnpj(str_cnpj) for str_cnpj in series_cnpj],
+        cnpj_valido=_parts_aligned(df_chunk) & series_cnpj.map(is_valid_cnpj),
     )
     for str_col in _DATE_COLS:
         df_out[str_col] = parse_compact_dates(df_out[str_col])
     return df_out
+
+
+@type_checker
+def _parts_aligned(df_chunk: pd.DataFrame) -> pd.Series:
+    """Flag rows whose CNPJ parts are exactly 8, 4 and 2 characters wide.
+
+    Parameters
+    ----------
+    df_chunk : pd.DataFrame
+        A named raw (all-text) chunk.
+
+    Returns
+    -------
+    pd.Series
+        ``True`` where a misaligned split cannot pass for a valid 14-character CNPJ.
+    """
+    return (
+        (df_chunk["cnpj_basico"].str.len() == _LEN_BASICO)
+        & (df_chunk["cnpj_ordem"].str.len() == _LEN_ORDEM)
+        & (df_chunk["cnpj_dv"].str.len() == _LEN_DV)
+    )

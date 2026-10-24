@@ -18,9 +18,17 @@ from filings_rfb.ingestion.cnpj.establishments import read_establishments
 STR_MONTH = "2026-10"
 
 
-def _row(str_cnpj: str, str_start: str, str_cnae: str) -> str:
+def _row(str_cnpj: str, str_start: str, str_cnae: str, int_cut: int = 8) -> str:
     """Build one 30-field line: split CNPJ, flags, a status date, start date, CNAEs."""
-    list_head = [str_cnpj[:8], str_cnpj[8:12], str_cnpj[12:], "1", "FANTASIA", "02", str_start]
+    list_head = [
+        str_cnpj[:int_cut],
+        str_cnpj[int_cut:12],
+        str_cnpj[12:],
+        "1",
+        "FANTASIA",
+        "02",
+        str_start,
+    ]
     list_mid = ["", "", "", str_start, "6422100", str_cnae]
     list_fields = [f'"{str_val}"' for str_val in list_head + list_mid]
     list_fields += ['"x"'] * 6 + ['"SP"'] + ['""'] * 9 + ['"00000000"']
@@ -31,6 +39,7 @@ LIST_LINES = [
     _row("00000000000191", "20001231", "6422100"),
     _row("11222333000181", "00000000", "4711301,4711302,4712100"),
     _row("00000001000100", "", "1"),
+    _row("11222333000181", "", "1", int_cut=7),
 ]
 
 
@@ -65,6 +74,11 @@ def df_all(share: None) -> pd.DataFrame:
 def test_full_cnpj_is_assembled(df_all: pd.DataFrame) -> None:
     """Basic + order + check digits make the 14-character CNPJ."""
     assert df_all["cnpj_completo"].iloc[1] == "11222333000181"
+
+
+def test_cnpj_validity_rejects_misaligned_parts(df_all: pd.DataFrame) -> None:
+    """A 7+5+2 split that concatenates to a valid CNPJ is still not valid."""
+    assert not df_all["cnpj_valido"].iloc[3]
 
 
 def test_cnpj_validity_flags_the_bad_row(df_all: pd.DataFrame) -> None:
