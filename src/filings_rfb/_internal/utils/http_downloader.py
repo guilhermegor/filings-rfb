@@ -15,7 +15,7 @@ NOT followed (a redirect could hop to an internal target that bypasses the up-fr
 
 from __future__ import annotations
 
-from http.client import HTTPMessage
+from http.client import HTTPMessage, HTTPResponse
 import ipaddress
 from pathlib import Path
 import socket
@@ -63,7 +63,7 @@ class _NoRedirectHandler(request.HTTPRedirectHandler, metaclass=TypeChecker):
     def redirect_request(
         self,
         req: request.Request,
-        fp: IO[bytes],
+        fp: IO[bytes] | HTTPResponse,
         code: int,
         msg: str,
         headers: HTTPMessage,
@@ -75,8 +75,8 @@ class _NoRedirectHandler(request.HTTPRedirectHandler, metaclass=TypeChecker):
         ----------
         req : urllib.request.Request
             The original request.
-        fp : IO[bytes]
-            The response file object.
+        fp : IO[bytes] | http.client.HTTPResponse
+            The response file object (``urllib`` passes an ``HTTPResponse``).
         code : int
             The 3xx status code.
         msg : str
@@ -204,7 +204,25 @@ def _fetch_bytes(
                 raise OSError(f"Download returned status {int_status} for {str_url!r}")
             return cls_response.read()
     except error.URLError as cls_err:
+        close_http_error(cls_err)
         raise OSError(f"Failed to download {str_url!r}: {cls_err}") from cls_err
+
+
+@type_checker
+def close_http_error(cls_err: error.URLError) -> None:
+    """Release the response an ``HTTPError`` wraps, so a failed attempt leaks no descriptor.
+
+    A blocked redirect raises an ``HTTPError`` around the still-open response; converting it
+    to ``OSError`` without closing it leaves the socket to the garbage collector, once per
+    retry attempt.
+
+    Parameters
+    ----------
+    cls_err : urllib.error.URLError
+        The caught error; only an ``HTTPError`` holds a response to close.
+    """
+    if isinstance(cls_err, error.HTTPError):
+        cls_err.close()
 
 
 @type_checker
