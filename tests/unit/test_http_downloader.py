@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+import contextlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import threading
+from urllib import error
 
 import pytest
 from pytest_mock import MockerFixture
@@ -34,6 +37,53 @@ class _RedirectHandler(BaseHTTPRequestHandler):
         self.send_response(302)
         self.send_header("Location", "http://127.0.0.1:1/elsewhere")
         self.end_headers()
+
+
+@pytest.fixture
+def redirect_url(mocker: MockerFixture) -> Iterator[str]:
+    """Serve a 302 from loopback with the SSRF host check relaxed and no retry sleeps.
+
+    Parameters
+    ----------
+    mocker : pytest_mock.MockerFixture
+        The pytest-mock patcher.
+
+    Yields
+    ------
+    str
+        The URL that answers with a redirect.
+    """
+    mocker.patch("time.sleep")
+    mocker.patch("filings_rfb._internal.utils.http_downloader._assert_public_host")
+    cls_server = ThreadingHTTPServer(("127.0.0.1", 0), _RedirectHandler)
+    cls_thread = threading.Thread(target=cls_server.serve_forever, daemon=True)
+    cls_thread.start()
+    yield f"http://127.0.0.1:{cls_server.server_port}/f.zip"
+    cls_server.shutdown()
+    cls_server.server_close()
+    cls_thread.join()
+
+
+def test_download_file_blocked_redirect_closes_the_http_error(
+    tmp_path: Path, mocker: MockerFixture, redirect_url: str
+) -> None:
+    """Every blocked redirect closes its ``HTTPError`` (and so the response it wraps).
+
+    Parameters
+    ----------
+    tmp_path : pathlib.Path
+        Pytest's per-test temp dir.
+    mocker : pytest_mock.MockerFixture
+        The pytest-mock patcher.
+    redirect_url : str
+        The URL that answers with a redirect.
+    """
+    cls_spy = mocker.spy(error.HTTPError, "close")
+
+    with contextlib.suppress(OSError):
+        download_file(redirect_url, tmp_path / "f.zip")
+
+    assert cls_spy.call_count == 3
 
 
 def test_download_file_redirect_raises_oserror_not_followed(

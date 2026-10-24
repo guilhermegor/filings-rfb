@@ -204,7 +204,25 @@ def _fetch_bytes(
                 raise OSError(f"Download returned status {int_status} for {str_url!r}")
             return cls_response.read()
     except error.URLError as cls_err:
+        close_http_error(cls_err)
         raise OSError(f"Failed to download {str_url!r}: {cls_err}") from cls_err
+
+
+@type_checker
+def close_http_error(cls_err: error.URLError) -> None:
+    """Release the response an ``HTTPError`` wraps, so a failed attempt leaks no descriptor.
+
+    A blocked redirect raises an ``HTTPError`` around the still-open response; converting it
+    to ``OSError`` without closing it leaves the socket to the garbage collector, once per
+    retry attempt.
+
+    Parameters
+    ----------
+    cls_err : urllib.error.URLError
+        The caught error; only an ``HTTPError`` holds a response to close.
+    """
+    if isinstance(cls_err, error.HTTPError):
+        cls_err.close()
 
 
 @type_checker

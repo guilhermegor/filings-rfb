@@ -27,6 +27,7 @@ from filings_rfb._internal.utils.http_downloader import (
     _OPENER,
     _TIMEOUT_SECONDS,
     _assert_url_allowed,
+    close_http_error,
 )
 from filings_rfb._internal.utils.retry import retry_with_backoff
 from filings_rfb._internal.utils.typing import type_checker
@@ -299,6 +300,7 @@ def _map_open_error(
     _StaleResume | OSError
         The exception to raise.
     """
+    close_http_error(cls_err)
     if (
         isinstance(cls_err, error.HTTPError)
         and int_offset > 0

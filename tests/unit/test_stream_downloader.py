@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import threading
+from urllib import error
 
 import pytest
 from pytest_mock import MockerFixture
@@ -452,6 +453,29 @@ def test_download_streaming_redirect_is_not_followed(stub: _Stub, path_dest: Pat
 
     with pytest.raises(OSError, match="redirect blocked"):
         download_file_streaming(stub.str_url, path_dest)
+
+
+def test_download_streaming_blocked_redirect_closes_the_http_error(
+    stub: _Stub, path_dest: Path, mocker: MockerFixture
+) -> None:
+    """Every blocked redirect closes its ``HTTPError`` (and so the response it wraps).
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    mocker : pytest_mock.MockerFixture
+        The pytest-mock patcher.
+    """
+    stub.cls_state.bool_redirect = True
+    cls_spy = mocker.spy(error.HTTPError, "close")
+
+    with contextlib.suppress(OSError):
+        download_file_streaming(stub.str_url, path_dest)
+
+    assert cls_spy.call_count == 3
 
 
 def test_download_streaming_non_http_scheme_raises(path_dest: Path) -> None:
