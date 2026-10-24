@@ -34,6 +34,7 @@ class _StubState:
     bool_honour_if_range: bool = True
     bool_send_length: bool = True
     bool_redirect: bool = False
+    int_partial_first: int = 0
     list_requests: list[dict[str, str]] = field(default_factory=list)
 
 
@@ -66,6 +67,9 @@ class _Handler(BaseHTTPRequestHandler):
             self.send_header("Location", "http://127.0.0.1:1/elsewhere")
             self.end_headers()
             return
+        if cls_state.int_partial_first and "Range" not in self.headers:
+            self._send_partial_first(cls_state)
+            return
         int_start = self._resolve_start(cls_state)
         self.send_response(206 if int_start else 200)
         self.send_header("ETag", cls_state.str_etag)
@@ -78,6 +82,22 @@ class _Handler(BaseHTTPRequestHandler):
             )
         self.end_headers()
         self.wfile.write(self._payload(cls_state, int_start))
+
+    def _send_partial_first(self, cls_state: _StubState) -> None:
+        """Answer an un-ranged request with a 206 covering only the first bytes.
+
+        Parameters
+        ----------
+        cls_state : _StubState
+            The stub behaviour (``int_partial_first`` is the bytes served).
+        """
+        int_len = cls_state.int_partial_first
+        self.send_response(206)
+        self.send_header("ETag", cls_state.str_etag)
+        self.send_header("Content-Length", str(int_len))
+        self.send_header("Content-Range", f"bytes 0-{int_len - 1}/{len(cls_state.body)}")
+        self.end_headers()
+        self.wfile.write(cls_state.body[:int_len])
 
     def _resolve_start(  # complexity-ok: stub server protocol branch (Range / If-Range)
         self, cls_state: _StubState
@@ -476,6 +496,24 @@ def test_download_streaming_blocked_redirect_closes_the_http_error(
         download_file_streaming(stub.str_url, path_dest)
 
     assert cls_spy.call_count == 3
+
+
+def test_download_streaming_partial_response_to_initial_request_raises(
+    stub: _Stub, path_dest: Path
+) -> None:
+    """A 206 that does not cover the whole object must not be renamed into place as complete.
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    stub.cls_state.int_partial_first = 10
+
+    with pytest.raises(ValueError, match="Content-Range"):
+        download_file_streaming(stub.str_url, path_dest)
 
 
 def test_download_streaming_non_http_scheme_raises(path_dest: Path) -> None:

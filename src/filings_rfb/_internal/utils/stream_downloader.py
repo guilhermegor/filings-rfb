@@ -19,6 +19,7 @@ from __future__ import annotations
 from http.client import HTTPException, HTTPResponse
 from io import BufferedIOBase
 from pathlib import Path
+import re
 from urllib import error, request
 
 from filings_rfb._internal.utils.http_downloader import (
@@ -36,6 +37,7 @@ from filings_rfb._internal.utils.typing import type_checker
 _CHUNK_BYTES: int = 1 << 20
 _HTTP_PARTIAL_CONTENT: int = 206
 _HTTP_RANGE_NOT_SATISFIABLE: int = 416
+_CONTENT_RANGE: re.Pattern[str] = re.compile(r"bytes (\d+)-(\d+)/(\d+)")
 
 
 class _StaleResume(Exception):  # noqa: N818
@@ -341,15 +343,18 @@ def _resolve_start(
     _StaleResume
         If a 206 does not continue the stored partial file.
     """
-    if int_offset == 0 or cls_response.status != _HTTP_PARTIAL_CONTENT:
+    if cls_response.status != _HTTP_PARTIAL_CONTENT:
         return 0
-    _assert_continues(cls_response, int_offset, str_etag == str_stored_etag)
+    _assert_continues(cls_response, int_offset, int_offset == 0 or str_etag == str_stored_etag)
     return int_offset
 
 
 @type_checker
 def _assert_continues(cls_response: HTTPResponse, int_offset: int, bool_same_etag: bool) -> None:
-    """Raise unless a 206 continues the stored partial file at exactly ``int_offset``.
+    """Raise unless a 206 covers the object from ``int_offset`` through its last byte.
+
+    A 206 to an initial request (``int_offset`` 0) is only acceptable when it spans the whole
+    object; otherwise the truncated body would be renamed into place as complete.
 
     Parameters
     ----------
@@ -363,11 +368,43 @@ def _assert_continues(cls_response: HTTPResponse, int_offset: int, bool_same_eta
     Raises
     ------
     _StaleResume
-        If the ETag changed or ``Content-Range`` does not start at ``int_offset``.
+        If a resume's ETag changed or its ``Content-Range`` does not continue the file.
+    ValueError
+        If a response to an initial request is a partial one.
     """
-    str_range = cls_response.headers.get("Content-Range", "")
-    if not (bool_same_etag and str_range.startswith(f"bytes {int_offset}-")):
-        raise _StaleResume
+    tuple_range = _parse_content_range(cls_response.headers.get("Content-Range", ""))
+    bool_ok = bool_same_etag and tuple_range[0] == int_offset and tuple_range[1] == tuple_range[2]
+    if bool_ok:
+        return
+    raise (
+        _StaleResume
+        if int_offset
+        else ValueError(
+            "206 response to an initial request does not cover the whole file (Content-Range)"
+        )
+    )
+
+
+@type_checker
+def _parse_content_range(str_range: str) -> tuple[int, int, int]:
+    """Parse ``bytes <start>-<end>/<total>`` into ``(start, end + 1, total)``.
+
+    Parameters
+    ----------
+    str_range : str
+        The ``Content-Range`` header value.
+
+    Returns
+    -------
+    tuple[int, int, int]
+        ``(start, end + 1, total)``; ``(-1, -1, -2)`` when absent or unparsable, which never
+        satisfies the "covers the rest of the file" comparison.
+    """
+    cls_match = _CONTENT_RANGE.fullmatch(str_range.strip())
+    if cls_match is None:
+        return -1, -1, -2
+    int_start, int_end, int_total = (int(str_group) for str_group in cls_match.groups())
+    return int_start, int_end + 1, int_total
 
 
 @type_checker
