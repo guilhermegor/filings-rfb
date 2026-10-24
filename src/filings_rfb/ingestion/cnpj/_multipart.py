@@ -41,6 +41,7 @@ __all__ = ["DEFAULT_CHUNK_ROWS", "DEFAULT_PARTS", "iter_part_chunks"]
 DEFAULT_PARTS: tuple[int, ...] = tuple(range(10))
 DEFAULT_CHUNK_ROWS: int = 500_000
 _PACKAGE_NAME: str = "filings-rfb"
+_SINGLE_PART_BY_FLAG: dict[bool, tuple[int, ...]] = {False: (), True: (0,)}
 
 
 @type_checker
@@ -54,6 +55,7 @@ def iter_part_chunks(  # noqa: PLR0913 — the shared reader API; each argument 
     tuple_parts: tuple[int, ...] = DEFAULT_PARTS,
     list_decimal_cols: Sequence[str] | None = None,
     fn_prepare: Callable[[pd.DataFrame], pd.DataFrame] | None = None,
+    bool_single_file: bool = False,
 ) -> Iterator[pd.DataFrame]:
     """Yield every chunk of every part of one dataset for a reference month.
 
@@ -84,6 +86,9 @@ def iter_part_chunks(  # noqa: PLR0913 — the shared reader API; each argument 
         Columns coerced to exact ``Decimal``.
     fn_prepare : callable, optional
         Text-level reshaping of each named chunk before typing.
+    bool_single_file : bool, optional
+        The dataset is one un-numbered ``<prefix>.zip`` (``Simples.zip``) rather than ten
+        parts; ``tuple_parts`` is then ignored and rows carry ``part_index`` 0.
 
     Yields
     ------
@@ -97,13 +102,14 @@ def iter_part_chunks(  # noqa: PLR0913 — the shared reader API; each argument 
     FileNotFoundError
         If a requested part is not published for the month.
     """
-    _assert_parts_published(str_month, str_prefix, tuple_parts)
+    tuple_parts = _SINGLE_PART_BY_FLAG[bool_single_file] or tuple_parts
+    _assert_parts_published(str_month, str_prefix, tuple_parts, bool_single_file)
     str_run_id = new_run_id()
     str_version = resolve_package_version(_PACKAGE_NAME)
     with _workdir(path_workdir) as path_dir:
         for int_part in tuple_parts:
             yield from _iter_one_part(
-                (str_month, f"{str_prefix}{int_part}.zip", int_part),
+                (str_month, _zip_name(str_prefix, int_part, bool_single_file), int_part),
                 path_dir,
                 (cls_contract, dict_dtypes, int_chunk_rows, list_decimal_cols, fn_prepare),
                 (str_run_id, str_version, path_workdir is not None),
@@ -111,7 +117,9 @@ def iter_part_chunks(  # noqa: PLR0913 — the shared reader API; each argument 
 
 
 @type_checker
-def _assert_parts_published(str_month: str, str_prefix: str, tuple_parts: tuple[int, ...]) -> None:
+def _assert_parts_published(
+    str_month: str, str_prefix: str, tuple_parts: tuple[int, ...], bool_single_file: bool = False
+) -> None:
     """Fail before any download when a requested part is not published.
 
     Parameters
@@ -122,6 +130,8 @@ def _assert_parts_published(str_month: str, str_prefix: str, tuple_parts: tuple[
         The file-name stem before the part number.
     tuple_parts : tuple of int
         The requested part numbers.
+    bool_single_file : bool, optional
+        Whether the dataset is one un-numbered archive.
 
     Raises
     ------
@@ -129,13 +139,31 @@ def _assert_parts_published(str_month: str, str_prefix: str, tuple_parts: tuple[
         Naming every requested part the share does not list.
     """
     set_published = {cls_entry.str_name for cls_entry in list_files(str_month)}
-    list_missing = [
-        f"{str_prefix}{int_part}.zip"
-        for int_part in tuple_parts
-        if f"{str_prefix}{int_part}.zip" not in set_published
-    ]
+    list_names = [_zip_name(str_prefix, int_part, bool_single_file) for int_part in tuple_parts]
+    list_missing = [str_name for str_name in list_names if str_name not in set_published]
     if list_missing:
         raise FileNotFoundError(f"{str_month}: part(s) not published: {', '.join(list_missing)}")
+
+
+@type_checker
+def _zip_name(str_prefix: str, int_part: int, bool_single_file: bool) -> str:
+    """Return the archive file name of one part, or of the whole un-numbered dataset.
+
+    Parameters
+    ----------
+    str_prefix : str
+        The file-name stem, e.g. ``"Empresas"`` or ``"Simples"``.
+    int_part : int
+        The part number (ignored for a single-file dataset).
+    bool_single_file : bool
+        Whether the dataset is one un-numbered archive.
+
+    Returns
+    -------
+    str
+        ``Simples.zip`` for a single file, else ``Empresas3.zip`` style.
+    """
+    return f"{str_prefix}.zip" if bool_single_file else f"{str_prefix}{int_part}.zip"
 
 
 @contextmanager
