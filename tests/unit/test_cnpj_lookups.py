@@ -1,5 +1,6 @@
 """Unit tests for the six CNPJ lookup-table readers (offline, trimmed real fixtures)."""
 
+from collections import deque
 import hashlib
 from pathlib import Path
 import zipfile
@@ -59,8 +60,7 @@ def _write_zip(path_zip: Path, dict_members: dict[str, bytes]) -> Path:
         ``path_zip``.
     """
     with zipfile.ZipFile(path_zip, "w") as cls_zip:
-        for str_name, bytes_content in dict_members.items():
-            cls_zip.writestr(str_name, bytes_content)
+        deque(map(cls_zip.writestr, dict_members, dict_members.values()), maxlen=0)
     return path_zip
 
 
