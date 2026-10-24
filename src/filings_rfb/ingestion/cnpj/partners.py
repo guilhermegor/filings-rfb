@@ -24,6 +24,7 @@ from pathlib import Path
 import pandas as pd
 
 from filings_rfb._internal.config.contracts import CNPJ_PARTNERS
+from filings_rfb._internal.utils.compact_dates import parse_compact_dates
 from filings_rfb._internal.utils.typing import type_checker
 from filings_rfb.ingestion.cnpj._multipart import DEFAULT_CHUNK_ROWS, iter_part_chunks
 
@@ -33,7 +34,10 @@ __all__ = ["read_partners"]
 _PREFIX: str = "Socios"
 _COL_REPRESENTATIVE_DOC: str = "documento_representante"
 _NO_REPRESENTATIVE: str = "***000000**"
-_DTYPES: dict[str, str] = {str_col: "str" for str_col in CNPJ_PARTNERS.tuple_required}
+_COL_ENTRY_DATE: str = "data_entrada"
+_DTYPES: dict[str, str] = {
+    str_col: "str" for str_col in CNPJ_PARTNERS.tuple_required if str_col != _COL_ENTRY_DATE
+}
 
 
 @type_checker
@@ -56,13 +60,16 @@ def read_partners(
     Returns
     -------
     Iterator[pd.DataFrame]
-        The eleven published columns as text (documents verbatim, see the module docstring)
+        The eleven published columns as text (documents verbatim, see the module docstring),
+        except ``data_entrada``, which is ``datetime.date`` (``00000000`` and blank are null),
         plus the provenance columns, ``source_etag`` and ``part_index``.
 
     Raises
     ------
     FileNotFoundError
         If any of the ten parts is not published for the month (raised on first iteration).
+    ValueError
+        If ``data_entrada`` is neither ``YYYYMMDD`` nor a null marker.
     """
     return iter_part_chunks(
         str_month,
@@ -71,13 +78,13 @@ def read_partners(
         _DTYPES,
         int_chunk_rows=int_chunk_rows,
         path_workdir=path_workdir,
-        fn_prepare=_null_missing_representative,
+        fn_prepare=_prepare_partners,
     )
 
 
 @type_checker
-def _null_missing_representative(df_chunk: pd.DataFrame) -> pd.DataFrame:
-    """Replace the "no representative" document sentinel with null.
+def _prepare_partners(df_chunk: pd.DataFrame) -> pd.DataFrame:
+    """Null the "no representative" sentinel and parse ``data_entrada``.
 
     Parameters
     ----------
@@ -87,8 +94,14 @@ def _null_missing_representative(df_chunk: pd.DataFrame) -> pd.DataFrame:
     Returns
     -------
     pd.DataFrame
-        A copy whose representative document is null where RFB published ``***000000**``.
+        A copy whose representative document is null where RFB published ``***000000**`` and
+        whose entry date is ``datetime.date`` or null.
     """
     ser_doc = df_chunk[_COL_REPRESENTATIVE_DOC]
     ser_clean = ser_doc.mask(ser_doc == _NO_REPRESENTATIVE)
-    return df_chunk.assign(**{_COL_REPRESENTATIVE_DOC: ser_clean})
+    return df_chunk.assign(
+        **{
+            _COL_REPRESENTATIVE_DOC: ser_clean,
+            _COL_ENTRY_DATE: parse_compact_dates(df_chunk[_COL_ENTRY_DATE]),
+        }
+    )
