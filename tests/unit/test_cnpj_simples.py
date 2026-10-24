@@ -149,6 +149,31 @@ def test_unpublished_archive_is_an_error(monkeypatch: pytest.MonkeyPatch, tmp_pa
 
 def test_unknown_option_is_rejected(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """A flag other than S/N is an error, never a silent null."""
-    _publish(monkeypatch, tmp_path, ['"00000006";"X";"20180101";"00000000";"N";"0";"0"'])
+    _publish(
+        monkeypatch, tmp_path, ['"00000006";"X";"20180101";"00000000";"N";"00000000";"00000000"']
+    )
     with pytest.raises(ValueError, match="expected 'S' or 'N'"):
         next(read_simples(STR_MONTH))
+
+
+@pytest.mark.parametrize("str_bad_date", ["2020101", "202011"])
+def test_short_date_is_rejected_not_misparsed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, str_bad_date: str
+) -> None:
+    """A non-eight-digit date raises instead of becoming a wrong date."""
+    _publish(
+        monkeypatch,
+        tmp_path,
+        [f'"00000006";"N";"{str_bad_date}";"00000000";"N";"00000000";"00000000"'],
+    )
+    with pytest.raises(ValueError, match="not YYYYMMDD"):
+        next(read_simples(STR_MONTH))
+
+
+def test_blank_flag_is_na(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """A blank S/N flag is NA, not an error and not False."""
+    _publish(
+        monkeypatch, tmp_path, ['"00000006";"";"00000000";"00000000";"N";"00000000";"00000000"']
+    )
+    df_chunk = next(read_simples(STR_MONTH))
+    assert pd.isna(df_chunk["opcao_pelo_simples"].iloc[0])

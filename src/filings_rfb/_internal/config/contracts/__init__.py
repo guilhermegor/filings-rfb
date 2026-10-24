@@ -20,6 +20,10 @@ from filings_rfb._internal.config.contracts.cnpj_companies import (
     CNPJ_COMPANIES,
     COLUMNS_COMPANIES,
 )
+from filings_rfb._internal.config.contracts.cnpj_establishments import (
+    CNPJ_ESTABLISHMENTS,
+    COLUMNS_ESTABLISHMENTS,
+)
 from filings_rfb._internal.config.contracts.cnpj_lookups import (
     CNAES,
     CNPJ_LOOKUP_CONTRACTS,
@@ -29,6 +33,10 @@ from filings_rfb._internal.config.contracts.cnpj_lookups import (
     NATUREZAS,
     PAISES,
     QUALIFICACOES,
+)
+from filings_rfb._internal.config.contracts.cnpj_partners import (
+    CNPJ_PARTNERS,
+    COLUMNS_PARTNERS,
 )
 from filings_rfb._internal.config.contracts.cnpj_simples import CNPJ_SIMPLES, COLUMNS_SIMPLES
 from filings_rfb._internal.config.contracts.example_source import EXAMPLE_SOURCE
@@ -42,10 +50,14 @@ from filings_rfb._internal.utils.tabular_reader import (
 __all__ = [
     "CNAES",
     "CNPJ_COMPANIES",
+    "CNPJ_ESTABLISHMENTS",
     "CNPJ_LOOKUP_CONTRACTS",
     "CNPJ_LOOKUP_NAMES",
+    "CNPJ_PARTNERS",
     "CNPJ_SIMPLES",
     "COLUMNS_COMPANIES",
+    "COLUMNS_ESTABLISHMENTS",
+    "COLUMNS_PARTNERS",
     "COLUMNS_SIMPLES",
     "EXAMPLE_SOURCE",
     "MOTIVOS",

@@ -47,11 +47,17 @@ for df_chunk in read_companies("2026-10"):
     ...
 ```
 
+`read_establishments("2026-10")` does the same for `Estabelecimentos`, adding the full 14-character
+`cnpj_completo` and its validity flag `cnpj_valido`.
+
 `export_companies_parquet("2026-10", path)` writes them to Parquet for lazy querying (DuckDB,
 Polars `scan_parquet`); it needs the optional extra `pip install 'filings-rfb[parquet]'`.
 
 `read_simples("2026-10")` does the same for the Simples Nacional and MEI options (booleans and
 real dates, with the RFB's `00000000` read as null).
+
+`read_partners("2026-10")` does the same for `Socios`: masked CPFs (`***240659**`) are kept verbatim,
+never unmasked, and `***000000**` as representative document becomes null.
 
 <!-- slug: project-structure -->
 ## Project Structure

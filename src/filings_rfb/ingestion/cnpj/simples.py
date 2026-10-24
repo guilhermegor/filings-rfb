@@ -15,7 +15,7 @@ from pathlib import Path
 import pandas as pd
 
 from filings_rfb._internal.config.contracts import CNPJ_SIMPLES
-from filings_rfb._internal.utils.dtypes import apply_dtypes
+from filings_rfb._internal.utils.compact_dates import parse_compact_dates
 from filings_rfb._internal.utils.typing import type_checker
 from filings_rfb.ingestion.cnpj._multipart import DEFAULT_CHUNK_ROWS, iter_part_chunks
 
@@ -31,7 +31,6 @@ _DATE_COLS: tuple[str, ...] = (
     "data_exclusao_mei",
 )
 _DTYPES: dict[str, str] = {"cnpj_basico": "str"}
-_SENTINELS: tuple[str, ...] = ("00000000", "")
 _DICT_FLAGS: dict[str, bool] = {"S": True, "N": False}
 
 
@@ -90,22 +89,18 @@ def _type_options_and_dates(df_chunk: pd.DataFrame) -> pd.DataFrame:
     Returns
     -------
     pd.DataFrame
-        A copy with the option columns as nullable ``boolean`` and the date columns typed
-        through ``apply_dtypes``.
+        A copy with the option columns as nullable ``boolean`` and the date columns parsed by
+        ``parse_compact_dates`` (strict ``YYYYMMDD``).
     """
-    df_flags = df_chunk.assign(
+    return df_chunk.assign(
         **{str_col: _flags_to_boolean(df_chunk[str_col]) for str_col in _BOOL_COLS},
-        **{
-            str_col: df_chunk[str_col].mask(df_chunk[str_col].isin(_SENTINELS))
-            for str_col in _DATE_COLS
-        },
+        **{str_col: parse_compact_dates(df_chunk[str_col]) for str_col in _DATE_COLS},
     )
-    return apply_dtypes(df_flags, list_date_cols=_DATE_COLS)
 
 
 @type_checker
 def _flags_to_boolean(series_flag: pd.Series) -> pd.Series:
-    """Map ``S``/``N`` text to a nullable boolean series, rejecting anything else.
+    """Map ``S``/``N`` text to a nullable boolean series; blank is NA, anything else raises.
 
     Parameters
     ----------
@@ -115,15 +110,16 @@ def _flags_to_boolean(series_flag: pd.Series) -> pd.Series:
     Returns
     -------
     pd.Series
-        ``True`` for ``S``, ``False`` for ``N``.
+        ``True`` for ``S``, ``False`` for ``N``, ``<NA>`` for a blank.
 
     Raises
     ------
     ValueError
         If a value is neither ``S`` nor ``N``.
     """
-    series_bool = series_flag.map(_DICT_FLAGS)
-    if series_bool.isna().any():
-        list_bad = sorted(series_flag[series_bool.isna()].unique().tolist())
+    series_bool = series_flag.str.strip().map(_DICT_FLAGS)
+    series_bad = series_flag[series_bool.isna() & (series_flag.str.strip() != "")]
+    if not series_bad.empty:
+        list_bad = sorted(series_bad.unique().tolist())
         raise ValueError(f"{series_flag.name}: expected 'S' or 'N', got {list_bad}")
     return series_bool.astype("boolean")
