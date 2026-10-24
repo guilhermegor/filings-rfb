@@ -19,7 +19,7 @@
 <!-- slug: overview -->
 ## Overview
 
-Simple and efficient Python library to interact with Secretariat of Federal Revenuel of Brazil (Receita Federal Brasileira) public data
+Simple and efficient Python library to interact with Secretariat of Federal Revenue of Brazil (Receita Federal Brasileira) public data
 
 <!-- slug: getting-started -->
 ## Getting Started
@@ -94,7 +94,7 @@ This project is licensed under MIT; see [LICENSE](LICENSE).
 <!-- slug: authors -->
 ## Authors
 
-- guilhermegor — [GitHub](https://github.com/guilhermegor) | [LinkedIn](https://www.linkedin.com/in/y)
+- guilhermegor — [GitHub](https://github.com/guilhermegor) | [LinkedIn](https://www.linkedin.com/in/guilhermegor)
 
 <!-- slug: useful-links -->
 ## Useful Links

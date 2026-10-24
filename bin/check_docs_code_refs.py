@@ -450,7 +450,8 @@ def scan_file(
             int_scoped += 1
             str_problem = candidate_problem(path_src, str_module, parse_names(str_names))
             if str_problem:
-                list_problems.append(f"{path_md}:{int_lineno}: {str_problem}")
+                str_rel = path_md.relative_to(path_src.parent).as_posix()
+                list_problems.append(f"{str_rel}:{int_lineno}: {str_problem}")
     return int_raw, int_scoped, list_problems
 
 

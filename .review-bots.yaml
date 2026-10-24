@@ -24,9 +24,16 @@ reviewers:
     posts: threads
     note: GitHub's built-in reviewer; enabled per-repo by enable_repo_rules.sh.
 
+  - login: guilhermegor-review-ladder[bot]
+    posts: threads
+    note: >-
+      The reviewer ladder's GitHub App. Submits its fallback review (qwen/codex/…) as a PR
+      review whose body opens with the attribution line below and names the reviewed head.
+
   - kind: comment-marker
     marker: "Fallback review — runtime:"
-    posters: []
+    posters:
+      - guilhermegor-review-ladder[bot]
     note: >-
       The reviewer ladder's attribution line. Counts as a review only in a comment authored by
       a login in `posters:` and posted after the head commit (docs/faq.md). The author
