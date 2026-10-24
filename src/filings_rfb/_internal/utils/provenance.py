@@ -175,6 +175,54 @@ def stamp_provenance(
 
 
 @type_checker
+def stamp_source_etag(df_input: pd.DataFrame, str_etag: str) -> pd.DataFrame:
+    """Append a ``source_etag`` column holding the share's ``ETag`` for the source artifact.
+
+    Kept beside :func:`stamp_provenance` so callers outside the seam layer never build a
+    column themselves. Returns a new frame; the input is not mutated.
+
+    Parameters
+    ----------
+    df_input : pd.DataFrame
+        The (usually already stamped) frame.
+    str_etag : str
+        The ``ETag`` the source reported for the artifact, shared by every row.
+
+    Returns
+    -------
+    pd.DataFrame
+        A copy of ``df_input`` with ``source_etag`` appended as the nullable ``string`` dtype.
+    """
+    df_stamped = df_input.copy()
+    df_stamped["source_etag"] = pd.array([str_etag] * len(df_stamped), dtype="string")
+    return df_stamped
+
+
+@type_checker
+def stamp_part_index(df_input: pd.DataFrame, int_part_index: int) -> pd.DataFrame:
+    """Append a ``part_index`` column naming the numbered archive the rows came from.
+
+    For a source split into ``<Name>0.zip`` .. ``<Name>9.zip``; pair it with
+    :func:`stamp_source_etag`, which names that archive's revision. Returns a new frame.
+
+    Parameters
+    ----------
+    df_input : pd.DataFrame
+        The frame to stamp.
+    int_part_index : int
+        The part number the rows were read from.
+
+    Returns
+    -------
+    pd.DataFrame
+        A copy of ``df_input`` with ``part_index`` appended as the nullable ``Int64`` dtype.
+    """
+    df_stamped = df_input.copy()
+    df_stamped["part_index"] = pd.array([int_part_index] * len(df_stamped), dtype="Int64")
+    return df_stamped
+
+
+@type_checker
 def new_run_id() -> str:
     """Return a fresh UUID4 string identifying one ingestion read.
 
@@ -187,39 +235,6 @@ def new_run_id() -> str:
         A new random UUID as a string.
     """
     return _new_run_id()
-
-
-@type_checker
-def stamp_source_etag(df_input: pd.DataFrame, str_etag: str, int_part_index: int) -> pd.DataFrame:
-    """Append the per-part source columns ``source_etag`` and ``part_index`` (pure transform).
-
-    Complements :func:`stamp_provenance` for a source split into numbered archives
-    (``Empresas0.zip`` .. ``Empresas9.zip``): the ``ETag`` names the exact archive revision the
-    server sent, and the index says which part the row came from, so a part re-published
-    mid-month is identifiable without re-hashing. Kept apart from ``PROVENANCE_COLUMNS`` because
-    only multi-part sources have a part index; those six columns stay the fixed set every
-    ingested frame carries.
-
-    Parameters
-    ----------
-    df_input : pd.DataFrame
-        The frame to stamp (left unmodified).
-    str_etag : str
-        The server ``ETag`` of the part's archive, quotes included; ``""`` when the server
-        sent none.
-    int_part_index : int
-        The part number the rows were read from.
-
-    Returns
-    -------
-    pd.DataFrame
-        A copy of ``df_input`` with ``source_etag`` (``string``) and ``part_index``
-        (``Int64``) appended.
-    """
-    return df_input.assign(
-        source_etag=pd.array([str_etag] * len(df_input), dtype="string"),
-        part_index=pd.array([int_part_index] * len(df_input), dtype="Int64"),
-    )
 
 
 @type_checker

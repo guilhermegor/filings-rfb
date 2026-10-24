@@ -3,6 +3,7 @@
 from importlib.metadata import PackageNotFoundError, version
 
 from .ingestion.cnpj.companies import export_companies_parquet, read_companies
+from .ingestion.cnpj.lookups import CNPJ_LOOKUP_NAMES, read_lookup
 from .main import main
 
 
@@ -12,4 +13,11 @@ except PackageNotFoundError:  # pragma: no cover - source tree without an instal
     __version__ = "0.0.0"
 
 
-__all__ = ["__version__", "export_companies_parquet", "main", "read_companies"]
+__all__ = [
+    "CNPJ_LOOKUP_NAMES",
+    "__version__",
+    "export_companies_parquet",
+    "main",
+    "read_companies",
+    "read_lookup",
+]

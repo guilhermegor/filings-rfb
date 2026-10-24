@@ -26,6 +26,7 @@ from filings_rfb._internal.utils.provenance import (
     hash_artifact,
     new_run_id,
     resolve_package_version,
+    stamp_part_index,
     stamp_provenance,
     stamp_source_etag,
 )
@@ -199,7 +200,7 @@ def _iter_one_part(
             df_stamped = stamp_provenance(
                 df_chunk, str_url, tuple_read[0], str_hash, tuple_run[1], tuple_run[0]
             )
-            yield stamp_source_etag(df_stamped, str_etag, int_part)
+            yield stamp_part_index(stamp_source_etag(df_stamped, str_etag), int_part)
     finally:
         _discard_unless_kept(path_zip, tuple_run[2])
 
