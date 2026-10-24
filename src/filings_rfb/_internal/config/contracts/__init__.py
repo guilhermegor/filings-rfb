@@ -16,6 +16,10 @@ delete the example once your own contracts exist.
 
 from __future__ import annotations
 
+from filings_rfb._internal.config.contracts.cnpj_companies import (
+    CNPJ_COMPANIES,
+    COLUMNS_COMPANIES,
+)
 from filings_rfb._internal.config.contracts.cnpj_lookups import (
     CNAES,
     CNPJ_LOOKUP_CONTRACTS,
@@ -36,8 +40,10 @@ from filings_rfb._internal.utils.tabular_reader import (
 
 __all__ = [
     "CNAES",
+    "CNPJ_COMPANIES",
     "CNPJ_LOOKUP_CONTRACTS",
     "CNPJ_LOOKUP_NAMES",
+    "COLUMNS_COMPANIES",
     "EXAMPLE_SOURCE",
     "MOTIVOS",
     "MUNICIPIOS",

@@ -12,6 +12,11 @@ with ``Range: bytes=<n>-`` plus ``If-Range: <etag>``, and restarts from zero whe
 server's ``ETag`` no longer matches the stored one or the leftover has no recorded ``ETag``.
 The finished file is verified against ``Content-Length`` and renamed atomically, so the final
 path never holds a partial file.
+
+Once renamed, its ``ETag`` is recorded in ``<dest>.etag``. A later call for a ``dest`` that has
+that sidecar sends ``If-None-Match``: a ``304`` returns the file untouched, anything else
+downloads afresh and replaces it. The sidecar is written only **after** the rename, so it can
+never describe a partial file.
 """
 
 from __future__ import annotations
@@ -36,6 +41,7 @@ from filings_rfb._internal.utils.typing import type_checker
 
 _CHUNK_BYTES: int = 1 << 20
 _HTTP_PARTIAL_CONTENT: int = 206
+_HTTP_NOT_MODIFIED: int = 304
 _HTTP_RANGE_NOT_SATISFIABLE: int = 416
 _BODY_STATUSES: frozenset[int] = frozenset({200, _HTTP_PARTIAL_CONTENT})
 _CONTENT_RANGE: re.Pattern[str] = re.compile(r"bytes (\d+)-(\d+)/(\d+)")
@@ -62,7 +68,9 @@ def download_file_streaming(
     Validates the URL like ``download_file`` (scheme + public host, redirects refused), writes
     to ``<path_dest>.part`` and renames it onto ``path_dest`` only once the byte count matches
     ``Content-Length``. Transient failures are retried; a retry resumes from the bytes already
-    on disk.
+    on disk. When ``path_dest`` already exists with the ``ETag`` sidecar of an earlier complete
+    download, the file is revalidated with ``If-None-Match`` and reused on a ``304`` (no body is
+    transferred); with no sidecar the file is downloaded and overwritten.
 
     Parameters
     ----------
@@ -94,10 +102,134 @@ def download_file_streaming(
     _assert_url_allowed(str_url)
     path_dest.parent.mkdir(parents=True, exist_ok=True)
     path_part = path_dest.with_name(path_dest.name + ".part")
+    str_cached = _read_cached_etag(path_dest)
+    if str_cached and _is_unmodified(str_url, str_cached, int_timeout_s):
+        return path_dest, str_cached
     str_etag = _stream_to_part(str_url, path_part, int_timeout_s, int_chunk_bytes)
+    _complete_download(path_part, path_dest, str_etag)
+    return path_dest, str_etag
+
+
+@type_checker
+def _complete_download(path_part: Path, path_dest: Path, str_etag: str) -> None:
+    """Rename the finished partial file onto the destination, then record its ``ETag``.
+
+    The old sidecar goes first and the new one is written last, so a crash at any point leaves
+    either no sidecar (full download next time) or one that matches the file.
+
+    Parameters
+    ----------
+    path_part : pathlib.Path
+        The completed partial file.
+    path_dest : pathlib.Path
+        The final destination.
+    str_etag : str
+        The server ``ETag`` of the body (empty when the server sent none).
+    """
+    _final_etag_path(path_dest).unlink(missing_ok=True)
     path_part.replace(path_dest)
     _etag_path(path_part).unlink(missing_ok=True)
-    return path_dest, str_etag
+    if str_etag:
+        _final_etag_path(path_dest).write_text(str_etag)
+
+
+@type_checker
+def _final_etag_path(path_dest: Path) -> Path:
+    """Return the sidecar path that records the ``ETag`` of a completed download.
+
+    Parameters
+    ----------
+    path_dest : pathlib.Path
+        The final destination.
+
+    Returns
+    -------
+    pathlib.Path
+        ``<dest>.etag``.
+    """
+    return path_dest.with_name(path_dest.name + ".etag")
+
+
+@type_checker
+def _read_cached_etag(path_dest: Path) -> str:
+    """Return the recorded ``ETag`` of an earlier complete download, or ``""``.
+
+    Parameters
+    ----------
+    path_dest : pathlib.Path
+        The final destination.
+
+    Returns
+    -------
+    str
+        The stored ``ETag``; empty unless both the file and its sidecar exist.
+    """
+    path_sidecar = _final_etag_path(path_dest)
+    if not (path_dest.is_file() and path_sidecar.is_file()):
+        return ""
+    return path_sidecar.read_text()
+
+
+@type_checker
+def _is_unmodified(str_url: str, str_etag: str, int_timeout_s: int) -> bool:
+    """Ask the server whether the stored ``ETag`` is still current (``If-None-Match``).
+
+    Only the response headers are read; a body that comes back is discarded unread.
+
+    Parameters
+    ----------
+    str_url : str
+        An already-validated URL.
+    str_etag : str
+        The stored ``ETag``.
+    int_timeout_s : int
+        Socket timeout in seconds.
+
+    Returns
+    -------
+    bool
+        ``True`` on a ``304``; ``False`` when the server sent a fresh body.
+
+    Raises
+    ------
+    OSError
+        On a transport failure, a blocked redirect or a non-2xx, non-304 status.
+    """
+    cls_request = request.Request(  # noqa: S310
+        str_url, headers={"If-None-Match": str_etag}, method="GET"
+    )
+    try:
+        with _OPENER.open(cls_request, timeout=int_timeout_s):  # noqa: S310
+            return False
+    except error.URLError as cls_err:
+        return _is_not_modified_error(cls_err, str_url)
+
+
+@type_checker
+def _is_not_modified_error(cls_err: error.URLError, str_url: str) -> bool:
+    """Treat a ``304`` as "unmodified" and every other failed open as a download error.
+
+    Parameters
+    ----------
+    cls_err : urllib.error.URLError
+        The error raised by the opener.
+    str_url : str
+        The URL being revalidated.
+
+    Returns
+    -------
+    bool
+        ``True`` for a ``304``.
+
+    Raises
+    ------
+    OSError
+        For any other failure.
+    """
+    close_http_error(cls_err)
+    if getattr(cls_err, "code", None) == _HTTP_NOT_MODIFIED:
+        return True
+    raise OSError(f"Failed to revalidate {str_url!r}: {cls_err}") from cls_err
 
 
 @type_checker

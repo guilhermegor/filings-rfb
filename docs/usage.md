@@ -62,6 +62,45 @@ file_url(str_month, "Empresas0.zip")   # plain-GET download URL, no redirect
 
 ---
 
+## Reading Empresas
+
+`read_companies(str_month)` yields one typed `pandas.DataFrame` per chunk of each of the ten
+`Empresas0.zip` .. `Empresas9.zip` parts, so a month that inflates to ~3 GB is never held in
+memory at once. Each ZIP is streamed to disk with the resumable downloader and its single member
+is read as a stream, never extracted.
+
+```python
+from filings_rfb import read_companies
+
+for df_chunk in read_companies("2026-10", int_chunk_rows=500_000):
+    print(df_chunk[["cnpj_basico", "razao_social", "capital_social"]].head(1))
+```
+
+- `capital_social` is parsed from decimal-comma text (`120000000000,00`) to an exact `Decimal`,
+  never through a float, with no rounding.
+- Every row carries the provenance columns plus `source_etag` (the part's `ETag`) and
+  `part_index` (0-9); all chunks of one call share one `ingestion_run_id`.
+- A part the share does not list raises `FileNotFoundError` before any download starts; it is
+  never skipped.
+- Pass `path_workdir=` to keep the downloaded ZIPs (a rerun resumes from them); by default each
+  ZIP is deleted once consumed.
+
+### Exporting to Parquet
+
+`export_companies_parquet(str_month, path_dest)` drains the same iterator into one Parquet file
+(`capital_social` stored as `decimal128(38, 2)`). It needs the optional extra, which pulls in
+pyarrow:
+
+```bash
+pip install 'filings-rfb[parquet]'
+```
+
+Without it the call raises an `ImportError` that names the extra. Querying the Parquet lazily
+(DuckDB, Polars `scan_parquet`) is up to you; see [Examples](examples.md).
+
+⚠️ Do not read these files with Polars directly: it silently misparses the `.zip` and corrupts
+latin-1 text.
+
 ## Running from the Makefile
 
 ```bash
@@ -110,6 +149,10 @@ path_zip, str_etag = download_file_streaming(
 - The server `ETag` is stored next to the partial file (`<dest>.part.etag`). A retry, or a
   later call after a crash, continues with `Range: bytes=<n>-` and `If-Range: <etag>`. If the
   `ETag` changed, or the leftover has no recorded `ETag`, the download restarts from zero.
+- After the rename the `ETag` is recorded in `<dest>.etag`. Calling again for a destination that
+  has that sidecar sends `If-None-Match`: a `304` returns the existing file untouched with the
+  stored `ETag`; a `200` downloads and replaces it. With no sidecar the file is downloaded
+  afresh. This is how a rerun over a kept `path_workdir` avoids re-downloading every part.
 - The returned `str_etag` (empty when the server sends none) is for provenance.
 - A body shorter than `Content-Length` raises `OSError` after the bounded retries, keeping the
   partial file for the next attempt; a response without `Content-Length` raises `ValueError`.

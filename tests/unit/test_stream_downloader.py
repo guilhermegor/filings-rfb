@@ -68,6 +68,10 @@ class _Handler(BaseHTTPRequestHandler):
             self.send_header("Location", "http://127.0.0.1:1/elsewhere")
             self.end_headers()
             return
+        if self.headers.get("If-None-Match") == cls_state.str_etag:
+            self.send_response(304)
+            self.end_headers()
+            return
         if cls_state.int_empty_status:
             self.send_response(cls_state.int_empty_status)
             self.send_header("Content-Length", "0")
@@ -607,3 +611,141 @@ def test_download_streaming_loopback_host_raises(path_dest: Path) -> None:
     """
     with pytest.raises(ValueError, match="non-public address"):
         download_file_streaming("http://127.0.0.1:1/file.zip", path_dest)
+
+
+def _seed_complete(path_dest: Path, bytes_old: bytes, str_etag: str) -> None:
+    """Pre-create a finished download together with its ETag sidecar.
+
+    Parameters
+    ----------
+    path_dest : pathlib.Path
+        The final destination.
+    bytes_old : bytes
+        The file's current bytes.
+    str_etag : str
+        The ETag recorded with them.
+    """
+    path_dest.parent.mkdir(parents=True, exist_ok=True)
+    path_dest.write_bytes(bytes_old)
+    path_dest.with_name(path_dest.name + ".etag").write_text(str_etag)
+
+
+def test_download_streaming_records_the_etag_sidecar_after_completion(
+    stub: _Stub, path_dest: Path
+) -> None:
+    """A completed download leaves ``<dest>.etag`` holding the server ETag.
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    download_file_streaming(stub.str_url, path_dest)
+
+    assert path_dest.with_name("file.zip.etag").read_text() == '"v1"'
+
+
+def test_download_streaming_not_modified_reuses_file_and_returns_stored_etag(
+    stub: _Stub, path_dest: Path
+) -> None:
+    """A 304 leaves the file untouched and returns the stored ETag.
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    _seed_complete(path_dest, b"cached", '"v1"')
+
+    tuple_result = download_file_streaming(stub.str_url, path_dest)
+
+    assert (tuple_result, path_dest.read_bytes()) == ((path_dest, '"v1"'), b"cached")
+
+
+def test_download_streaming_not_modified_sends_if_none_match(stub: _Stub, path_dest: Path) -> None:
+    """The revalidation carries the stored ETag as ``If-None-Match``.
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    _seed_complete(path_dest, b"cached", '"v1"')
+
+    download_file_streaming(stub.str_url, path_dest)
+
+    assert stub.cls_state.list_requests[0]["If-None-Match"] == '"v1"'
+
+
+def test_download_streaming_changed_etag_replaces_file_and_sidecar(
+    stub: _Stub, path_dest: Path
+) -> None:
+    """A 200 for a changed ETag streams the new body and records the new ETag.
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    _seed_complete(path_dest, b"cached", '"v0"')
+
+    tuple_result = download_file_streaming(stub.str_url, path_dest)
+
+    assert (
+        path_dest.read_bytes(),
+        tuple_result[1],
+        path_dest.with_name("file.zip.etag").read_text(),
+    ) == (
+        BODY,
+        '"v1"',
+        '"v1"',
+    )
+
+
+def test_download_streaming_without_sidecar_downloads_in_full(
+    stub: _Stub, path_dest: Path
+) -> None:
+    """An existing file with no sidecar is not trusted: it is fully re-downloaded.
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    path_dest.parent.mkdir(parents=True, exist_ok=True)
+    path_dest.write_bytes(b"unknown provenance")
+
+    download_file_streaming(stub.str_url, path_dest)
+
+    assert path_dest.read_bytes() == BODY
+
+
+def test_download_streaming_failed_transfer_writes_no_sidecar(
+    stub: _Stub, path_dest: Path
+) -> None:
+    """A transfer that stays short never leaves a final sidecar.
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    stub.cls_state.int_cuts_left = 100
+    stub.cls_state.int_cut_after = 100
+
+    with contextlib.suppress(OSError):
+        download_file_streaming(stub.str_url, path_dest, int_chunk_bytes=CHUNK)
+
+    assert path_dest.with_name("file.zip.etag").exists() is False

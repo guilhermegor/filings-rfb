@@ -20,6 +20,7 @@ resolves *and* connects, so the hostname path is still caught there.
 
 from __future__ import annotations
 
+from functools import partial
 import socket
 from typing import NoReturn
 
@@ -112,3 +113,33 @@ def block_network(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatc
         "create_connection",
         socket.create_connection if bool_allowed else _blocked,
     )
+
+
+TUPLE_GIT_POINTER_VARS: tuple[str, ...] = (
+    "GIT_DIR",
+    "GIT_WORK_TREE",
+    "GIT_INDEX_FILE",
+    "GIT_OBJECT_DIRECTORY",
+    "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+    "GIT_COMMON_DIR",
+    "GIT_PREFIX",
+    "GIT_NAMESPACE",
+)
+
+
+@pytest.fixture(autouse=True)
+def isolate_git_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Remove the ``GIT_*`` repository pointers a ``git commit`` hook exports.
+
+    pre-commit runs the unit tests with ``GIT_DIR`` / ``GIT_INDEX_FILE`` / ``GIT_WORK_TREE`` set
+    to the repository being committed. A test that builds a throwaway repo with ``git -C
+    <tmp_path> init|config|commit`` inherits them, so those commands act on the REAL repository
+    instead: it grew stray ``seed`` commits, ``core.bare = true`` and a fake ``user.name`` in
+    the shared ``.git/config``. Dropping the pointers makes ``-C <tmp_path>`` mean what it says.
+
+    Parameters
+    ----------
+    monkeypatch : pytest.MonkeyPatch
+        Pytest's patcher; restores the variables at teardown.
+    """
+    list(map(partial(monkeypatch.delenv, raising=False), TUPLE_GIT_POINTER_VARS))

@@ -33,12 +33,13 @@ here stays domain-agnostic.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterator, Sequence
 import csv
 from dataclasses import dataclass
+from io import IOBase
 import json
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import IO, TYPE_CHECKING, Any, ClassVar
 
 import pandas as pd
 
@@ -257,6 +258,136 @@ def read_table(  # noqa: PLR0913 — the public reader API; each argument is a r
         int_csv_quoting,
     )
     return _finalize(df_raw, dict_dtypes, list_date_cols, cls_contract, list_decimal_cols)
+
+
+@type_checker
+def read_table_chunks(  # noqa: PLR0913 — the streaming reader API; each argument is a real option
+    cls_stream: IOBase | IO[bytes],
+    dict_dtypes: dict[str, str],
+    cls_contract: FileContract,
+    list_columns: Sequence[str],
+    int_chunk_rows: int,
+    list_decimal_cols: Sequence[str] | None = None,
+    fn_prepare: Callable[[pd.DataFrame], pd.DataFrame] | None = None,
+    str_csv_sep: str = ";",
+    str_encoding: str = "latin-1",
+) -> Iterator[pd.DataFrame]:
+    """Stream a headerless CSV from an open binary stream as typed, contract-validated chunks.
+
+    The streaming sibling of :func:`read_table` for files too large to hold in memory (and
+    that must not be extracted to disk: ``cls_stream`` may be a ZIP member opened with
+    :meth:`zipfile.ZipFile.open`). Every chunk is read as raw text (``dtype=str``,
+    ``keep_default_na=False`` so an empty field stays ``""``), width-checked, named, optionally
+    reshaped by ``fn_prepare``, then runs through the same contract + :func:`apply_dtypes` tail
+    as :func:`read_table`.
+
+    Parameters
+    ----------
+    cls_stream : io.IOBase
+        An open binary stream (e.g. a ``ZipExtFile``); the caller closes it.
+    dict_dtypes : dict of {str: str}
+        Column→dtype mapping enforced via :func:`utils.dtypes.apply_dtypes`.
+    cls_contract : FileContract
+        The contract every chunk must satisfy.
+    list_columns : sequence of str
+        The names to assign, in positional order; the source has no header.
+    int_chunk_rows : int
+        Rows per chunk (the last chunk may be shorter).
+    list_decimal_cols : sequence of str, optional
+        Columns coerced to exact ``Decimal`` (after ``fn_prepare``).
+    fn_prepare : callable, optional
+        Text-level reshaping applied to each named chunk before typing, e.g. turning a
+        decimal-comma column into decimal-point text.
+    str_csv_sep : str, optional
+        CSV delimiter (default ``";"``).
+    str_encoding : str, optional
+        Text encoding (default ``"latin-1"``, which RFB uses).
+
+    Yields
+    ------
+    pd.DataFrame
+        One typed chunk at a time.
+
+    Raises
+    ------
+    ValueError
+        If ``int_chunk_rows`` is not positive.
+    ContractError
+        If a chunk's width differs from ``list_columns`` (a wider row would otherwise be
+        silently turned into an index) or a chunk violates ``cls_contract``.
+    """
+    _assert_positive_rows(int_chunk_rows)
+    cls_reader = pd.read_csv(
+        cls_stream,
+        sep=str_csv_sep,
+        header=None,
+        encoding=str_encoding,
+        dtype=str,
+        keep_default_na=False,
+        chunksize=int_chunk_rows,
+    )
+    for df_raw in cls_reader:
+        df_prepared = _name_and_prepare(df_raw, list_columns, cls_contract, fn_prepare)
+        yield _finalize(df_prepared, dict_dtypes, None, cls_contract, list_decimal_cols)
+
+
+@type_checker
+def _assert_positive_rows(int_chunk_rows: int) -> None:
+    """Reject a non-positive chunk size before any read starts.
+
+    Parameters
+    ----------
+    int_chunk_rows : int
+        The requested rows per chunk.
+
+    Raises
+    ------
+    ValueError
+        If ``int_chunk_rows`` is not positive.
+    """
+    if int_chunk_rows <= 0:
+        raise ValueError(f"int_chunk_rows must be positive, got {int_chunk_rows!r}")
+
+
+@type_checker
+def _name_and_prepare(
+    df_raw: pd.DataFrame,
+    list_columns: Sequence[str],
+    cls_contract: FileContract,
+    fn_prepare: Callable[[pd.DataFrame], pd.DataFrame] | None,
+) -> pd.DataFrame:
+    """Width-check a headerless chunk, name its columns and apply the optional reshaping.
+
+    Parameters
+    ----------
+    df_raw : pd.DataFrame
+        A positional chunk.
+    list_columns : sequence of str
+        The names to assign.
+    cls_contract : FileContract
+        The contract, for the error message.
+    fn_prepare : callable or None
+        Text-level reshaping applied after naming.
+
+    Returns
+    -------
+    pd.DataFrame
+        The named (and reshaped) chunk.
+
+    Raises
+    ------
+    ContractError
+        If the chunk's width differs from ``list_columns``.
+    """
+    if df_raw.shape[1] != len(list_columns):
+        raise ContractError(
+            [
+                f"'{cls_contract.str_name}' chunk has {df_raw.shape[1]} columns, "
+                f"expected {len(list_columns)}"
+            ]
+        )
+    df_named = df_raw.set_axis(list(list_columns), axis=1)
+    return df_named if fn_prepare is None else fn_prepare(df_named)
 
 
 @type_checker

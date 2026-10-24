@@ -2373,6 +2373,7 @@ def test_ladder_marker_without_a_findings_line_is_rejected() -> None:
 
 def test_later_ladder_comment_with_findings_supersedes_an_earlier_clean_one() -> None:
     """The latest qualifying marker decides: a re-run that found something blocks."""
+    # one-assert-ok: order independence: the same two comments in both orders
     dict_later = {
         **_marker_comment("OWNER"),
         "body": f"{_MARKER}\nReviewed head: {_HEAD}\n\n2 finding(s) across 3 reviewed file(s).",
@@ -3413,6 +3414,7 @@ def test_find_missing_review_problem_carries_only_a_review_newer_than_the_base_c
 
 def test_query_asks_for_the_creation_time_of_both_retarget_events() -> None:
     """The carry-forward needs ``createdAt`` on the manual and the automatic event alike."""
+    # one-assert-ok: the two retarget event kinds are asserted together on one query string
     str_query = _load_gate()._QUERY
     assert "... on BaseRefChangedEvent { createdAt }" in str_query
     assert "... on AutomaticBaseChangeSucceededEvent { createdAt }" in str_query
@@ -3474,6 +3476,7 @@ def test_fetch_pull_request_keeps_timeline_items_across_pages(
 
 def test_query_reads_both_retarget_event_types() -> None:
     """Manual and automatic retargets both change the base the review was written against."""
+    # one-assert-ok: the two retarget event kinds are asserted together on one query string
     str_query = _load_gate()._QUERY
     assert "BASE_REF_CHANGED_EVENT" in str_query
     assert "AUTOMATIC_BASE_CHANGE_SUCCEEDED_EVENT" in str_query

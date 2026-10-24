@@ -27,6 +27,7 @@ class _Sample(metaclass=TypeChecker):
 
 def test_engine_imports_and_enforces_after_rewrite() -> None:
     """The rewritten engine imports and rejects a wrong-typed argument."""
+    # one-assert-ok: one positive call and one rejection are the two halves of one behaviour
     assert _Sample.doubled(5) == 10
     with pytest.raises(TypeError):
         _Sample.doubled("five")
@@ -57,6 +58,7 @@ def _add(a: int, b: int) -> int:
 
 def test_decorator_rejects_wrong_type() -> None:
     """The decorator validates a standalone function's arguments."""
+    # one-assert-ok: one positive call and one rejection are the two halves of one behaviour
     assert _add(1, 2) == 3
     with pytest.raises(TypeError):
         _add(1, "two")
