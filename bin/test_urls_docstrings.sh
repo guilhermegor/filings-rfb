@@ -15,7 +15,7 @@ get_cache() {
 
 	if [[ -f "$str_cache_file" ]]; then
 		local int_timestamp
-		int_timestamp=$(stat -c %Y "$str_cache_file")
+		int_timestamp=$(stat -c %Y "$str_cache_file" 2>/dev/null || stat -f %m "$str_cache_file")
 		local int_now
 		int_now=$(date +%s)
 

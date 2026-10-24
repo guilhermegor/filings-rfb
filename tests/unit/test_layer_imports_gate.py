@@ -264,7 +264,8 @@ def _run_main(path_root: Path) -> tuple[int, str]:
         ],
         cwd=path_root,
         capture_output=True,
-        text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
     )
     return cls_run.returncode, cls_run.stdout + cls_run.stderr

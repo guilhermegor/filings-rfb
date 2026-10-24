@@ -486,4 +486,8 @@ def main(list_argv: list) -> int:
 
 
 if __name__ == "__main__":
+    for cls_stream in (sys.stdout, sys.stderr):
+        if hasattr(cls_stream, "reconfigure"):
+            cls_stream.reconfigure(encoding="utf-8", errors="replace")
+
     sys.exit(main(sys.argv[1:]))

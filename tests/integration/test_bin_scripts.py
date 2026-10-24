@@ -2190,6 +2190,23 @@ def test_template_drift_clean_when_every_required_path_is_present(tmp_path: Path
     assert "no template drift detected" in cls_result.stdout.lower()
 
 
+def _write_stub_python(path_python: Path) -> None:
+    """Write an executable, future-dated stub "python" that echoes its own argv.
+
+    Written as bytes so Windows text mode cannot turn the shebang line into CRLF.
+
+    Parameters
+    ----------
+    path_python : pathlib.Path
+        Where the stub goes; parents are created.
+    """
+    path_python.parent.mkdir(parents=True)
+    path_python.write_bytes(b"#!/bin/sh\nprintf 'ARG:%s\\n' \"$@\"\n")
+    path_python.chmod(0o755)
+    float_future = time.time() + 60
+    os.utime(path_python, (float_future, float_future))
+
+
 def _materialise_run_sh(path_root: Path) -> Path:
     """Build a throwaway project tree with ``run.sh`` + its libs, ready to invoke.
 
@@ -2212,11 +2229,8 @@ def _materialise_run_sh(path_root: Path) -> Path:
     _write(path_root / "pyproject.toml", "[tool.poetry]\n")
     _write(path_root / "src" / "main.py", '"""Entrypoint stub."""\n')
 
-    path_python = path_root / ".venv" / "bin" / "python"
-    _write(path_python, "#!/bin/sh\nprintf 'ARG:%s\\n' \"$@\"\n")
-    path_python.chmod(0o755)
-    float_future = time.time() + 60
-    os.utime(path_python, (float_future, float_future))
+    _write_stub_python(path_root / ".venv" / "bin" / "python")
+    _write_stub_python(path_root / ".venv" / "Scripts" / "python.exe")
     return path_script
 
 
