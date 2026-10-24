@@ -37,6 +37,7 @@ from filings_rfb._internal.utils.typing import type_checker
 _CHUNK_BYTES: int = 1 << 20
 _HTTP_PARTIAL_CONTENT: int = 206
 _HTTP_RANGE_NOT_SATISFIABLE: int = 416
+_BODY_STATUSES: frozenset[int] = frozenset({200, _HTTP_PARTIAL_CONTENT})
 _CONTENT_RANGE: re.Pattern[str] = re.compile(r"bytes (\d+)-(\d+)/(\d+)")
 
 
@@ -85,7 +86,7 @@ def download_file_streaming(
     ValueError
         If the URL is rejected by the SSRF guards, or the response lacks ``Content-Length``.
     OSError
-        On a non-2xx status, a redirect, a transport failure, or a body shorter than
+        On a status other than 200/206, a redirect, a transport failure, or a body shorter than
         ``Content-Length`` (after the retries are exhausted).
     """
     _assert_url_allowed(str_url)
@@ -343,10 +344,32 @@ def _resolve_start(
     _StaleResume
         If a 206 does not continue the stored partial file.
     """
+    _assert_body_status(cls_response.status)
     if cls_response.status != _HTTP_PARTIAL_CONTENT:
         return 0
     _assert_continues(cls_response, int_offset, int_offset == 0 or str_etag == str_stored_etag)
     return int_offset
+
+
+@type_checker
+def _assert_body_status(int_status: int) -> None:
+    """Raise unless the response carries a file body (200) or a range of it (206).
+
+    Any other 2xx (204, 205, ...) has no content; renaming its empty ``.part`` into place
+    would publish an empty file as a finished download.
+
+    Parameters
+    ----------
+    int_status : int
+        The response status code.
+
+    Raises
+    ------
+    OSError
+        If the status is neither 200 nor 206.
+    """
+    if int_status not in _BODY_STATUSES:
+        raise OSError(f"Download returned status {int_status}; expected 200 or 206")
 
 
 @type_checker

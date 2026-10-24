@@ -35,6 +35,7 @@ class _StubState:
     bool_send_length: bool = True
     bool_redirect: bool = False
     int_partial_first: int = 0
+    int_empty_status: int = 0
     list_requests: list[dict[str, str]] = field(default_factory=list)
 
 
@@ -65,6 +66,11 @@ class _Handler(BaseHTTPRequestHandler):
         if cls_state.bool_redirect:
             self.send_response(302)
             self.send_header("Location", "http://127.0.0.1:1/elsewhere")
+            self.end_headers()
+            return
+        if cls_state.int_empty_status:
+            self.send_response(cls_state.int_empty_status)
+            self.send_header("Content-Length", "0")
             self.end_headers()
             return
         if cls_state.int_partial_first and "Range" not in self.headers:
@@ -514,6 +520,50 @@ def test_download_streaming_partial_response_to_initial_request_raises(
 
     with pytest.raises(ValueError, match="Content-Range"):
         download_file_streaming(stub.str_url, path_dest)
+
+
+@pytest.fixture
+def no_content_download(stub: _Stub, path_dest: Path) -> None:
+    """Run a download against a 204 stub, swallowing the final error.
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    stub.cls_state.int_empty_status = 204
+    with contextlib.suppress(OSError):
+        download_file_streaming(stub.str_url, path_dest)
+
+
+def test_download_streaming_204_status_raises_naming_it(stub: _Stub, path_dest: Path) -> None:
+    """A 2xx other than 200/206 is refused, naming the status.
+
+    Parameters
+    ----------
+    stub : _Stub
+        The running stub server.
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    stub.cls_state.int_empty_status = 204
+
+    with pytest.raises(OSError, match="status 204"):
+        download_file_streaming(stub.str_url, path_dest)
+
+
+@pytest.mark.usefixtures("no_content_download")
+def test_download_streaming_204_status_leaves_no_destination(path_dest: Path) -> None:
+    """An empty 204 never produces a file at the final path.
+
+    Parameters
+    ----------
+    path_dest : pathlib.Path
+        The destination path.
+    """
+    assert not path_dest.exists()
 
 
 def test_download_streaming_non_http_scheme_raises(path_dest: Path) -> None:
