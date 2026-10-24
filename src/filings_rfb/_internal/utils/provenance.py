@@ -120,6 +120,7 @@ def stamp_provenance(
     cls_contract: FileContract,
     str_content_hash: str,
     str_package_version: str,
+    str_run_id: str | None = None,
 ) -> pd.DataFrame:
     """Append the provenance columns to an ingested frame (pure transform, no I/O).
 
@@ -144,6 +145,10 @@ def stamp_provenance(
     str_package_version : str
         The producing package's version (from :func:`resolve_package_version`), so rows made by
         a buggy version are identifiable and re-ingestible after a fix.
+    str_run_id : str, optional
+        An ``ingestion_run_id`` to reuse instead of generating one. A reader that stamps a
+        read **chunk by chunk** passes the same id to every chunk, so the rows of one read stay
+        one run; ``None`` (the default) generates a fresh UUID.
 
     Returns
     -------
@@ -152,7 +157,7 @@ def stamp_provenance(
         nullable ``string`` dtype; ``updated_at`` as tz-aware UTC).
     """
     dt_fetched = datetime.now(timezone.utc)
-    str_run_id = _new_run_id()
+    str_run_id = str_run_id if str_run_id is not None else _new_run_id()
     dict_text_provenance = {
         "url": str_url,
         "source_key": cls_contract.str_source_key,
@@ -167,6 +172,56 @@ def stamp_provenance(
         [dt_fetched] * len(df_stamped), index=df_stamped.index, dtype="datetime64[ns, UTC]"
     )
     return df_stamped[[*df_input.columns, *cls_contract.PROVENANCE_COLUMNS]]
+
+
+@type_checker
+def new_run_id() -> str:
+    """Return a fresh UUID4 string identifying one ingestion read.
+
+    Public so a chunked reader can mint the id once and hand it to every
+    :func:`stamp_provenance` call of the read.
+
+    Returns
+    -------
+    str
+        A new random UUID as a string.
+    """
+    return _new_run_id()
+
+
+@type_checker
+def stamp_source_etag(
+    df_input: pd.DataFrame, str_etag: str, int_part_index: int
+) -> pd.DataFrame:
+    """Append the per-part source columns ``source_etag`` and ``part_index`` (pure transform).
+
+    Complements :func:`stamp_provenance` for a source split into numbered archives
+    (``Empresas0.zip`` .. ``Empresas9.zip``): the ``ETag`` names the exact archive revision the
+    server sent, and the index says which part the row came from, so a part re-published
+    mid-month is identifiable without re-hashing. Kept apart from ``PROVENANCE_COLUMNS`` because
+    only multi-part sources have a part index; those six columns stay the fixed set every
+    ingested frame carries.
+
+    Parameters
+    ----------
+    df_input : pd.DataFrame
+        The frame to stamp (left unmodified).
+    str_etag : str
+        The server ``ETag`` of the part's archive, quotes included; ``""`` when the server
+        sent none.
+    int_part_index : int
+        The part number the rows were read from.
+
+    Returns
+    -------
+    pd.DataFrame
+        A copy of ``df_input`` with ``source_etag`` (``string``) and ``part_index``
+        (``Int64``) appended.
+    """
+    return df_input.assign(
+        source_etag=pd.array([str_etag] * len(df_input), dtype="string"),
+        part_index=pd.array([int_part_index] * len(df_input), dtype="Int64"),
+    )
 
 
 @type_checker
