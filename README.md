@@ -50,6 +50,9 @@ for df_chunk in read_companies("2026-10"):
 `export_companies_parquet("2026-10", path)` writes them to Parquet for lazy querying (DuckDB,
 Polars `scan_parquet`); it needs the optional extra `pip install 'filings-rfb[parquet]'`.
 
+`read_simples("2026-10")` does the same for the Simples Nacional and MEI options (booleans and
+real dates, with the RFB's `00000000` read as null).
+
 <!-- slug: project-structure -->
 ## Project Structure
 

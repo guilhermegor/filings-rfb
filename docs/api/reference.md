@@ -67,6 +67,19 @@ Raises `ValueError` for an unknown table or an archive with zero or several file
 
 ---
 
+## Module: `filings_rfb.ingestion.cnpj.simples`
+
+### `read_simples(str_month, int_chunk_rows=500_000, path_workdir=None) -> Iterator[pd.DataFrame]`
+
+Yields the `Simples` rows (Simples Nacional and MEI options) of a reference month (`YYYY-MM`),
+one typed DataFrame per chunk. `Simples.zip` is one un-numbered archive, read through the same
+shared iterator as the numbered datasets (`part_index` is always 0). `opcao_pelo_simples` and
+`opcao_pelo_mei` are booleans (`S`/`N`; anything else raises `ValueError`); the four date
+columns are `datetime.date`, with the RFB's `00000000` sentinel read as null. Raises
+`FileNotFoundError` when `Simples.zip` is not published.
+
+---
+
 ## Adding new modules
 
 Place new modules under `src/<package_name>/`. Export public symbols from `src/<package_name>/__init__.py` so callers can do:
