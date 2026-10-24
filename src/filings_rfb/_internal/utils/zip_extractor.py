@@ -12,6 +12,7 @@ returning all members, a subset, or a single member.
 
 from __future__ import annotations
 
+from collections import Counter
 from pathlib import Path
 from typing import TYPE_CHECKING
 import zipfile
@@ -239,7 +240,9 @@ def extract_all_to_memory(path_zip: Path, str_password: str | None = None) -> di
         list_names = [
             cls_info.filename for cls_info in cls_zip.infolist() if not cls_info.is_dir()
         ]
-        set_duplicates = {str_name for str_name in list_names if list_names.count(str_name) > 1}
+        set_duplicates = {
+            str_name for str_name, int_count in Counter(list_names).items() if int_count > 1
+        }
         if set_duplicates:
             raise ValueError(f"{path_zip.name}: duplicate member names {sorted(set_duplicates)}")
         return {str_name: cls_zip.read(str_name, pwd=bytes_pwd) for str_name in list_names}
