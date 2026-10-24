@@ -31,6 +31,7 @@ from filings_rfb._internal.utils.provenance import (
     hash_artifact,
     resolve_package_version,
     stamp_provenance,
+    stamp_source_etag,
 )
 from filings_rfb._internal.utils.tabular_reader import read_table
 from filings_rfb._internal.utils.zip_extractor import extract_all_to_memory
@@ -96,8 +97,7 @@ def read_lookup(str_table: str, path_zip: Path, str_url: str, str_etag: str) -> 
         hash_artifact(path_zip),
         resolve_package_version(_STR_DISTRIBUTION),
     )
-    df_stamped["source_etag"] = pd.array([str_etag] * len(df_stamped), dtype="string")
-    return df_stamped
+    return stamp_source_etag(df_stamped, str_etag)
 
 
 @type_checker

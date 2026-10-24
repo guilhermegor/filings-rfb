@@ -12,7 +12,7 @@ from filings_rfb._internal.config.contracts import (
     CNPJ_LOOKUP_NAMES,
     ContractError,
 )
-from filings_rfb._internal.utils.provenance import hash_artifact
+from filings_rfb._internal.utils.provenance import hash_artifact, stamp_source_etag
 from filings_rfb.ingestion.cnpj.lookups import read_lookup
 
 
@@ -114,6 +114,13 @@ def test_read_lookup_stamps_source_url_etag_and_content_hash() -> None:
         df_out["source_etag"].iloc[0],
         df_out["content_hash"].iloc[0],
     ) == (STR_URL.format("Paises"), STR_ETAG, hash_artifact(path_zip))
+
+
+def test_stamp_source_etag_does_not_mutate_the_input() -> None:
+    """The helper returns a copy; the caller's frame keeps its columns."""
+    df_in = pd.DataFrame({"code": ["1"]})
+    stamp_source_etag(df_in, STR_ETAG)
+    assert list(df_in.columns) == ["code"]
 
 
 def test_read_lookup_stamps_source_key_per_table() -> None:
