@@ -31,7 +31,7 @@ also references ``stamp_provenance`` — so a contract-checked read cannot ship 
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 import hashlib
 from importlib import metadata
 from pathlib import Path
@@ -151,7 +151,7 @@ def stamp_provenance(
         A copy of ``df_input`` with the six provenance columns appended (text columns as the
         nullable ``string`` dtype; ``updated_at`` as tz-aware UTC).
     """
-    dt_fetched = datetime.now(UTC)
+    dt_fetched = datetime.now(timezone.utc)
     str_run_id = _new_run_id()
     dict_text_provenance = {
         "url": str_url,
