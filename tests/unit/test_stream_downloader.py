@@ -566,6 +566,25 @@ def test_download_streaming_204_status_leaves_no_destination(path_dest: Path) ->
     assert not path_dest.exists()
 
 
+@pytest.mark.parametrize("int_chunk_bytes", [0, -1])
+def test_download_streaming_non_positive_chunk_size_raises(
+    path_dest: Path, int_chunk_bytes: int
+) -> None:
+    """A chunk size <= 0 is rejected before any connection (``read(-1)`` would buffer it all).
+
+    Parameters
+    ----------
+    path_dest : pathlib.Path
+        The destination path.
+    int_chunk_bytes : int
+        The invalid chunk size.
+    """
+    with pytest.raises(ValueError, match="int_chunk_bytes"):
+        download_file_streaming(
+            "http://127.0.0.1:1/f.zip", path_dest, int_chunk_bytes=int_chunk_bytes
+        )
+
+
 def test_download_streaming_non_http_scheme_raises(path_dest: Path) -> None:
     """The scheme allow-list is reused: ``file://`` is rejected.
 

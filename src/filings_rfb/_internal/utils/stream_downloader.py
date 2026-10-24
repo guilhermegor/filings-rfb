@@ -84,11 +84,13 @@ def download_file_streaming(
     Raises
     ------
     ValueError
-        If the URL is rejected by the SSRF guards, or the response lacks ``Content-Length``.
+        If ``int_chunk_bytes`` is not positive, the URL is rejected by the SSRF guards, or the
+        response lacks ``Content-Length``.
     OSError
         On a status other than 200/206, a redirect, a transport failure, or a body shorter than
         ``Content-Length`` (after the retries are exhausted).
     """
+    _assert_chunk_size(int_chunk_bytes)
     _assert_url_allowed(str_url)
     path_dest.parent.mkdir(parents=True, exist_ok=True)
     path_part = path_dest.with_name(path_dest.name + ".part")
@@ -96,6 +98,27 @@ def download_file_streaming(
     path_part.replace(path_dest)
     _etag_path(path_part).unlink(missing_ok=True)
     return path_dest, str_etag
+
+
+@type_checker
+def _assert_chunk_size(int_chunk_bytes: int) -> None:
+    """Reject a non-positive chunk size before any connection is opened.
+
+    ``read(-1)`` would buffer the whole remaining body, defeating the bounded-memory
+    guarantee, and ``read(0)`` ends the copy loop at once.
+
+    Parameters
+    ----------
+    int_chunk_bytes : int
+        The requested chunk size.
+
+    Raises
+    ------
+    ValueError
+        If the size is not positive.
+    """
+    if int_chunk_bytes <= 0:
+        raise ValueError(f"int_chunk_bytes must be positive, got {int_chunk_bytes}")
 
 
 @type_checker
