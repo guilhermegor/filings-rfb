@@ -22,6 +22,7 @@ from xml.etree.ElementTree import (  # noqa: S405 — types only; parsing is def
     ParseError,
 )
 
+from defusedxml import DefusedXmlException
 from defusedxml.ElementTree import fromstring as defused_fromstring
 
 from filings_rfb._internal.utils.http_downloader import (
@@ -137,11 +138,12 @@ def parse_multistatus(bytes_xml: bytes) -> list[WebdavEntry]:
     Raises
     ------
     ValueError
-        If the body is not well-formed XML, or declares entities (refused by defusedxml).
+        If the body is not well-formed XML, or declares entities (refused by defusedxml;
+        re-raised here with the vendor error as ``__cause__``).
     """
     try:
         cls_root = defused_fromstring(bytes_xml)
-    except ParseError as cls_err:
+    except (ParseError, DefusedXmlException) as cls_err:
         raise ValueError(f"not valid multistatus XML: {cls_err}") from cls_err
     return [_to_entry(cls_response) for cls_response in cls_root.findall("d:response", _DAV)]
 

@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 from urllib import error
 
+from defusedxml import DefusedXmlException
 import pytest
 
 from filings_rfb._internal.utils import webdav_client
@@ -142,10 +143,12 @@ def test_parse_multistatus_href_is_percent_decoded() -> None:
 
 
 def test_parse_multistatus_entity_declaration_is_rejected() -> None:
-    """Defusedxml refuses a document declaring entities (billion-laughs guard)."""
+    """An entity declaration is re-raised in the seam's wording, chained to the vendor error."""
+    # one-assert-ok: the message prefix and the chained cause are one re-raise contract
     bytes_xml = b'<!DOCTYPE d [<!ENTITY x "y">]><d:multistatus xmlns:d="DAV:"/>'
-    with pytest.raises(ValueError, match="[Ee]ntit"):
+    with pytest.raises(ValueError, match="^not valid multistatus XML: ") as cls_info:
         parse_multistatus(bytes_xml)
+    assert isinstance(cls_info.value.__cause__, DefusedXmlException)
 
 
 def test_parse_multistatus_malformed_xml_raises_value_error() -> None:
