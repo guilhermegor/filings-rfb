@@ -40,6 +40,9 @@ LIST_LINES = [
     _row("11222333000181", "00000000", "4711301,4711302,4712100"),
     _row("00000001000100", "", "1"),
     _row("11222333000181", "", "1", int_cut=7),
+    _row("12ABC34501DE35", "", "1"),
+    _row("12abc34501de35", "", "1"),
+    _row("1122233000120 ", "", "1"),
 ]
 
 
@@ -74,6 +77,14 @@ def df_all(share: None) -> pd.DataFrame:
 def test_full_cnpj_is_assembled(df_all: pd.DataFrame) -> None:
     """Basic + order + check digits make the 14-character CNPJ."""
     assert df_all["cnpj_completo"].iloc[1] == "11222333000181"
+
+
+@pytest.mark.parametrize(("int_row", "bool_expected"), [(4, True), (5, False), (6, False)])
+def test_cnpj_validity_requires_clean_uppercase_characters(
+    df_all: pd.DataFrame, int_row: int, bool_expected: bool
+) -> None:
+    """Alphanumeric uppercase is valid; lowercase and a trailing space are not."""
+    assert df_all["cnpj_valido"].iloc[int_row] == bool_expected
 
 
 def test_cnpj_validity_rejects_misaligned_parts(df_all: pd.DataFrame) -> None:

@@ -28,6 +28,7 @@ _PREFIX: str = "Estabelecimentos"
 _LEN_BASICO: int = 8
 _LEN_ORDEM: int = 4
 _LEN_DV: int = 2
+_CNPJ_SHAPE: str = r"[0-9A-Z]{12}[0-9]{2}"
 _DATE_COLS: tuple[str, ...] = (
     "data_situacao_cadastral",
     "data_inicio_atividade",
@@ -97,7 +98,9 @@ def _assemble_cnpj_and_dates(df_chunk: pd.DataFrame) -> pd.DataFrame:
     series_cnpj = df_chunk["cnpj_basico"] + df_chunk["cnpj_ordem"] + df_chunk["cnpj_dv"]
     df_out = df_chunk.assign(
         cnpj_completo=series_cnpj,
-        cnpj_valido=_parts_aligned(df_chunk) & series_cnpj.map(is_valid_cnpj),
+        cnpj_valido=_parts_aligned(df_chunk)
+        & series_cnpj.str.fullmatch(_CNPJ_SHAPE)
+        & series_cnpj.map(is_valid_cnpj),
     )
     for str_col in _DATE_COLS:
         df_out[str_col] = parse_compact_dates(df_out[str_col])
