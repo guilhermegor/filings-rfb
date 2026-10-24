@@ -118,6 +118,28 @@ def test_parse_multistatus_collection_with_content_length_still_has_no_size() ->
     assert parse_multistatus(bytes_xml)[0].int_size is None
 
 
+def test_parse_multistatus_properties_split_across_propstats_are_all_kept() -> None:
+    """Properties spread over several 200 propstats merge; a 404 propstat is ignored."""
+    bytes_xml = (
+        b'<d:multistatus xmlns:d="DAV:"><d:response><d:href>/dav/a.zip</d:href>'
+        b"<d:propstat><d:prop><d:getcontentlength>7</d:getcontentlength></d:prop>"
+        b"<d:status>HTTP/1.1 200 OK</d:status></d:propstat>"
+        b"<d:propstat><d:prop><d:getcontentlength>999</d:getcontentlength></d:prop>"
+        b"<d:status>HTTP/1.1 404 Not Found</d:status></d:propstat>"
+        b'<d:propstat><d:prop><d:getetag>"e1"</d:getetag>'
+        b"<d:getlastmodified>Tue, 13 Oct 2026 22:00:16 GMT</d:getlastmodified></d:prop>"
+        b"<d:status>HTTP/1.1 200 OK</d:status></d:propstat>"
+        b"</d:response></d:multistatus>"
+    )
+    assert parse_multistatus(bytes_xml)[0] == WebdavEntry(
+        str_name="a.zip",
+        is_collection=False,
+        int_size=7,
+        str_etag='"e1"',
+        dt_last_modified=datetime(2026, 10, 13, 22, 0, 16, tzinfo=timezone.utc),
+    )
+
+
 def test_parse_multistatus_tarball_size_matches_source_bytes(
     list_root_entries: list[WebdavEntry],
 ) -> None:

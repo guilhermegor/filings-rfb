@@ -177,13 +177,13 @@ def _to_entry(cls_response: Element) -> WebdavEntry:
 
 
 @type_checker
-def _found_prop(  # complexity-ok: one pass over the propstats, taking the 200 one
+def _found_prop(  # complexity-ok: one pass over the propstats, merging the 200 ones
     cls_response: Element,
 ) -> Element:
-    """Return the ``<prop>`` of the ``200 OK`` propstat (an empty one when none is OK).
+    """Return one ``<prop>`` merging every ``200 OK`` propstat (empty when none is OK).
 
-    A server answers properties it lacks in a separate ``404`` propstat; reading the first
-    propstat blindly would take that one when it happens to come first.
+    RFC 4918 lets a response split its properties across several propstats, and a server
+    answers properties it lacks in a separate ``404`` one; only the ``200`` ones are kept.
 
     Parameters
     ----------
@@ -193,10 +193,10 @@ def _found_prop(  # complexity-ok: one pass over the propstats, taking the 200 o
     Returns
     -------
     xml.etree.ElementTree.Element
-        The matching ``DAV:prop`` element, or an empty ``Element`` when no propstat is 200.
+        A synthetic ``prop`` holding the children of every ``200`` ``DAV:prop``.
     """
+    cls_merged = Element("prop")
     for cls_propstat in cls_response.findall("d:propstat", _DAV):
         if " 200 " in cls_propstat.findtext("d:status", default="", namespaces=_DAV):
-            cls_prop = cls_propstat.find("d:prop", _DAV)
-            return cls_prop if cls_prop is not None else Element("prop")
-    return Element("prop")
+            cls_merged.extend(cls_propstat.findall("d:prop/*", _DAV))
+    return cls_merged
