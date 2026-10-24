@@ -45,6 +45,18 @@ print(
 )
 ```
 
+## Recipe: read partners with masked documents
+
+Individuals' CPFs arrive masked by RFB (`***240659**`) and stay that way; never try to unmask
+them. Qualification codes are text and join to the `Qualificacoes` lookup.
+
+```python
+from filings_rfb import read_partners
+
+for df_chunk in read_partners("2026-10"):
+    df_legal_entities = df_chunk[df_chunk["tipo_socio"] == "1"]
+```
+
 ## Recipe: read a CNPJ lookup table
 
 Turn a downloaded lookup ZIP into a typed frame. The `ETag` comes from the share listing and is

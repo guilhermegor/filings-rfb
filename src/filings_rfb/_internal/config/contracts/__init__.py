@@ -30,6 +30,10 @@ from filings_rfb._internal.config.contracts.cnpj_lookups import (
     PAISES,
     QUALIFICACOES,
 )
+from filings_rfb._internal.config.contracts.cnpj_partners import (
+    CNPJ_PARTNERS,
+    COLUMNS_PARTNERS,
+)
 from filings_rfb._internal.config.contracts.example_source import EXAMPLE_SOURCE
 from filings_rfb._internal.utils.tabular_reader import (
     ContractError,
@@ -43,7 +47,9 @@ __all__ = [
     "CNPJ_COMPANIES",
     "CNPJ_LOOKUP_CONTRACTS",
     "CNPJ_LOOKUP_NAMES",
+    "CNPJ_PARTNERS",
     "COLUMNS_COMPANIES",
+    "COLUMNS_PARTNERS",
     "EXAMPLE_SOURCE",
     "MOTIVOS",
     "MUNICIPIOS",
