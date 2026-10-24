@@ -79,7 +79,7 @@ with the tar members decompressed in F-3: both SHA-256 prefixes match
 `PROPFIND` reports for `2025-05/Cnaes.zip` and `2025-05/Empresas0.zip` equal the tar
 header sizes.
 
-### F-5 Exact extent: nine months, `2025-05` to `2026-01`
+### F-5 Inferred extent: nine months, `2025-05` to `2026-01`
 The last 8 bytes of a gzip stream are CRC32 and ISIZE (uncompressed length mod 2^32):
 ```bash
 curl -sS -r 63954782741-63954782748 -o tail8.bin "$BASE/cnpj.tar.gz"   # 206
@@ -98,9 +98,10 @@ each of the 37 files, plus a 1024 B end marker, rounded up to GNU tar's 10240 B 
 (The 2025-08..2025-11 ranges also miss; the match is exact to the byte.) The match also
 shows a single gzip stream: ISIZE describes the whole tar, so there are no per-member
 restart points. Compression gains nothing, since the payload is already zip: 64.0 GB
-becomes 63.95 GB (0.9992). The tar is therefore **the 9 folders `2025-05` to `2026-01`,
-333 files, and nothing else**, caveat: it is an inference from a 1-in-2^32 check plus the
-two byte comparisons, not a full listing.
+becomes 63.95 GB (0.9992). The tar is therefore **consistent with** the 9 folders
+`2025-05` to `2026-01` (333 files). ISIZE is the length mod 2^32 and the range check is
+exact to the byte, but a 32-bit residue does not prove membership, and only two members
+were byte-compared. This is an inference, not a verified listing.
 
 ## Does it help the library?
 
@@ -108,7 +109,7 @@ two byte comparisons, not a full listing.
 |----------|--------|
 | Back-fill months before `2023-05`? | No. Earliest month inside is `2025-05`. |
 | Fill gaps between `2023-05` and `2026-10`? | No. All nine months it holds are still served individually. |
-| Any data absent from the per-month folders? | None seen: every file checked is byte-identical, and the total size matches the folders to the byte. |
+| Any data absent from the per-month folders? | None seen: the files sampled are byte-identical, and the tar length is consistent with the folders. |
 | Cheaper to fetch? | No. Compression is 0.08%; one month is ~7 GB but a month inside the tar costs sequential reads of everything before it. |
 | Resumable / selective? | Poorly. `Range` works, but a single gzip stream has no seek points, so one lost connection past a few GB restarts the decode, and one table costs the whole prefix. |
 | Maintained? | No. Frozen at 2026-01-28 while releases continue monthly. |
