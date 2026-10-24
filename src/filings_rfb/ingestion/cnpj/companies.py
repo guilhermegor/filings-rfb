@@ -12,11 +12,11 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Any
 
 import pandas as pd
 
 from filings_rfb._internal.config.contracts import CNPJ_COMPANIES
+from filings_rfb._internal.utils.parquet_writer import ParquetChunkWriter
 from filings_rfb._internal.utils.typing import type_checker
 from filings_rfb.ingestion.cnpj._multipart import DEFAULT_CHUNK_ROWS, iter_part_chunks
 
@@ -29,12 +29,7 @@ _DECIMAL_COLS: tuple[str, ...] = (_COL_CAPITAL,)
 _DTYPES: dict[str, str] = {
     str_col: "str" for str_col in CNPJ_COMPANIES.tuple_required if str_col != _COL_CAPITAL
 }
-_CAPITAL_PRECISION: int = 38
 _CAPITAL_SCALE: int = 2
-_MSG_NEEDS_PYARROW: str = (
-    "export_companies_parquet needs pyarrow; install the optional extra: "
-    "pip install 'filings-rfb[parquet]'"
-)
 
 
 @type_checker
@@ -87,7 +82,7 @@ def export_companies_parquet(
     """Write the ``Empresas`` of a reference month to one Parquet file, chunk by chunk.
 
     ``capital_social`` is stored as ``decimal128(38, 2)``; a value with more fractional digits
-    raises instead of being rounded.
+    raises instead of being rounded. The file is only created once the first chunk is read.
 
     Parameters
     ----------
@@ -110,47 +105,10 @@ def export_companies_parquet(
     ImportError
         If ``pyarrow`` is missing; install the ``filings-rfb[parquet]`` extra.
     """
-    try:
-        import pyarrow as pa  # noqa: PLC0415 — optional extra, imported only when exporting
-        import pyarrow.parquet as pq  # noqa: PLC0415
-    except ImportError as cls_err:
-        raise ImportError(_MSG_NEEDS_PYARROW) from cls_err
-    path_dest.parent.mkdir(parents=True, exist_ok=True)
-    cls_writer = None
-    try:
+    with ParquetChunkWriter(path_dest, {_COL_CAPITAL: _CAPITAL_SCALE}) as cls_writer:
         for df_chunk in read_companies(str_month, int_chunk_rows, path_workdir):
-            if cls_writer is None:
-                cls_schema = _parquet_schema(pa, df_chunk)
-                cls_writer = pq.ParquetWriter(path_dest, cls_schema)
-            cls_writer.write_table(pa.Table.from_pandas(df_chunk, schema=cls_schema))
-    finally:
-        if cls_writer is not None:
-            cls_writer.close()
+            cls_writer.write(df_chunk)
     return path_dest
-
-
-@type_checker
-def _parquet_schema(cls_pa: Any, df_first: pd.DataFrame) -> Any:  # noqa: ANN401 — pyarrow is optional
-    """Infer the Parquet schema from the first chunk, pinning the capital's decimal type.
-
-    A schema inferred per chunk would give each chunk its own ``Decimal`` precision and the
-    writer would reject the second one.
-
-    Parameters
-    ----------
-    cls_pa : Any
-        The lazily imported ``pyarrow`` module.
-    df_first : pd.DataFrame
-        The first chunk.
-
-    Returns
-    -------
-    Any
-        The ``pyarrow.Schema`` every chunk is written with.
-    """
-    cls_inferred = cls_pa.Schema.from_pandas(df_first, preserve_index=False)
-    cls_field = cls_pa.field(_COL_CAPITAL, cls_pa.decimal128(_CAPITAL_PRECISION, _CAPITAL_SCALE))
-    return cls_inferred.set(cls_inferred.get_field_index(_COL_CAPITAL), cls_field)
 
 
 @type_checker

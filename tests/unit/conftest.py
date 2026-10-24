@@ -38,7 +38,7 @@ def _write_part_zip(path_zip: Path, list_lines: list[str]) -> None:
 
 
 @pytest.fixture
-def fake_share(
+def fake_share(  # complexity-ok: fixture factory with a nested fake
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> Callable[[dict[int, list[str]]], MagicMock]:
     """Patch the catalogue and the downloader so parts come from tiny local ZIPs.
@@ -57,7 +57,9 @@ def fake_share(
         ``Empresas`` and returns the patched downloader mock.
     """
 
-    def publish(dict_parts: dict[int, list[str]]) -> MagicMock:
+    def publish(  # complexity-ok: builds the fake share
+        dict_parts: dict[int, list[str]],
+    ) -> MagicMock:
         dict_paths = {}
         for int_part, list_lines in dict_parts.items():
             dict_paths[f"Empresas{int_part}.zip"] = tmp_path / f"src_{int_part}.zip"

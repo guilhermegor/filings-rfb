@@ -190,9 +190,7 @@ def new_run_id() -> str:
 
 
 @type_checker
-def stamp_source_etag(
-    df_input: pd.DataFrame, str_etag: str, int_part_index: int
-) -> pd.DataFrame:
+def stamp_source_etag(df_input: pd.DataFrame, str_etag: str, int_part_index: int) -> pd.DataFrame:
     """Append the per-part source columns ``source_etag`` and ``part_index`` (pure transform).
 
     Complements :func:`stamp_provenance` for a source split into numbered archives

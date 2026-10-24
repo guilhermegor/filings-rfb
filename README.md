@@ -38,8 +38,17 @@ poetry install --no-root
 <!-- slug: usage -->
 ### Usage
 
-Run the project through its entry points under `src/`; replace this paragraph with the
-commands your users run first.
+Read the RFB `Empresas` files of a month as typed chunks, without loading them whole:
+
+```python
+from filings_rfb import read_companies
+
+for df_chunk in read_companies("2026-10"):
+    ...
+```
+
+`export_companies_parquet("2026-10", path)` writes them to Parquet for lazy querying (DuckDB,
+Polars `scan_parquet`); it needs the optional extra `pip install 'filings-rfb[parquet]'`.
 
 <!-- slug: project-structure -->
 ## Project Structure

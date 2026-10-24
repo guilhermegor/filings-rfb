@@ -55,7 +55,7 @@ def test_part_index_and_etag_are_stamped_per_part(fake_share: Publish) -> None:
     """Every row carries the part it came from and that archive's ETag."""
     fake_share({0: LIST_PART0_LINES, 1: LIST_PART1_LINES})
     df_all = pd.concat(_read(2), ignore_index=True)
-    assert df_all[["part_index", "source_etag"]].drop_duplicates().values.tolist() == [
+    assert df_all[["part_index", "source_etag"]].drop_duplicates().to_numpy().tolist() == [
         [0, '"etag-Empresas0.zip"'],
         [1, '"etag-Empresas1.zip"'],
     ]
@@ -64,7 +64,7 @@ def test_part_index_and_etag_are_stamped_per_part(fake_share: Publish) -> None:
 def test_all_chunks_of_one_read_share_one_run_id(fake_share: Publish) -> None:
     """The ingestion run id is minted once per read, not per chunk."""
     fake_share({0: LIST_PART0_LINES, 1: LIST_PART1_LINES})
-    assert pd.concat(_read(2))["ingestion_run_id"].nunique() == 1
+    assert len(set(pd.concat(_read(2))["ingestion_run_id"])) == 1
 
 
 def test_latin1_accents_round_trip(fake_share: Publish) -> None:
@@ -111,4 +111,4 @@ def test_temporary_workdir_is_cleaned_after_the_read(fake_share: Publish) -> Non
 
 def test_module_exposes_ten_default_parts() -> None:
     """The default part set is 0 through 9."""
-    assert _multipart.DEFAULT_PARTS == tuple(range(10))
+    assert tuple(range(10)) == _multipart.DEFAULT_PARTS

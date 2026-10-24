@@ -8,22 +8,39 @@ alone — copy it and adjust.
 
 ---
 
-## Recipe: <a common task>
+## Recipe: iterate Empresas without loading it all
 
-Briefly describe the problem this recipe solves, then show the smallest working snippet.
+Each chunk is a typed frame, so aggregate as you go and keep memory flat.
 
 ```python
-from <project_name> import main
+from decimal import Decimal
 
+from filings_rfb import read_companies
 
-# Replace with a real, runnable example of your public API.
-main()
+decimal_total = Decimal(0)
+for df_chunk in read_companies("2026-10"):
+    decimal_total += sum(df_chunk["capital_social"].dropna(), Decimal(0))
+print(decimal_total)
 ```
 
-## Recipe: <another task>
+## Recipe: export to Parquet and query it with DuckDB
 
-Add one `##` section per recipe. Comments in the code should explain **why**, not just what.
+Reading the ZIPs always decompresses everything once; lazy querying only pays off afterwards,
+against a columnar file. Export once, then let DuckDB (installed on your side, not a dependency of
+this library) scan it.
 
 ```python
-# Replace with a second illustrative example.
+from pathlib import Path
+
+import duckdb
+
+from filings_rfb import export_companies_parquet
+
+path_parquet = export_companies_parquet("2026-10", Path("empresas_2026-10.parquet"))
+print(
+    duckdb.sql(
+        f"SELECT razao_social, capital_social FROM '{path_parquet}' "
+        "ORDER BY capital_social DESC LIMIT 5"
+    )
+)
 ```
