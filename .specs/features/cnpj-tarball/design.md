@@ -8,7 +8,7 @@ Created: 2026-10-22
 Decide whether `filings-rfb` should support the `cnpj.tar.gz` archive that sits at the root
 of the RFB share, next to the `YYYY-MM` folders (epic #2, sub-issue #10).
 
-**Recommendation: ignore it.** It is a redundant, single-stream snapshot of nine monthly
+**Recommendation: ignore it.** It is a redundant gzip snapshot of nine monthly
 folders that the library already reaches one file at a time. It cannot back-fill anything
 older than `2025-05`, and it is a worse transport than the per-file zips. No follow-up
 implementation issue is warranted.
@@ -95,9 +95,12 @@ each of the 37 files, plus a 1024 B end marker, rounded up to GNU tar's 10240 B 
 | 2025-05..2026-01 | 64,006,635,520 | 3,877,093,376 | **yes** |
 | 2025-05..2026-02 | 71,375,370,240 | 2,655,893,504 | no |
 
-(The 2025-08..2025-11 ranges also miss; the match is exact to the byte.) The match also
-shows a single gzip stream: ISIZE describes the whole tar, so there are no per-member
-restart points. Compression gains nothing, since the payload is already zip: 64.0 GB
+(The 2025-08..2025-11 ranges also miss; the match is exact to the byte.) The match is
+conditional on one assumption: the file is a single gzip member spanning the whole tar.
+The trailer's ISIZE covers only the last member, so a multi-member file would give a
+different residue; the match is consistent with one member, the simplest explanation, but
+does not rule out several (that needs a full 64 GB scan for further `1f8b08` headers).
+Compression gains nothing, since the payload is already zip: 64.0 GB
 becomes 63.95 GB (0.9992). The tar is therefore **consistent with** the 9 folders
 `2025-05` to `2026-01` (333 files). ISIZE is the length mod 2^32 and the range check is
 exact to the byte, but a 32-bit residue does not prove membership, and only two members
@@ -111,7 +114,7 @@ were byte-compared. This is an inference, not a verified listing.
 | Fill gaps between `2023-05` and `2026-10`? | No. All nine months it holds are still served individually. |
 | Any data absent from the per-month folders? | None seen: the files sampled are byte-identical, and the tar length is consistent with the folders. |
 | Cheaper to fetch? | No. Compression is 0.08%; one month is ~7 GB but a month inside the tar costs sequential reads of everything before it. |
-| Resumable / selective? | Poorly. `Range` works, but a single gzip stream has no seek points, so one lost connection past a few GB restarts the decode, and one table costs the whole prefix. |
+| Resumable / selective? | Poorly. `Range` works, but a gzip stream (probably one member, see F-5) offers no known seek points, so one lost connection past a few GB restarts the decode, and one table costs the whole prefix. |
 | Maintained? | No. Frozen at 2026-01-28 while releases continue monthly. |
 | Fits the architecture? | No. The reader contracts (#6-#9) and the catalogue (#4) are keyed on `YYYY-MM/<file>.zip`; a tar reader would be a second, parallel input path for zero new data. |
 
