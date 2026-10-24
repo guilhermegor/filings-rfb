@@ -163,6 +163,16 @@ def test_read_lookup_several_members_raises(tmp_path: Path) -> None:
         read_lookup("Motivos", path_zip, "https://example.invalid/x.zip", STR_ETAG)
 
 
+@pytest.mark.filterwarnings("ignore:Duplicate name")
+def test_read_lookup_duplicate_member_names_raises(tmp_path: Path) -> None:
+    """Two same-name members surface as an error, never one silently dropped."""
+    path_zip = tmp_path / "dup.zip"
+    with zipfile.ZipFile(path_zip, "w") as cls_zip:
+        deque(map(cls_zip.writestr, ["M", "M"], [b'"1";"a"\n', b'"2";"b"\n']), maxlen=0)
+    with pytest.raises(ValueError, match="duplicate member names"):
+        read_lookup("Motivos", path_zip, "https://example.invalid/x.zip", STR_ETAG)
+
+
 def test_read_lookup_unknown_table_raises(tmp_path: Path) -> None:
     """An unknown table name is rejected before the archive is opened."""
     with pytest.raises(ValueError, match="Unknown lookup table"):
