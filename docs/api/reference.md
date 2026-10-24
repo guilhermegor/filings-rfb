@@ -57,8 +57,9 @@ Yields the `Socios` rows of a reference month, one typed DataFrame per chunk of 
 `documento_socio` is verbatim (RFB pre-masks an individual's CPF as `***dddddd**`; it is never
 unmasked). `documento_representante` is null where RFB published `***000000**` (no
 representative). `qualificacao_socio` and `qualificacao_representante` are two-character text
-codes that join to the `Qualificacoes` lookup. Raises `FileNotFoundError` when a part is not
-published.
+codes that join to the `Qualificacoes` lookup. `data_entrada` is a `datetime.date`
+(`00000000` and blank are null; any other value that is not `YYYYMMDD` raises `ValueError`).
+Raises `FileNotFoundError` when a part is not published.
 
 ---
 
@@ -99,9 +100,10 @@ Raises `ValueError` for an unknown table or an archive with zero or several file
 Yields the `Simples` rows (Simples Nacional and MEI options) of a reference month (`YYYY-MM`),
 one typed DataFrame per chunk. `Simples.zip` is one un-numbered archive, read through the same
 shared iterator as the numbered datasets (`part_index` is always 0). `opcao_pelo_simples` and
-`opcao_pelo_mei` are booleans (`S`/`N`; anything else raises `ValueError`); the four date
-columns are `datetime.date`, with the RFB's `00000000` sentinel read as null. Raises
-`FileNotFoundError` when `Simples.zip` is not published.
+`opcao_pelo_mei` are nullable booleans (`S`/`N`; blank is null; anything else raises
+`ValueError`); the four date columns are `datetime.date`, with the RFB's `00000000` sentinel
+and blanks read as null, and any other value that is not `YYYYMMDD` raising `ValueError`.
+Raises `FileNotFoundError` when `Simples.zip` is not published.
 
 ---
 

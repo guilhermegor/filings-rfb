@@ -98,12 +98,21 @@ print(df_cnaes[["code", "description"]].head())
 
 ## Recipe: Simples Nacional and MEI options
 
-`Simples.zip` inflates to ~3.2 GB, so it is read as chunks too. Options are booleans and the
-dates are real dates; an option still in force has a null end date.
+`Simples.zip` inflates to ~3.2 GB, so it is read as chunks too. Options are nullable booleans
+(a blank flag is null) and the dates are real dates; an option still in force has a null end
+date.
 
 ```python
+import pandas as pd
+
 from filings_rfb import read_simples
 
-for df_chunk in read_simples("2026-10"):
-    df_active = df_chunk[df_chunk["opcao_pelo_simples"] & df_chunk["data_exclusao_simples"].isna()]
+list_active = [
+    df_chunk[
+        df_chunk["opcao_pelo_simples"].fillna(False)
+        & df_chunk["data_exclusao_simples"].isna()
+    ]
+    for df_chunk in read_simples("2026-10")
+]
+df_active = pd.concat(list_active, ignore_index=True)
 ```
