@@ -106,6 +106,17 @@ def test_parse_multistatus_collection_has_no_size(
     assert cls_self.int_size is None
 
 
+def test_parse_multistatus_collection_with_content_length_still_has_no_size() -> None:
+    """A collection reports ``None`` even when the server sends ``getcontentlength``."""
+    bytes_xml = (
+        b'<d:multistatus xmlns:d="DAV:"><d:response><d:href>/dav/2026-10/</d:href>'
+        b"<d:propstat><d:prop><d:getcontentlength>4096</d:getcontentlength>"
+        b"<d:resourcetype><d:collection/></d:resourcetype></d:prop>"
+        b"<d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response></d:multistatus>"
+    )
+    assert parse_multistatus(bytes_xml)[0].int_size is None
+
+
 def test_parse_multistatus_tarball_size_matches_source_bytes(
     list_root_entries: list[WebdavEntry],
 ) -> None:

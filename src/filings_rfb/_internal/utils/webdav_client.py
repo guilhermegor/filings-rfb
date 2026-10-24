@@ -164,10 +164,11 @@ def _to_entry(cls_response: Element) -> WebdavEntry:
     cls_prop = _found_prop(cls_response)
     str_size = cls_prop.findtext("d:getcontentlength", default="", namespaces=_DAV)
     str_modified = cls_prop.findtext("d:getlastmodified", default="", namespaces=_DAV)
+    is_collection = cls_prop.find("d:resourcetype/d:collection", _DAV) is not None
     return WebdavEntry(
         str_name=unquote(str_href.rstrip("/").rsplit("/", 1)[-1]),
-        is_collection=cls_prop.find("d:resourcetype/d:collection", _DAV) is not None,
-        int_size=int(str_size) if str_size else None,
+        is_collection=is_collection,
+        int_size=int(str_size) if str_size and not is_collection else None,
         str_etag=cls_prop.findtext("d:getetag", default="", namespaces=_DAV),
         dt_last_modified=parsedate_to_datetime(str_modified) if str_modified else None,
     )
