@@ -23,6 +23,21 @@ for df_chunk in read_companies("2026-10"):
 print(decimal_total)
 ```
 
+## Recipe: find invalid or inactive establishments
+
+`situacao_cadastral` is `02` for ATIVA; `01` NULA, `03` SUSPENSA, `04` INAPTA and `08` BAIXADA are
+the non-active ones.
+
+```python
+from filings_rfb import read_establishments
+
+int_invalid = int_inactive = 0
+for df_chunk in read_establishments("2026-10"):
+    int_invalid += int((~df_chunk["cnpj_valido"]).sum())
+    int_inactive += int((df_chunk["situacao_cadastral"] != "02").sum())
+print(int_invalid, int_inactive)
+```
+
 ## Recipe: export to Parquet and query it with DuckDB
 
 Reading the ZIPs always decompresses everything once; lazy querying only pays off afterwards,

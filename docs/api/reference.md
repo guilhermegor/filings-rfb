@@ -37,6 +37,18 @@ Writes the same rows to one Parquet file. Requires the `filings-rfb[parquet]` ex
 
 ---
 
+## Module: `filings_rfb.ingestion.cnpj.establishments`
+
+### `read_establishments(str_month, int_chunk_rows=500_000, path_workdir=None) -> Iterator[pd.DataFrame]`
+
+Yields the `Estabelecimentos` rows of a reference month (`YYYY-MM`), one typed DataFrame per chunk
+of each part 0-9. Adds `cnpj_completo` (basic + order + check digits) and `cnpj_valido`
+(check-digit validation, alphanumeric-aware). The three date columns are `datetime.date`, with
+`00000000` and empty as null; `cnae_fiscal_secundaria` stays comma-separated text. Raises
+`FileNotFoundError` when a part is not published.
+
+---
+
 ## Module: `filings_rfb.ingestion.cnpj.partners`
 
 ### `read_partners(str_month, int_chunk_rows=500_000, path_workdir=None) -> Iterator[pd.DataFrame]`
