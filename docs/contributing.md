@@ -32,6 +32,10 @@ poe lint                # ruff + mypy + codespell + pydocstyle + shell/sql/yaml 
 
 CI runs the same gates on every pull request; keep them green locally before pushing.
 
+The `bin/` scripts need bash 4 or later (they use associative arrays, `declare -A`). macOS ships
+bash 3.2 as `/bin/bash`, so on a Mac run `brew install bash` and put Homebrew's `bin` first on
+`PATH`; the macOS CI jobs do the same before running the tests.
+
 ## Verifying the built package
 
 Before opening a release PR, confirm the wheel actually builds and imports — this catches
