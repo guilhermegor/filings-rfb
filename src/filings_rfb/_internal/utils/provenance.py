@@ -170,6 +170,30 @@ def stamp_provenance(
 
 
 @type_checker
+def stamp_source_etag(df_input: pd.DataFrame, str_etag: str) -> pd.DataFrame:
+    """Append a ``source_etag`` column holding the share's ``ETag`` for the source artifact.
+
+    Kept beside :func:`stamp_provenance` so callers outside the seam layer never build a
+    column themselves. Returns a new frame; the input is not mutated.
+
+    Parameters
+    ----------
+    df_input : pd.DataFrame
+        The (usually already stamped) frame.
+    str_etag : str
+        The ``ETag`` the source reported for the artifact, shared by every row.
+
+    Returns
+    -------
+    pd.DataFrame
+        A copy of ``df_input`` with ``source_etag`` appended as the nullable ``string`` dtype.
+    """
+    df_stamped = df_input.copy()
+    df_stamped["source_etag"] = pd.array([str_etag] * len(df_stamped), dtype="string")
+    return df_stamped
+
+
+@type_checker
 def _new_run_id() -> str:
     """Return a fresh UUID4 string identifying one ingestion read.
 

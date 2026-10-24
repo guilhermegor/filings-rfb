@@ -72,6 +72,9 @@ poetry run pytest tests/integration/ -v
 The public surface is whatever the package `__init__.py` lists in `__all__`; everything
 under `_internal/` is private.
 
+- `read_lookup(str_table, path_zip, str_url, str_etag)` reads one of the six RFB CNPJ lookup
+  tables (`CNPJ_LOOKUP_NAMES`) into a typed, provenance-stamped DataFrame.
+
 <!-- slug: publishing -->
 ## Publishing
 

@@ -16,6 +16,16 @@ delete the example once your own contracts exist.
 
 from __future__ import annotations
 
+from filings_rfb._internal.config.contracts.cnpj_lookups import (
+    CNAES,
+    CNPJ_LOOKUP_CONTRACTS,
+    CNPJ_LOOKUP_NAMES,
+    MOTIVOS,
+    MUNICIPIOS,
+    NATUREZAS,
+    PAISES,
+    QUALIFICACOES,
+)
 from filings_rfb._internal.config.contracts.example_source import EXAMPLE_SOURCE
 from filings_rfb._internal.utils.tabular_reader import (
     ContractError,
@@ -24,4 +34,17 @@ from filings_rfb._internal.utils.tabular_reader import (
 )
 
 
-__all__ = ["EXAMPLE_SOURCE", "ContractError", "FileContract", "find_file_problems"]
+__all__ = [
+    "CNAES",
+    "CNPJ_LOOKUP_CONTRACTS",
+    "CNPJ_LOOKUP_NAMES",
+    "EXAMPLE_SOURCE",
+    "MOTIVOS",
+    "MUNICIPIOS",
+    "NATUREZAS",
+    "PAISES",
+    "QUALIFICACOES",
+    "ContractError",
+    "FileContract",
+    "find_file_problems",
+]

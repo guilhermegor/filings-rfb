@@ -89,6 +89,11 @@ class FileContract(metaclass=TypeChecker):
         reports every non-required column as a finding. Keep the default ``False`` unless the
         contract was pinned to the full header; the choice should be conscious per source, not
         accidental.
+    tuple_extra_output : tuple of str, optional
+        Columns beyond :attr:`PROVENANCE_COLUMNS` that this source's reader stamps (default
+        ``()``), e.g. ``"source_etag"`` for share-sourced readers. They are output-only, like
+        the provenance columns, and are appended by :attr:`output_columns`. Declared per
+        contract rather than globally because only some readers stamp them.
 
     Attributes
     ----------
@@ -105,6 +110,7 @@ class FileContract(metaclass=TypeChecker):
     tuple_required: tuple[str, ...]
     tuple_cnpj_cols: tuple[str, ...]
     bool_full_column: bool = False
+    tuple_extra_output: tuple[str, ...] = ()
 
     PROVENANCE_COLUMNS: ClassVar[tuple[str, ...]] = (
         "url",
@@ -117,14 +123,15 @@ class FileContract(metaclass=TypeChecker):
 
     @property
     def output_columns(self) -> tuple[str, ...]:
-        """Return the full output shape: source-required columns then provenance columns.
+        """Return the full output shape: source columns, provenance, then extra stamped columns.
 
         Returns
         -------
         tuple of str
-            ``tuple_required + PROVENANCE_COLUMNS`` — what a stamped, ingested frame holds.
+            ``tuple_required + PROVENANCE_COLUMNS + tuple_extra_output`` — what a stamped,
+            ingested frame holds.
         """
-        return self.tuple_required + self.PROVENANCE_COLUMNS
+        return self.tuple_required + self.PROVENANCE_COLUMNS + self.tuple_extra_output
 
 
 class ContractError(Exception, metaclass=TypeChecker):
