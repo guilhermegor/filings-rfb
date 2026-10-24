@@ -1,1 +1,1 @@
-"""Ingestion of public registers."""
+"""Readers that ingest public filings into typed frames."""

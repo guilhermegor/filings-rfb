@@ -1,1 +1,1 @@
-"""RFB CNPJ open-data ingestion."""
+"""RFB CNPJ open-data readers."""
