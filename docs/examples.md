@@ -25,12 +25,17 @@ print(decimal_total)
 
 ## Recipe: find invalid or inactive establishments
 
+`situacao_cadastral` is `02` for ATIVA; `01` NULA, `03` SUSPENSA, `04` INAPTA and `08` BAIXADA are
+the non-active ones.
+
 ```python
 from filings_rfb import read_establishments
 
+int_invalid = int_inactive = 0
 for df_chunk in read_establishments("2026-10"):
-    df_bad = df_chunk[~df_chunk["cnpj_valido"]]
-    print(len(df_bad), df_chunk["data_inicio_atividade"].isna().sum())
+    int_invalid += int((~df_chunk["cnpj_valido"]).sum())
+    int_inactive += int((df_chunk["situacao_cadastral"] != "02").sum())
+print(int_invalid, int_inactive)
 ```
 
 ## Recipe: export to Parquet and query it with DuckDB

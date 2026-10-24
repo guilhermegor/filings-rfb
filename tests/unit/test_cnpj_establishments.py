@@ -88,10 +88,11 @@ def test_all_ten_parts_are_read(df_all: pd.DataFrame) -> None:
     assert sorted(df_all["part_index"].unique().tolist()) == list(range(10))
 
 
-def test_bad_date_is_an_error() -> None:
-    """A non-date value is raised, never nulled silently."""
-    with pytest.raises(ValueError, match="2026XXYY"):
-        parse_compact_dates(pd.Series(["2026XXYY"]))
+@pytest.mark.parametrize("str_bad", ["2026XXYY", "2020101", "202011", "202010011"])
+def test_bad_date_is_an_error(str_bad: str) -> None:
+    """A value that is not exactly eight digits is raised, never parsed or nulled."""
+    with pytest.raises(ValueError, match=str_bad):
+        parse_compact_dates(pd.Series([str_bad]))
 
 
 def test_missing_part_is_an_error(share: None, monkeypatch: pytest.MonkeyPatch) -> None:
