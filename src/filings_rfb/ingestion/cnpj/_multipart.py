@@ -75,8 +75,9 @@ def iter_part_chunks(  # noqa: PLR0913 — the shared reader API; each argument 
     int_chunk_rows : int, optional
         Rows per chunk, by default :data:`DEFAULT_CHUNK_ROWS`.
     path_workdir : pathlib.Path, optional
-        Where to keep the downloaded ZIPs (kept after the read, so a rerun can reuse the
-        directory). ``None`` uses a temporary directory removed when the iterator finishes.
+        Where to keep the downloaded ZIPs. A rerun with the same directory revalidates each
+        kept ZIP with its stored ``ETag`` and reuses it on a ``304`` instead of downloading it
+        again. ``None`` uses a temporary directory removed when the iterator finishes.
     tuple_parts : tuple of int, optional
         The part numbers to read, by default ``0..9``.
     list_decimal_cols : sequence of str, optional

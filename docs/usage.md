@@ -149,6 +149,10 @@ path_zip, str_etag = download_file_streaming(
 - The server `ETag` is stored next to the partial file (`<dest>.part.etag`). A retry, or a
   later call after a crash, continues with `Range: bytes=<n>-` and `If-Range: <etag>`. If the
   `ETag` changed, or the leftover has no recorded `ETag`, the download restarts from zero.
+- After the rename the `ETag` is recorded in `<dest>.etag`. Calling again for a destination that
+  has that sidecar sends `If-None-Match`: a `304` returns the existing file untouched with the
+  stored `ETag`; a `200` downloads and replaces it. With no sidecar the file is downloaded
+  afresh. This is how a rerun over a kept `path_workdir` avoids re-downloading every part.
 - The returned `str_etag` (empty when the server sends none) is for provenance.
 - A body shorter than `Content-Length` raises `OSError` after the bounded retries, keeping the
   partial file for the next attempt; a response without `Content-Length` raises `ValueError`.
