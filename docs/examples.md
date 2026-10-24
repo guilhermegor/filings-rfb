@@ -99,9 +99,10 @@ print(df_cnaes[["code", "description"]].head())
 ## Recipe: Simples Nacional and MEI options
 
 `Simples.zip` inflates to ~3.2 GB, so it is read as chunks too. Options are nullable booleans
-(a blank flag is null) and the dates are real dates; an option still in force has a null end
-date. Reduce each chunk as it arrives (count, aggregate or write it out) rather than collecting
-the rows: the companies currently in the Simples alone run to tens of millions.
+(a blank flag is null) and the dates are real dates; an option with no exclusion recorded has a
+null end date (a scheduled future exclusion is not null, so the count below leaves it out).
+Reduce each chunk as it arrives (count, aggregate or write it out) rather than collecting the
+rows: the companies in the Simples alone run to millions.
 
 ```python
 from filings_rfb import read_simples
@@ -113,5 +114,5 @@ for df_chunk in read_simples("2026-10"):
         & df_chunk["data_exclusao_simples"].isna()
     )
     int_active += int(series_active.sum())
-print(f"{int_active} companies currently opted into the Simples Nacional")
+print(f"{int_active:,} companies opted into the Simples Nacional with no exclusion recorded")
 ```
