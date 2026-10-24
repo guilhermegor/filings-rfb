@@ -6,22 +6,6 @@ Public interface for this library.
 
 ---
 
-## Module: `main`
-
-Entry point module. Extend this with your library's public functions.
-
-### `main() -> None`
-
-Runs the library entry point. Replace the body with your top-level logic.
-
-```python
-from <package_name>.main import main
-
-main()
-```
-
----
-
 ## Module: `filings_rfb.ingestion.cnpj.companies`
 
 ### `read_companies(str_month, int_chunk_rows=500_000, path_workdir=None) -> Iterator[pd.DataFrame]`
@@ -63,7 +47,7 @@ Raises `FileNotFoundError` when a part is not published.
 
 ---
 
-## Module: `ingestion.cnpj.lookups`
+## Module: `filings_rfb.ingestion.cnpj.lookups`
 
 Reads the six RFB CNPJ lookup tables: `Cnaes`, `Motivos`, `Municipios`, `Naturezas`, `Paises`
 and `Qualificacoes` (the partner/representative qualification, i.e. role).
@@ -109,10 +93,10 @@ Raises `FileNotFoundError` when `Simples.zip` is not published.
 
 ## Adding new modules
 
-Place new modules under `src/<package_name>/`. Export public symbols from `src/<package_name>/__init__.py` so callers can do:
+Place new modules under `src/filings_rfb/`. Export public symbols from `src/filings_rfb/__init__.py` (and its `__all__`) so callers can do:
 
 ```python
-from <package_name> import my_function
+from filings_rfb import read_companies
 ```
 
 Follow the one-class-per-file convention: utility functions with no shared state belong at module level, not wrapped in a class.
@@ -126,4 +110,4 @@ Follow the one-class-per-file convention: utility functions with no shared state
 | Type hints | Required on all public functions, including `-> None` return types |
 | Docstrings | NumPy style; explain *why*, not *what* |
 | Variable names | Type-prefixed (`str_`, `list_`, `cls_`, `dict_`, …) |
-| Testing | `unittest`; one assertion per test; name as `test_<unit>_<scenario>_<expected>` |
+| Testing | `pytest`-style functions with fixtures; name as `test_<unit>_<scenario>_<expected>` |
