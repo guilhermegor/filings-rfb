@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from unittest.mock import MagicMock
 import zipfile
@@ -150,3 +150,56 @@ def test_missing_part_is_an_error(fake_share: Callable) -> None:
     fake_share({int_part: LIST_PART1_LINES for int_part in range(9)})
     with pytest.raises(FileNotFoundError, match="Socios9.zip"):
         next(read_partners(STR_MONTH, 2))
+
+
+def _partner_line(str_date: str) -> str:
+    """Build one individual-partner CSV line with the given ``data_entrada`` text.
+
+    Parameters
+    ----------
+    str_date : str
+        The raw entry-date field.
+
+    Returns
+    -------
+    str
+        The CSV line.
+    """
+    return f'"1";"2";"X";"***111222**";"49";"{str_date}";"";"***000000**";"";"00";"1"'
+
+
+def _first_entry_date(fake_share: Callable, str_date: str) -> object:
+    """Read the fake share with one date text in every part and return the first row's date.
+
+    Parameters
+    ----------
+    fake_share : collections.abc.Callable
+        The share fixture.
+    str_date : str
+        The raw entry-date field.
+
+    Returns
+    -------
+    object
+        The parsed ``data_entrada`` of the first row.
+    """
+    fake_share({int_part: [_partner_line(str_date)] for int_part in range(10)})
+    return next(read_partners(STR_MONTH, 2))["data_entrada"].iloc[0]
+
+
+def test_data_entrada_valid_date_becomes_a_date(fake_share: Callable) -> None:
+    """``20050518`` is a ``datetime.date``, not text."""
+    assert _first_entry_date(fake_share, "20050518") == date(2005, 5, 18)
+
+
+@pytest.mark.parametrize("str_date", ["00000000", ""])
+def test_data_entrada_null_markers_become_null(fake_share: Callable, str_date: str) -> None:
+    """``00000000`` and a blank field are null, not a date."""
+    assert _first_entry_date(fake_share, str_date) is None
+
+
+@pytest.mark.parametrize("str_date", ["2020101", "202011"])
+def test_data_entrada_malformed_date_is_rejected(fake_share: Callable, str_date: str) -> None:
+    """A short date raises instead of being guessed (same as Estabelecimentos)."""
+    with pytest.raises(ValueError, match="YYYYMMDD"):
+        _first_entry_date(fake_share, str_date)
