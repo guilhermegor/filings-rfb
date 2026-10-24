@@ -68,11 +68,9 @@ def _write_zip(path_zip: Path, dict_members: dict[str, bytes]) -> Path:
 def test_read_lookup_each_table_returns_code_and_description_plus_provenance(
     str_table: str,
 ) -> None:
-    """Every table yields ``code``/``description`` then the provenance columns."""
+    """Every table's returned columns equal its contract's declared output shape."""
     df_out = _read(str_table)
-    assert tuple(df_out.columns) == CNPJ_LOOKUP_CONTRACTS[str_table].output_columns + (
-        "source_etag",
-    )
+    assert tuple(df_out.columns) == CNPJ_LOOKUP_CONTRACTS[str_table].output_columns
 
 
 def test_lookup_names_are_the_six_published_tables() -> None:

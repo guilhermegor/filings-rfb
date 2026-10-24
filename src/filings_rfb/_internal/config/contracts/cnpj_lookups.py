@@ -14,13 +14,16 @@ from __future__ import annotations
 from filings_rfb._internal.utils.tabular_reader import FileContract
 
 
-CNAES = FileContract("CNPJ Cnaes", "cnpj_cnaes", ("code", "description"), (), True)
-MOTIVOS = FileContract("CNPJ Motivos", "cnpj_motivos", ("code", "description"), (), True)
-MUNICIPIOS = FileContract("CNPJ Municipios", "cnpj_municipios", ("code", "description"), (), True)
-NATUREZAS = FileContract("CNPJ Naturezas", "cnpj_naturezas", ("code", "description"), (), True)
-PAISES = FileContract("CNPJ Paises", "cnpj_paises", ("code", "description"), (), True)
+_COLUMNS = ("code", "description")
+_STAMPED = ("source_etag",)
+
+CNAES = FileContract("CNPJ Cnaes", "cnpj_cnaes", _COLUMNS, (), True, _STAMPED)
+MOTIVOS = FileContract("CNPJ Motivos", "cnpj_motivos", _COLUMNS, (), True, _STAMPED)
+MUNICIPIOS = FileContract("CNPJ Municipios", "cnpj_municipios", _COLUMNS, (), True, _STAMPED)
+NATUREZAS = FileContract("CNPJ Naturezas", "cnpj_naturezas", _COLUMNS, (), True, _STAMPED)
+PAISES = FileContract("CNPJ Paises", "cnpj_paises", _COLUMNS, (), True, _STAMPED)
 QUALIFICACOES = FileContract(
-    "CNPJ Qualificacoes", "cnpj_qualificacoes", ("code", "description"), (), True
+    "CNPJ Qualificacoes", "cnpj_qualificacoes", _COLUMNS, (), True, _STAMPED
 )
 
 CNPJ_LOOKUP_CONTRACTS: dict[str, FileContract] = {
