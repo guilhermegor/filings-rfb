@@ -109,6 +109,7 @@ from pathlib import Path
 
 from filings_rfb import read_lookup
 
+# str_url / str_etag: the URL the ZIP was fetched from and the ETag the share reported
 df_cnaes = read_lookup("Cnaes", Path("Cnaes.zip"), str_url, str_etag)
 ```
 
