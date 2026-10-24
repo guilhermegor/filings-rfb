@@ -47,19 +47,19 @@ strip_non_prose() {
 issues_from_body() {
 	local str_body="$1" str_neg='(not|never|cannot|no longer|reverts?|reverted|reverting|without)'
 
-	printf '%s\n' "$str_body" | strip_non_prose | tr '\n' ' ' | tr '[:upper:]' '[:lower:]' \
-		| sed -E \
+	printf '%s\n' "$str_body" | strip_non_prose | tr '\n' ' ' | tr '[:upper:]' '[:lower:]' |
+		sed -E \
 			-e "s/(^|[^[:alnum:]_])$str_neg([[:space:]]+[[:alpha:]]+){0,3}[[:space:]]+$KEYWORDS:?[[:space:]]+#[0-9]+/ /g" \
-			-e "s/n('|’)t([[:space:]]+[[:alpha:]]+){0,3}[[:space:]]+$KEYWORDS:?[[:space:]]+#[0-9]+/ /g" \
-		| { grep -owE "$KEYWORDS:?[[:space:]]+#[0-9]+" || true; } \
-		| { grep -oE '[0-9]+$' || true; }
+			-e "s/n('|’)t([[:space:]]+[[:alpha:]]+){0,3}[[:space:]]+$KEYWORDS:?[[:space:]]+#[0-9]+/ /g" |
+		{ grep -owE "$KEYWORDS:?[[:space:]]+#[0-9]+" || true; } |
+		{ grep -oE '[0-9]+$' || true; }
 }
 
 resolve_issues() {
 	local str_branch="$1" str_body="$2"
 
 	case "$str_branch" in
-		dependabot/* | renovate/* | release/*) return 0 ;;
+	dependabot/* | renovate/* | release/*) return 0 ;;
 	esac
 	{
 		issue_from_branch "$str_branch"

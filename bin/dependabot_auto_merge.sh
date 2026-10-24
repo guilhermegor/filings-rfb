@@ -68,8 +68,14 @@ disarm() {
 
 decide() {
 	local str_pr="$1" str_head="$2" str_json="$3"
-	is_pure_dependabot "$str_pr" || { echo skip; return 0; }
-	pushed_by_dependabot "$str_head" || { echo skip; return 0; }
+	is_pure_dependabot "$str_pr" || {
+		echo skip
+		return 0
+	}
+	pushed_by_dependabot "$str_head" || {
+		echo skip
+		return 0
+	}
 	if [[ "$(classify_update "$str_json")" == minor ]]; then
 		echo arm
 	elif has_review_on_head "$str_pr" "$str_head"; then

@@ -34,13 +34,6 @@ help = "Provision the pr-quality-gate ruleset and the repo settings the PR gate 
 cmd = "bash bin/enable_security.sh"
 help = "Enable private vulnerability reporting, Dependabot alerts and security updates"
 
-[tool.poe.tasks.bump_version]
-shell = """
-cz bump --yes --no-verify --git-output-to-stderr
-echo "Version bumped to $(cz version --project 2>/dev/null || bash bin/poetry_exec.sh version -s)"
-"""
-help = "Bump the version from Conventional Commits and tag it (offline tiers only)"
-
 [tool.poe.tasks.changelog]
 sequence = [
 	{ cmd = "cz changelog" },
