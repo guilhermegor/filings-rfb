@@ -102,8 +102,9 @@ Releases are **tag-driven and secret-free** when the project is connected to a G
   (`Release to PyPI` / `Release to Test PyPI`, `workflow_dispatch` with the version), or by pushing
   a `vX.Y.Z` tag.
 - The release workflow runs the **full test suite** as a hard gate, builds with `python -m build`,
-  and publishes via **OIDC trusted publishing** (`pypa/gh-action-pypi-publish`) — no stored
-  `PYPI_TOKEN`.
+  and publishes via **OIDC trusted publishing** (`pypa/gh-action-pypi-publish`) — no token
+  secrets are needed. Register the pending publishers below; GitHub creates the
+  `release-pypi` and `release-test-pypi` environments on the first run.
 - The changelog is regenerated from tags at release/build time (`poe changelog` locally); CI never
   commits `CHANGELOG.md` back to the protected default branch.
 
