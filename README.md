@@ -61,8 +61,11 @@ itself, see [CONTRIBUTING.md](CONTRIBUTING.md).
 <!-- slug: usage -->
 ### Usage
 
-Every reader takes a reference month (`YYYY-MM`) and yields chunks of `int_chunk_rows` rows
-(default 500,000), so memory stays flat. Every row carries provenance columns (`url`,
+Every dataset reader (`read_companies`, `read_establishments`, `read_partners`,
+`read_simples`) takes a reference month (`YYYY-MM`) and yields chunks of `int_chunk_rows` rows
+(default 500,000), so memory stays flat. `read_lookup` is the exception: it takes
+`str_table, path_zip, str_url, str_etag` and returns a single DataFrame, since each lookup table
+is small. Every row carries provenance columns (`url`,
 `updated_at`, `source_key`, `package_version`, `ingestion_run_id`, `content_hash`,
 `source_etag`).
 

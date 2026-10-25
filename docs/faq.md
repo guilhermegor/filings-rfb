@@ -14,6 +14,9 @@ pip install filings-rfb
 pip install "filings-rfb[parquet]"   # optional Parquet export
 ```
 
+Until the first PyPI release is published, install from source:
+`pip install git+https://github.com/guilhermegor/filings-rfb.git`.
+
 ## How do I add or update a dependency?
 
 Use Poetry so the lock file stays authoritative:

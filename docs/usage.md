@@ -19,11 +19,16 @@ Or with Poetry:
 poetry add filings-rfb
 ```
 
+Until the first PyPI release is published, install from source:
+`pip install git+https://github.com/guilhermegor/filings-rfb.git`.
+
 ---
 
 ## Basic usage
 
-Every reader takes a reference month (`YYYY-MM`) and yields typed chunks:
+Every dataset reader (`read_companies`, `read_establishments`, `read_partners`,
+`read_simples`) takes a reference month (`YYYY-MM`) and yields typed chunks. `read_lookup` is the
+exception: it takes `str_table, path_zip, str_url, str_etag` and returns a single DataFrame.
 
 ```python
 from filings_rfb import read_partners
