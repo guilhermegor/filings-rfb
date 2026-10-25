@@ -12,16 +12,6 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "run",
-			"detail": "Run the library entry-point",
-			"type": "shell",
-			"command": "bash bin/poe_exec.sh run",
-			"group": "build",
-			"icon": { "id": "play", "color": "terminal.ansiGreen" },
-			"presentation": { "reveal": "always", "panel": "shared" },
-			"problemMatcher": []
-		},
-		{
 			"label": "lint",
 			"detail": "Run ruff, codespell, pydocstyle, check_docstrings",
 			"type": "shell",
@@ -69,36 +59,6 @@
 			"group": "test",
 			"icon": { "id": "globe", "color": "terminal.ansiMagenta" },
 			"presentation": { "reveal": "always", "panel": "dedicated" },
-			"problemMatcher": []
-		},
-		{
-			"label": "ship",
-			"detail": "Package the committed main tree into dist/<name>_<ts>.zip",
-			"type": "shell",
-			"command": "bash bin/poe_exec.sh ship",
-			"group": { "kind": "build", "isDefault": true },
-			"icon": { "id": "package", "color": "terminal.ansiCyan" },
-			"presentation": { "reveal": "always", "panel": "shared" },
-			"problemMatcher": []
-		},
-		{
-			"label": "wheelhouse",
-			"detail": "Build the offline wheelhouse (../_wheels/<repo>) — run on the machine WITH PyPI access",
-			"type": "shell",
-			"command": "bash bin/poe_exec.sh wheelhouse",
-			"group": "none",
-			"icon": { "id": "cloud-download", "color": "terminal.ansiCyan" },
-			"presentation": { "reveal": "always", "panel": "shared" },
-			"problemMatcher": []
-		},
-		{
-			"label": "wheelhouse_assemble",
-			"detail": "Assemble a transferred wheelhouse payload into installable wheels — run on the blocked target",
-			"type": "shell",
-			"command": "bash bin/poe_exec.sh wheelhouse_assemble",
-			"group": "none",
-			"icon": { "id": "package", "color": "terminal.ansiCyan" },
-			"presentation": { "reveal": "always", "panel": "shared" },
 			"problemMatcher": []
 		},
 		{

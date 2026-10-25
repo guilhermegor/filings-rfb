@@ -113,14 +113,6 @@ Without it the call raises an `ImportError` that names the extra. Querying the P
 ⚠️ Do not read these files with Polars directly: it silently misparses the `.zip` and corrupts
 latin-1 text.
 
-## Running from the Makefile
-
-```bash
-poe run            # runs src/filings_rfb/main.py
-```
-
----
-
 ## Running tests
 
 ```bash
