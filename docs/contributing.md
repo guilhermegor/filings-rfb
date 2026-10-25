@@ -89,9 +89,13 @@ Source: Deploy from a branch → `gh-pages` / `/`*.
 
 ## Pull requests
 
-1. Branch off the default branch following the prefix policy (`feat/…`, `fix/…`, …).
-2. Fill out the PR template completely.
-3. Ensure the CI checks (tests, lint, docs build) pass — they are the merge gate.
+1. **Open an issue first**, from the repository's issue template, stating what should change,
+   why, and the files it touches. Every branch and PR starts from one.
+2. Branch off the default branch as `<type>/<issue-number>-<slug>` (`feat/42-…`, `fix/57-…`).
+   The `branch-has-issue` check requires an issue number in contributor branch names;
+   `release/`, `dependabot/`, and `renovate/` branches are exempt.
+3. Fill out the PR template completely, with `Closes #<issue-number>` in the body.
+4. Ensure the CI checks (tests, lint, docs build) pass — they are the merge gate.
 
 ## Releasing
 
