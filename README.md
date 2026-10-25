@@ -49,7 +49,7 @@ The full documentation is published at <https://guilhermegor.github.io/filings-r
 - [FAQ](https://guilhermegor.github.io/filings-rfb/latest/faq/): common questions and troubleshooting
 - [Changelog](https://guilhermegor.github.io/filings-rfb/latest/changelog/): release history
 
-To serve it locally: `poe docs_serve`.
+To serve it locally: `bash bin/poe_exec.sh docs_serve` (runs the project venv's `poe`, no activation needed).
 
 <!-- slug: getting-started -->
 ## Getting Started
@@ -167,12 +167,12 @@ filings-rfb/
 ```bash
 git clone https://github.com/guilhermegor/filings-rfb.git
 cd filings-rfb
-bash bin/venv.sh        # bootstrap: Poetry venv and all deps (poe included)
-bash bin/precommit.sh   # install the git hooks
-poe unit_tests          # unit suite
-poe integration_tests   # integration suite
-poe lint                # ruff, codespell and the structure gates
-poe docs_serve          # serve the docs locally
+bash bin/venv.sh                           # bootstrap: Poetry venv and all deps (poe included)
+bash bin/precommit.sh                      # install the git hooks
+bash bin/poe_exec.sh unit_tests            # unit suite
+bash bin/poe_exec.sh integration_tests     # integration suite
+bash bin/poe_exec.sh lint                  # ruff, codespell and the structure gates
+bash bin/poe_exec.sh docs_serve            # serve the docs locally
 ```
 
 <!-- slug: public-api -->
