@@ -167,7 +167,8 @@ filings-rfb/
 ```bash
 git clone https://github.com/guilhermegor/filings-rfb.git
 cd filings-rfb
-poe init                # venv, deps and pre-commit hooks
+bash bin/venv.sh        # bootstrap: Poetry venv and all deps (poe included)
+bash bin/precommit.sh   # install the git hooks
 poe unit_tests          # unit suite
 poe integration_tests   # integration suite
 poe lint                # ruff, codespell and the structure gates
