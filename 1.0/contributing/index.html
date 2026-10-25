@@ -1,0 +1,1693 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for filings-rfb">
+      
+      
+      
+      
+        <link rel="prev" href="../faq/">
+      
+      
+        <link rel="next" href="../changelog/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Contributing - filings-rfb</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#contributing" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href=".." title="filings-rfb" class="md-header__button md-logo" aria-label="filings-rfb" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            filings-rfb
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Contributing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/guilhermegor/filings-rfb" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Abas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../usage/" class="md-tabs__link">
+          
+  
+  
+  Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../faq/" class="md-tabs__link">
+          
+  
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="filings-rfb" class="md-nav__button md-logo" aria-label="filings-rfb" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    filings-rfb
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/guilhermegor/filings-rfb" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-for-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setting up for development
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests-and-linting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests and linting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-the-built-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verifying the built package
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing-the-documentation-versioned-via-mike" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing the documentation (versioned, via mike)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Publishing the documentation (versioned, via mike)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#one-time-pages-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One-time Pages setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull requests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#releasing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Releasing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Releasing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maintainer-setup-trusted-publisher-one-time-before-the-first-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maintainer setup — trusted publisher (one time, before the first release)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choosing-publish-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing publish targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#branding-the-docs-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Branding the docs site
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-protection-security-one-time-scripted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository protection &amp; security (one-time, scripted)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Repository protection &amp; security (one-time, scripted)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-pr-quality-gate-ruleset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pr-quality-gate ruleset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic-vs-manual-the-boundary-is-repo-config-vs-account-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic vs manual — the boundary is repo config vs account plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automated-pr-flow-the-quality-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automated PR flow (the quality gate)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automated PR flow (the quality gate)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#after-changing-gate-policy-backfill-the-open-prs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ After changing gate policy, backfill the open PRs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bot-merged-prs-and-the-reconciler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bot-merged PRs and the reconciler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-work-ledger-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The work-ledger gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../incidents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Incidents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-for-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setting up for development
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests-and-linting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests and linting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-the-built-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verifying the built package
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing-the-documentation-versioned-via-mike" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing the documentation (versioned, via mike)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Publishing the documentation (versioned, via mike)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#one-time-pages-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One-time Pages setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull requests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#releasing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Releasing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Releasing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maintainer-setup-trusted-publisher-one-time-before-the-first-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maintainer setup — trusted publisher (one time, before the first release)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choosing-publish-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing publish targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#branding-the-docs-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Branding the docs site
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-protection-security-one-time-scripted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository protection &amp; security (one-time, scripted)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Repository protection &amp; security (one-time, scripted)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-pr-quality-gate-ruleset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pr-quality-gate ruleset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic-vs-manual-the-boundary-is-repo-config-vs-account-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic vs manual — the boundary is repo config vs account plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automated-pr-flow-the-quality-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automated PR flow (the quality gate)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automated PR flow (the quality gate)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#after-changing-gate-policy-backfill-the-open-prs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ After changing gate policy, backfill the open PRs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bot-merged-prs-and-the-reconciler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bot-merged PRs and the reconciler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-work-ledger-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The work-ledger gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="contributing"><strong>Contributing</strong><a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h1>
+<p>Everything you need to develop, test, and release this library.</p>
+<blockquote>
+<p><strong>See also:</strong> <a href="../usage/">Usage</a> · <a href="../api/">API Reference</a> · the repository's root
+<code>CONTRIBUTING.md</code> holds the authoritative branch/PR and commit-message policy.</p>
+</blockquote>
+<hr />
+<h2 id="setting-up-for-development">Setting up for development<a class="headerlink" href="#setting-up-for-development" title="Permanent link">&para;</a></h2>
+<p>The project ships both a <code>Makefile</code> and a parallel <code>tasks.sh</code>, so use whichever suits your
+machine — <strong><code>bash bin/venv.sh</code></strong>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bash<span class="w"> </span>bin/venv.sh<span class="w">        </span><span class="c1"># create the Poetry venv + install deps</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>bash<span class="w"> </span>bin/ensure_env.sh<span class="w">  </span><span class="c1"># seed .env from .env.example</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>bash<span class="w"> </span>bin/precommit.sh<span class="w">   </span><span class="c1"># install the git hooks</span>
+</span></code></pre></div>
+<p><code>init</code> composes <code>ensure_env</code> (seed <code>.env</code>), <code>venv</code> (create the Poetry virtualenv, install <strong>all</strong>
+dependencies including dev + docs), and <code>precommit</code> (install the git hooks). Poetry is
+auto-installed if missing.</p>
+<h2 id="tests-and-linting">Tests and linting<a class="headerlink" href="#tests-and-linting" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>poe<span class="w"> </span>unit_tests<span class="w">          </span><span class="c1"># poetry run pytest tests/unit/</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>poe<span class="w"> </span>integration_tests<span class="w">   </span><span class="c1"># poetry run pytest tests/integration/</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>poe<span class="w"> </span>lint<span class="w">                </span><span class="c1"># ruff + mypy + codespell + pydocstyle + shell/sql/yaml gates</span>
+</span></code></pre></div>
+<p>CI runs the same gates on every pull request; keep them green locally before pushing.</p>
+<p>The <code>bin/</code> scripts need bash 4 or later (they use associative arrays, <code>declare -A</code>). macOS ships
+bash 3.2 as <code>/bin/bash</code>, so on a Mac run <code>brew install bash</code> and put Homebrew's <code>bin</code> first on
+<code>PATH</code>; the macOS CI jobs do the same before running the tests.</p>
+<h2 id="verifying-the-built-package">Verifying the built package<a class="headerlink" href="#verifying-the-built-package" title="Permanent link">&para;</a></h2>
+<p>Before opening a release PR, confirm the wheel actually builds and imports — this catches
+packaging mistakes (a missing <code>__init__</code>, an unshipped <code>_internal/</code> subpackage) that source-tree
+tests never surface:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>poe<span class="w"> </span>install_dist_locally<span class="w">    </span><span class="c1"># python -m build → install → smoke-import → report the built wheel</span>
+</span></code></pre></div>
+<h2 id="publishing-the-documentation-versioned-via-mike">Publishing the documentation (versioned, via mike)<a class="headerlink" href="#publishing-the-documentation-versioned-via-mike" title="Permanent link">&para;</a></h2>
+<p>The published site is <strong>versioned</strong>: a consumer pinned to an older release reads <em>that
+release's</em> docs, not HEAD. <a href="https://github.com/jimporter/mike">mike</a> maintains the version tree
+on the <code>gh-pages</code> branch and MkDocs-Material renders the version dropdown.</p>
+<p>Two workflows split the work:</p>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Trigger</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Docs - Strict Build Check</code> (<code>docs.yaml</code>)</td>
+<td>every push + PR</td>
+<td><code>mkdocs build --strict</code> only — catches broken links/nav before a release. <strong>Never deploys.</strong></td>
+</tr>
+<tr>
+<td><code>Release to PyPI</code> (<code>release-pypi.yaml</code>)</td>
+<td>manual release</td>
+<td>after the PyPI publish succeeds, deploys the released version with <code>mike deploy --update-aliases &lt;X.Y&gt; latest</code></td>
+</tr>
+</tbody>
+</table>
+<p>Because the deploy runs <strong>after</strong> publishing, the site only ever advertises versions that
+actually shipped. Notes:</p>
+<ul>
+<li><strong>Granularity is <code>X.Y</code></strong> — <code>1.4.2</code> and <code>1.4.7</code> share the <code>1.4</code> entry; the <code>latest</code> alias
+  always tracks the newest release and is the default landing version.</li>
+<li><strong>Prereleases never move <code>latest</code></strong> — a version with a suffix (<code>1.2.3rc1</code>) builds and
+  publishes, but the docs deploy job is skipped.</li>
+</ul>
+<h3 id="one-time-pages-setup">One-time Pages setup<a class="headerlink" href="#one-time-pages-setup" title="Permanent link">&para;</a></h3>
+<p>mike serves from the <strong><code>gh-pages</code> branch</strong>, so Pages must be set to <em>Deploy from a branch →
+gh-pages</em>. The workflow's <code>GITHUB_TOKEN</code> cannot change that (it is a GitHub App token without
+repo-admin rights), so do it with your own <code>gh</code> auth:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>poe<span class="w"> </span>enable_pages
+</span></code></pre></div>
+<p>This already runs inside <code>poe init</code> (after bootstrap), and is <strong>idempotent and
+non-blocking</strong> — it warns and continues if <code>gh</code> is absent/unauthenticated, no remote resolves,
+or you are not a repo admin (a fork), so it never breaks <code>init</code>.</p>
+<p><strong>Ordering matters:</strong> the <code>gh-pages</code> branch does not exist until the first release deploy
+creates it. Until then <code>enable_pages</code> deliberately leaves Pages untouched (so the site is never
+pointed at an empty branch) and tells you to re-run it. So: cut the first release, then run
+<code>poe enable_pages</code> once. Manual alternative: <em>Settings → Pages → Build and deployment →
+Source: Deploy from a branch → <code>gh-pages</code> / <code>/</code></em>.</p>
+<h2 id="pull-requests">Pull requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Branch off the default branch following the prefix policy (<code>feat/…</code>, <code>fix/…</code>, …).</li>
+<li>Fill out the PR template completely.</li>
+<li>Ensure the CI checks (tests, lint, docs build) pass — they are the merge gate.</li>
+</ol>
+<h2 id="releasing">Releasing<a class="headerlink" href="#releasing" title="Permanent link">&para;</a></h2>
+<p>Releases are <strong>tag-driven and secret-free</strong> when the project is connected to a GitHub remote:</p>
+<ul>
+<li>The version is the <strong>git tag</strong> (via <code>poetry-dynamic-versioning</code>); <code>pyproject.toml</code> carries the
+  version for Commitizen. Bump it only as part of a release. Trigger a release from the Actions tab
+  (<code>Release to PyPI</code> / <code>Release to Test PyPI</code>, <code>workflow_dispatch</code> with the version), or by pushing
+  a <code>vX.Y.Z</code> tag.</li>
+<li>The release workflow runs the <strong>full test suite</strong> as a hard gate, builds with <code>python -m build</code>,
+  and publishes via <strong>OIDC trusted publishing</strong> (<code>pypa/gh-action-pypi-publish</code>) — no token
+  secrets are needed. Register the pending publishers below; GitHub creates the
+  <code>release-pypi</code> and <code>release-test-pypi</code> environments on the first run.</li>
+<li>The changelog is regenerated from tags at release/build time (<code>poe changelog</code> locally); CI never
+  commits <code>CHANGELOG.md</code> back to the protected default branch.</li>
+</ul>
+<h3 id="maintainer-setup-trusted-publisher-one-time-before-the-first-release">Maintainer setup — trusted publisher (one time, before the first release)<a class="headerlink" href="#maintainer-setup-trusted-publisher-one-time-before-the-first-release" title="Permanent link">&para;</a></h3>
+<p>Register a <strong>trusted publisher</strong> on <strong>both</strong> <a href="https://pypi.org">pypi.org</a> and
+<a href="https://test.pypi.org">test.pypi.org</a>. Every claim must match the workflow exactly or the upload
+fails with an opaque <code>invalid-publisher</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Owner / repository</td>
+<td>your GitHub <code>&lt;owner&gt;</code> / <code>&lt;repo&gt;</code></td>
+</tr>
+<tr>
+<td>Workflow filename</td>
+<td><code>release-pypi.yaml</code> (PyPI) / <code>release-test-pypi.yaml</code> (Test PyPI)</td>
+</tr>
+<tr>
+<td>Environment</td>
+<td><code>release-pypi</code> / <code>release-test-pypi</code></td>
+</tr>
+<tr>
+<td>PyPI <strong>Project Name</strong></td>
+<td>must equal the distribution name (<code>name</code> in <code>pyproject.toml</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>The GitHub Release step exists only in <code>release-pypi.yaml</code>, not in the Test PyPI workflow, so a change there is never rehearsed; diff the two workflows when editing either.</p>
+<p>For the very first upload the project does not exist yet — register a <strong>pending publisher</strong> at the
+account level (not under an existing project's settings). Publishing from a laptop instead of CI is
+the one case that still needs an API token; OIDC works only from GitHub Actions.</p>
+<h3 id="choosing-publish-targets">Choosing publish targets<a class="headerlink" href="#choosing-publish-targets" title="Permanent link">&para;</a></h3>
+<p>The scaffold wires the release workflows for the official public registry (PyPI) and a staging
+registry (Test PyPI). To publish to a <strong>private / non-official</strong> source instead — a git source
+(<code>pip install git+https://…</code>), a private PEP 503 index, or (for ecosystems that support it) GitHub
+Packages — wire the consumer-side source in <code>pyproject.toml</code> with an explicit-priority guard
+against dependency confusion (<code>poetry</code>'s <code>priority = "explicit"</code>; <code>pip --index-url</code>, never
+<code>--extra-index-url</code>).</p>
+<h2 id="branding-the-docs-site">Branding the docs site<a class="headerlink" href="#branding-the-docs-site" title="Permanent link">&para;</a></h2>
+<p>The scaffold ships a <strong>placeholder</strong> brand image at <code>docs/assets/logo.png</code>, wired as the header
+logo/favicon (<code>theme.logo</code> / <code>theme.favicon</code> in <code>mkdocs.yml</code>) and as the landing hero on
+<code>docs/index.md</code>. To brand your site:</p>
+<ol>
+<li>Replace <code>docs/assets/logo.png</code> with your own asset (keep the filename, or update the two
+   <code>mkdocs.yml</code> paths and the <code>&lt;img&gt;</code> in <code>docs/index.md</code>).</li>
+<li>Tune size, position and border inline on the <code>&lt;img&gt;</code> — <code>width="200"</code> (scale),
+   <code>align="right"</code> (position) and <code>style="border-radius: 15px;"</code> (rounded) — in <code>docs/index.md</code>.</li>
+</ol>
+<h2 id="repository-protection-security-one-time-scripted">Repository protection &amp; security (one-time, scripted)<a class="headerlink" href="#repository-protection-security-one-time-scripted" title="Permanent link">&para;</a></h2>
+<p><code>poe init</code> runs three admin-gated helpers. They are <strong>idempotent and non-blocking</strong>: without
+<code>gh</code>, without auth, without a GitHub remote, or without repo-admin rights they warn and skip, so
+<code>init</code> still completes for contributors and offline scaffolds. Re-run any of them alone later:</p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>What it provisions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>poe enable_pages</code></td>
+<td>GitHub Pages source (gh-pages branch for versioned docs, else Actions)</td>
+</tr>
+<tr>
+<td><code>poe enable_repo_rules</code></td>
+<td>The <code>pr-quality-gate</code> branch ruleset + the merge settings the PR gate needs</td>
+</tr>
+<tr>
+<td><code>poe enable_security</code></td>
+<td>Private vulnerability reporting, Dependabot alerts, Dependabot security updates</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-pr-quality-gate-ruleset">The <code>pr-quality-gate</code> ruleset<a class="headerlink" href="#the-pr-quality-gate-ruleset" title="Permanent link">&para;</a></h3>
+<p>Applied to <code>~DEFAULT_BRANCH</code> (that ref survives a branch rename), looked up <strong>by name</strong> so a
+re-run updates in place instead of creating a duplicate:</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Setting</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pull_request</code></td>
+<td><code>required_approving_review_count: 0</code></td>
+<td>⚠️ <strong>Must be 0.</strong> GitHub forbids approving your own PR, so any value ≥ 1 locks a solo maintainer out of merging their own work. Zero still forces every change through a PR — that is the real guardrail.</td>
+</tr>
+<tr>
+<td><code>pull_request</code></td>
+<td><code>required_review_thread_resolution: true</code></td>
+<td>Makes review comments <strong>binding</strong>: an unresolved thread blocks the merge instead of being decorative.</td>
+</tr>
+<tr>
+<td><code>code_scanning</code></td>
+<td>CodeQL, security <code>high_or_higher</code>, alerts <code>errors</code></td>
+<td>Alerts stay at <code>errors</code>: <code>errors_and_warnings</code>/<code>all</code> start blocking merges on stylistic queries, duplicating ruff/mypy with noise.</td>
+</tr>
+<tr>
+<td><code>copilot_code_review</code></td>
+<td><code>review_on_push: true</code></td>
+<td>Its <strong>own rule type</strong> — not a <code>pull_request</code> parameter (that returns HTTP 422 and makes the feature look UI-only).</td>
+</tr>
+<tr>
+<td><code>non_fast_forward</code>, <code>deletion</code></td>
+<td>on</td>
+<td>No force-push, no branch deletion on the default branch.</td>
+</tr>
+<tr>
+<td><code>required_status_checks</code></td>
+<td><strong>empty by default</strong></td>
+<td>⚠️ Deliberate. A required check whose name never reports blocks <strong>every</strong> PR forever. Populate <code>REQUIRED_CHECKS</code> in <code>bin/enable_repo_rules.sh</code> from a real PR — <code>gh api repos/:owner/:repo/commits/&lt;sha&gt;/check-runs --jq ".check_runs[].name"</code> — then re-run.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Deliberately not enabled:</strong> <em>Require code quality results</em> (subjective AI severity on the merge
+path — ruff, mypy and the <code>bin/check_*.py</code> gates already enforce quality deterministically) and
+<em>Restrict code coverage</em> (preview; the floor is single-sourced in <code>.coveragerc</code> <code>fail_under</code>).</p>
+<h3 id="automatic-vs-manual-the-boundary-is-repo-config-vs-account-plan">Automatic vs manual — the boundary is repo config vs account plan<a class="headerlink" href="#automatic-vs-manual-the-boundary-is-repo-config-vs-account-plan" title="Permanent link">&para;</a></h3>
+<p><strong>Nothing here needs a click.</strong> Every <em>repository</em> setting above is scripted. What is <strong>not</strong>
+scriptable is your <em>account's</em> entitlement: the <code>copilot_code_review</code> rule only fires if the author
+has access to Copilot code review, and <strong>code review is not part of Copilot Free</strong>. Without a
+qualifying plan the rule sits correctly configured and <strong>inert</strong> — no review appears and nothing
+errors. That silence is the trap, because the ruleset JSON looks perfect either way.</p>
+<p>Every other rule (PR required, CI green, CodeQL clean) works regardless of any Copilot plan, so
+the ruleset is worth applying unconditionally. Copilot Pro is free for verified students,
+teachers and popular-OSS maintainers.</p>
+<blockquote>
+<p>Do <strong>not</strong> diagnose this with <code>gh api user/copilot_billing</code> → 404: that endpoint is for
+org/enterprise seat management and 404s for a personal account even when Copilot Free is active.</p>
+</blockquote>
+<h3 id="security">Security<a class="headerlink" href="#security" title="Permanent link">&para;</a></h3>
+<p><code>SECURITY.md</code> at the repo root is auto-detected by GitHub (no API call) and flips <em>Security
+policy</em> to Enabled; <code>poe enable_security</code> turns on the matching private-reporting intake plus
+Dependabot alerts and security updates. Ordinary version bumps are separate — see
+<code>.github/dependabot.yml</code>, which uses <code>versioning-strategy: lockfile-only</code> so it refreshes
+<code>poetry.lock</code> (keeping CI honest about what consumers install) without ever rewriting your
+<code>pyproject</code> ranges.</p>
+<h2 id="automated-pr-flow-the-quality-gate">Automated PR flow (the quality gate)<a class="headerlink" href="#automated-pr-flow-the-quality-gate" title="Permanent link">&para;</a></h2>
+<p>Every PR is classified by <code>bin/pr_gate.py</code> (workflow <code>pr-gate.yaml</code>), which labels it, posts one
+sticky comment with a per-axis status table, and hands the <strong>safe classes</strong> to GitHub's native
+auto-merge. Two rules are the whole design:</p>
+<p><strong>Classified by PATH, never by diff size.</strong> The dangerous change is <em>semantic</em>, not big: a
+one-character edit to a schema/contract constant is the smallest possible diff and the most
+dangerous — and every test still passes, because the tests assert the contract that was written.
+So size never decides eligibility; the changed paths do. (The one place size still matters — an
+<code>XL</code> diff is vetoed — is <strong>waived for a lockfile-only diff</strong>, whose line count tracks how many
+dependency hashes moved, not risk.)</p>
+<table>
+<thead>
+<tr>
+<th>Risk class</th>
+<th>Paths</th>
+<th>Auto-merge?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src</code></td>
+<td><code>src/</code></td>
+<td>❌ defines what "passing" means</td>
+</tr>
+<tr>
+<td><code>tests</code></td>
+<td><code>tests/</code></td>
+<td>❌ defines what "passing" means</td>
+</tr>
+<tr>
+<td><code>other</code></td>
+<td>anything unmatched</td>
+<td>❌ unknown = unsafe (default-deny)</td>
+</tr>
+<tr>
+<td><code>ci</code></td>
+<td><code>.github/</code>, <code>bin/</code>, <code>Makefile</code>, <code>tasks.sh</code>, <code>.pre-commit-config.yaml</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>deps</code></td>
+<td><code>pyproject.toml</code>, <code>poetry.lock</code>, <code>requirements.txt</code></td>
+<td>✅ (the test suite is the gate)</td>
+</tr>
+<tr>
+<td><code>docs</code></td>
+<td><code>docs/</code>, <code>mkdocs.yml</code>, <code>README.md</code>, <code>CHANGELOG.md</code>, …</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Consent is opt-OUT.</strong> The safe classes auto-merge with <strong>no label</strong>; add <code>do-not-merge</code> to force
+a human merge. Native auto-merge <strong>bypasses nothing</strong> — GitHub holds the merge until every required
+check of the ruleset is green, so the gate only decides <em>eligibility</em>, never <em>whether it passed</em>.</p>
+<p>Edit the risk table (the <code>RISK_PATHS</code> constant) in <code>bin/pr_gate.py</code> for your project's real layout.</p>
+<h3 id="after-changing-gate-policy-backfill-the-open-prs">⚠️ After changing gate policy, backfill the open PRs<a class="headerlink" href="#after-changing-gate-policy-backfill-the-open-prs" title="Permanent link">&para;</a></h3>
+<p>The gate runs on <code>pull_request</code> events, so a PR that was <strong>already open</strong> when you change the
+policy (the classification/consent rules in <code>pr_gate.py</code>, or <code>allow_auto_merge</code> /
+<code>delete_branch_on_merge</code>) is <strong>never re-evaluated</strong> — it keeps the labels and auto-merge state it
+got under the old rules until some new event touches it. That is not a bug; the gate simply never
+ran again. So after merging a policy change, run the backfill:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>pr-gate.yaml<span class="w"> </span>-f<span class="w"> </span><span class="nv">backfill</span><span class="o">=</span><span class="nb">true</span><span class="w">   </span><span class="c1"># re-evaluates every open PR</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># for a Dependabot PR, `gh pr comment &lt;n&gt; --body "@dependabot rebase"` also works</span>
+</span></code></pre></div>
+<h3 id="bot-merged-prs-and-the-reconciler">Bot-merged PRs and the reconciler<a class="headerlink" href="#bot-merged-prs-and-the-reconciler" title="Permanent link">&para;</a></h3>
+<p>A PR merged by <strong>native auto-merge</strong> (a bot action) does <strong>not</strong> close its linked issue and does
+<strong>not</strong> delete its branch, even with <code>delete_branch_on_merge</code> on — bot-performed actions are
+deliberately inert to prevent automation recursion. <code>pr-reconcile.yaml</code> fixes both: it closes the
+<code>Closes #N</code> issues and deletes the head branch of merged PRs. Its <strong>scheduled daily run is the
+actual fix</strong> — scheduled events are exempt from the "no new workflow runs" suppression that also
+swallows the fast <code>pull_request: [closed]</code> path for a bot merge. Latency is up to one day; that is
+the accepted cost of not needing a personal access token.</p>
+<h3 id="the-work-ledger-gate">The work-ledger gate<a class="headerlink" href="#the-work-ledger-gate" title="Permanent link">&para;</a></h3>
+<p><code>bin/check_backlog_ledger.py</code> (pre-commit + CI) fails a branch that touches <code>src/</code> or CI paths but
+adds no <code>.specs/backlog/&lt;kebab&gt;_YYYYMMDD_HHMMSS.md</code> ledger with a <code>- [ ]</code> checklist — making the
+per-branch work-ledger convention structural instead of a thing you remember. Routine
+docs/deps/tests-only branches need none.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
