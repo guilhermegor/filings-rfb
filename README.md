@@ -7,7 +7,7 @@
 ![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 [![PyPI Version](https://img.shields.io/pypi/v/filings-rfb)](https://pypi.org/project/filings-rfb/)
 [![Docs](https://img.shields.io/badge/docs-mkdocs-blue)](https://guilhermegor.github.io/filings-rfb/)
-[![Linting](https://img.shields.io/badge/linting-ruff_|_codespell-blue)](https://github.com/astral-sh/ruff)
+[![Linting](https://img.shields.io/badge/linting-ruff_%7C_codespell-blue)](https://github.com/astral-sh/ruff)
 [![Type-checked: mypy](https://img.shields.io/badge/type--checked-mypy-blue)](https://mypy-lang.org/)
 ![Test Coverage](https://raw.githubusercontent.com/guilhermegor/filings-rfb/main/coverage.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
