@@ -122,10 +122,10 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "docs_server",
+			"label": "docs_serve",
 			"detail": "Serve the MkDocs site locally at http://0.0.0.0:8000",
 			"type": "shell",
-			"command": "bash bin/poe_exec.sh docs_server",
+			"command": "bash bin/poe_exec.sh docs_serve",
 			"group": "none",
 			"icon": { "id": "book", "color": "terminal.ansiBlue" },
 			"presentation": { "reveal": "always", "panel": "dedicated" },
