@@ -183,9 +183,15 @@ Two GitHub Actions workflows handle releases (present when the repo has a GitHub
 
 Trigger either from the **Actions** tab (`workflow_dispatch`) with the version to release.
 Both gate on the new version being greater than the latest already published, build with
-Poetry, and fall back to `twine` if `poetry publish` is unavailable.
+`python -m build`, and publish through OIDC trusted publishing. No token secrets are needed.
 
-Configure once, in repository settings:
+Register a **pending trusted publisher** once on each index:
 
-- Secrets `PYPI_TOKEN` and `TEST_PYPI_TOKEN` (API tokens from each index).
-- A GitHub **Environment** named `release`.
+- pypi.org: workflow `release-pypi.yaml`, environment `release-pypi`.
+- test.pypi.org: workflow `release-test-pypi.yaml`, environment `release-test-pypi`.
+
+GitHub creates the environments on the first run.
+
+The docs site (<https://guilhermegor.github.io/filings-rfb/>) returns 404 until the first
+`release-pypi.yaml` run's `deploy_docs` job (mike) creates the `gh-pages` branch. After that,
+run `poe enable_pages` once.

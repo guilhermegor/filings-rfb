@@ -130,12 +130,19 @@ means retyping it, not deleting a pushed tag.
 set to "Deploy from a branch → gh-pages" via `poe enable_pages`, which waits until the first
 release creates that branch. See `docs/contributing.md`.
 
-Both gate on the version being greater than what is already published, build with Poetry,
-and fall back to `twine` if `poetry publish` is unavailable. Configure these repository
-secrets and a GitHub Environment named **`release`**:
+Both gate on the version being greater than what is already published, build with
+`python -m build`, and publish through **OIDC trusted publishing**
+(`pypa/gh-action-pypi-publish`, `permissions: id-token: write`). No token secrets are needed.
+Register a **pending trusted publisher** once on each index before the first release:
 
-- `PYPI_TOKEN` — a PyPI API token.
-- `TEST_PYPI_TOKEN` — a Test PyPI API token.
+- pypi.org: workflow `release-pypi.yaml`, environment `release-pypi`.
+- test.pypi.org: workflow `release-test-pypi.yaml`, environment `release-test-pypi`.
+
+GitHub creates the environments on the first run.
+
+**First release and the docs site.** `https://guilhermegor.github.io/filings-rfb/` returns 404
+until the first `release-pypi.yaml` run's `deploy_docs` job (mike) creates the `gh-pages`
+branch. After that, run `poe enable_pages` once.
 
 ## Extending this template
 
