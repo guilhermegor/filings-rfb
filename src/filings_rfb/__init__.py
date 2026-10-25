@@ -7,7 +7,6 @@ from .ingestion.cnpj.establishments import read_establishments
 from .ingestion.cnpj.lookups import CNPJ_LOOKUP_NAMES, read_lookup
 from .ingestion.cnpj.partners import read_partners
 from .ingestion.cnpj.simples import read_simples
-from .main import main
 
 
 try:
@@ -20,7 +19,6 @@ __all__ = [
     "CNPJ_LOOKUP_NAMES",
     "__version__",
     "export_companies_parquet",
-    "main",
     "read_companies",
     "read_establishments",
     "read_lookup",
