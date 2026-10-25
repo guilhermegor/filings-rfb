@@ -54,7 +54,9 @@ pip install filings-rfb
 pip install 'filings-rfb[parquet]'   # optional: Parquet export (pulls in pyarrow)
 ```
 
-To work on the library itself, see [CONTRIBUTING.md](CONTRIBUTING.md).
+Until the first PyPI release is published, install from source:
+`pip install git+https://github.com/guilhermegor/filings-rfb.git`. To work on the library
+itself, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 <!-- slug: usage -->
 ### Usage
@@ -108,9 +110,12 @@ for df_chunk in read_simples("2026-10"):
 from pathlib import Path
 
 from filings_rfb import read_lookup
+from filings_rfb._internal.utils.stream_downloader import download_file_streaming
+from filings_rfb.ingestion.cnpj._share import file_url, latest_reference_month
 
-# str_url / str_etag: the URL the ZIP was fetched from and the ETag the share reported
-df_cnaes = read_lookup("Cnaes", Path("Cnaes.zip"), str_url, str_etag)
+str_url = file_url(latest_reference_month(), "Cnaes.zip")
+path_zip, str_etag = download_file_streaming(str_url, Path("data/raw/Cnaes.zip"))
+df_cnaes = read_lookup("Cnaes", path_zip, str_url, str_etag)
 ```
 
 **Parquet.** `export_companies_parquet("2026-10", path)` writes `Empresas` to one Parquet file
