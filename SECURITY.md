@@ -44,10 +44,10 @@ contractual. Please allow a reasonable window before any public disclosure.
 Unless stated otherwise below, security fixes land on the **latest released version** only.
 Consumers pinned to an older line should upgrade to pick up a fix.
 
-| Version | Supported |
-|---------|-----------|
-| latest 1.x release | ✅   |
-| < 1.0        | ❌        |
+| Version            | Supported |
+|--------------------|-----------|
+| latest 1.x release | ✅        |
+| < 1.0              | ❌        |
 
 ## Scope
 

@@ -26,7 +26,7 @@ poetry add filings-rfb
 Every reader takes a reference month (`YYYY-MM`) and yields typed chunks:
 
 ```python
-from filings_rfb import read_companies, read_establishments, read_partners, read_simples
+from filings_rfb import read_partners
 
 for df_chunk in read_partners("2026-10"):
     ...

@@ -1,4 +1,4 @@
-# **filings-rfb** <img src="assets/logo.png" align="right" width="200" style="border-radius: 15px;" alt="filings-rfb">
+# **filings-rfb** <img src="assets/logo.png" align="right" width="200" style="border-radius: 15px;" alt="Receita Federal emblem">
 
 Typed pandas readers for the Receita Federal do Brasil (RFB) CNPJ open data: Empresas, Estabelecimentos, Socios, Simples and the six lookup tables, read as memory-flat chunks.
 
