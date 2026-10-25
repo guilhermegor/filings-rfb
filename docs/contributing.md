@@ -97,8 +97,8 @@ Source: Deploy from a branch → `gh-pages` / `/`*.
 
 Releases are **tag-driven and secret-free** when the project is connected to a GitHub remote:
 
-- The version is the **git tag** (via `poetry-dynamic-versioning`); `pyproject.toml` holds a
-  `0.0.0` placeholder. Do not hand-edit it. Trigger a release from the Actions tab
+- The version is the **git tag** (via `poetry-dynamic-versioning`); `pyproject.toml` carries the
+  version for Commitizen. Bump it only as part of a release. Trigger a release from the Actions tab
   (`Release to PyPI` / `Release to Test PyPI`, `workflow_dispatch` with the version), or by pushing
   a `vX.Y.Z` tag.
 - The release workflow runs the **full test suite** as a hard gate, builds with `python -m build`,

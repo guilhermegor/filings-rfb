@@ -7,4 +7,21 @@ All notable changes to this project are generated from
 Regenerate or preview it with `poe changelog` (or `poe changelog`). The published
 docs site regenerates it fresh on every build; CI never commits it back to the repo.
 
-<!-- cz changelog fills the release sections below from the git tags on the first release. -->
+<!-- The v1.0.0 section is written ahead of its tag; once v1.0.0 is tagged, `cz changelog`
+     regenerates it from the commits and replaces this hand-written entry. -->
+
+## v1.0.0 (2026-10-24)
+
+### Feat
+
+- read the RFB CNPJ lookup tables (`read_lookup`, `CNPJ_LOOKUP_NAMES`)
+- read Empresas (`read_companies`) and export it to Parquet (`export_companies_parquet`)
+- read Estabelecimentos with full CNPJ assembly (`read_establishments`)
+- read Socios with qualification codes and masked documents (`read_partners`)
+- read Simples, the Simples Nacional and MEI options (`read_simples`)
+- shared multi-part chunked iterator, resumable streaming downloader and RFB share catalogue
+
+### Docs
+
+- README, usage, examples and API reference describe the shipped readers
+- replace the placeholder logo with the Receita Federal emblem (unofficial, not affiliated)

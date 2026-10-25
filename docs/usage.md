@@ -9,24 +9,36 @@ Examples for installing and using this library.
 ## Installation
 
 ```bash
-pip install <package-name>
+pip install filings-rfb
+pip install 'filings-rfb[parquet]'   # optional: Parquet export
 ```
 
 Or with Poetry:
 
 ```bash
-poetry add <package-name>
+poetry add filings-rfb
 ```
+
+Until the first PyPI release is published, install from source:
+`pip install git+https://github.com/guilhermegor/filings-rfb.git`.
 
 ---
 
 ## Basic usage
 
-```python
-from <package_name>.main import main
+Every dataset reader (`read_companies`, `read_establishments`, `read_partners`,
+`read_simples`) takes a reference month (`YYYY-MM`) and yields typed chunks. `read_lookup` is the
+exception: it takes `str_table, path_zip, str_url, str_etag` and returns a single DataFrame.
 
-main()
+```python
+from filings_rfb import read_partners
+
+for df_chunk in read_partners("2026-10"):
+    ...
 ```
+
+`read_establishments` (up to 2.3 GB per compressed part) and `read_simples` (~3.2 GB inflated)
+are the heaviest; keep `path_workdir=` to resume instead of re-downloading.
 
 ---
 
@@ -104,7 +116,7 @@ latin-1 text.
 ## Running from the Makefile
 
 ```bash
-poe run            # runs src/<package_name>/main.py
+poe run            # runs src/filings_rfb/main.py
 ```
 
 ---

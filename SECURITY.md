@@ -44,10 +44,10 @@ contractual. Please allow a reasonable window before any public disclosure.
 Unless stated otherwise below, security fixes land on the **latest released version** only.
 Consumers pinned to an older line should upgrade to pick up a fix.
 
-| Version | Supported |
-|---------|-----------|
-| latest  | ✅        |
-| older   | ❌        |
+| Version            | Supported |
+|--------------------|-----------|
+| latest 1.x release | ✅        |
+| < 1.0              | ❌        |
 
 ## Scope
 
@@ -55,7 +55,8 @@ In scope: vulnerabilities in this project's own code, its build/release workflow
 declared dependency set (a vulnerable transitive dependency this project pulls in).
 
 Out of scope: vulnerabilities in third-party services this project merely talks to — report
-those to the service's own security team.
+those to the service's own security team. This includes the Receita Federal's public data share,
+which is a third-party service this library only reads from.
 
 ## Automated security hygiene
 

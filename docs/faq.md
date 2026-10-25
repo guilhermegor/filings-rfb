@@ -10,10 +10,12 @@ entries as they come up in issues.
 ## How do I install it?
 
 ```bash
-pip install <project_name>
+pip install filings-rfb
+pip install "filings-rfb[parquet]"   # optional Parquet export
 ```
 
-Replace with the real distribution name and any extras (e.g. `pip install "<project_name>[web]"`).
+Until the first PyPI release is published, install from source:
+`pip install git+https://github.com/guilhermegor/filings-rfb.git`.
 
 ## How do I add or update a dependency?
 
@@ -33,8 +35,8 @@ See the `python = "..."` constraint in `pyproject.toml`; CI runs the test matrix
 
 ## How is the version determined?
 
-The version is the **git tag** (via poetry-dynamic-versioning); `pyproject.toml` holds a `0.0.0`
-placeholder. Cut a release from the release workflow — see [Contributing](contributing.md).
+The version is the **git tag** (via poetry-dynamic-versioning); `pyproject.toml` carries the
+version for Commitizen (`1.0.0` at the first release) but the built wheel takes the tag. Cut a release from the release workflow — see [Contributing](contributing.md).
 
 ## What is the `cnpj.tar.gz` at the root of the RFB share, and does the library use it?
 
