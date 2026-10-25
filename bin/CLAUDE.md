@@ -16,8 +16,8 @@ set -euo pipefail
 ```
 
 Use `set -e` (without `-u`/`-o pipefail`) only when the script reads
-environment values that may be unset (e.g. `db.sh`, which loads `.env` values
-via `_read_env_var` before applying defaults).
+environment values that may be unset (a script that loads `.env` values
+via a reader before applying defaults).
 
 ## Boilerplate (every script)
 
@@ -61,7 +61,7 @@ source "$SCRIPT_DIR/lib/bootstrap.sh"
 |------|-----------|-----------|
 | `lib/ca_bundle.py` | `bootstrap.sh::build_union_ca_bundle` | `BX_CA_CORPORATE` + `BX_CA_OUT` in; certificate count out; non-zero when the union would NARROW the trust store |
 | `lib/pip_requirements.py` | `pip_fallback.sh::pip_fallback_emit_pip_requirements_from_pyproject` | `PROJECT_ROOT` + `BX_GROUPS` in; one pip requirement per line out |
-| `lib/wheelhouse_select.py` | `build_wheelhouse.sh` (`poe wheelhouse` / `poe wheelhouse_assemble`) | subcommands `select`/`pack`/`assemble` — see `docs/offline-wheelhouse.md` |
+| `lib/wheelhouse_select.py` | `build_wheelhouse.sh` (run directly: `bash bin/build_wheelhouse.sh build\|assemble`; no poe task) | subcommands `select`/`pack`/`assemble` — see `docs/offline-wheelhouse.md` |
 
 `ca_bundle.py` and `pip_requirements.py` were `"$PYTHON" - <<'PYEOF'` heredocs inside their shell functions — 151 and 66
 lines of Python that **no Python tool could see**: ruff never linted them, mypy never
@@ -104,7 +104,7 @@ must route through the resolver.** How each surface routes:
 | Surface | How it calls Poetry |
 |---------|---------------------|
 | a `poe_tasks.toml` task / `.pre-commit-config.yaml` | `bash bin/poetry_exec.sh <args>` — the wrapper resolves+`exec`s Poetry, routing resolution status to **stderr** so `$(… version -s)` stays clean |
-| sourcing `bin/*.sh` that needs Poetry (`db.sh`, `fix_playwright.sh`, `precommit.sh`) | source `lib/bootstrap.sh`, `bootstrap_init` + `ensure_poetry`, then `run_poetry run …` |
+| sourcing `bin/*.sh` that needs Poetry (`precommit.sh`) | source `lib/bootstrap.sh`, `bootstrap_init` + `ensure_poetry`, then `run_poetry run …` |
 | optional-linter `bin/*.sh` (`lint_sql.sh`, `lint_yaml.sh`, `lint_shell.sh`) | **resolve, don't install**: `resolve_python` → `resolve_poetry \|\| skip (exit 0)` → `run_poetry run …`. Never guard on `command -v poetry` (it misses a `python -m poetry`-only box and skips silently) |
 
 **Pip-vendored lint CLIs (`shellcheck`, `shfmt`) resolve via `poetry run`, not bare

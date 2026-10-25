@@ -1,0 +1,30 @@
+[tool.poe.tasks.enable_pages]
+cmd = "bash bin/enable_pages.sh"
+help = "Enable GitHub Pages with the source this project's docs model needs (admin, idempotent)"
+
+[tool.poe.tasks.enable_repo_rules]
+cmd = "bash bin/enable_repo_rules.sh"
+help = "Provision the pr-quality-gate ruleset and the repo settings the PR gate needs"
+
+[tool.poe.tasks.enable_security]
+cmd = "bash bin/enable_security.sh"
+help = "Enable private vulnerability reporting, Dependabot alerts and security updates"
+
+[tool.poe.tasks.changelog]
+sequence = [
+	{ cmd = "cz changelog" },
+	{ cmd = "echo 'CHANGELOG.md regenerated'" },
+]
+help = "Regenerate CHANGELOG.md from git tags (preview only)"
+
+[tool.poe.tasks.get_corporate_ca]
+cmd = "bash bin/get_corporate_ca.sh"
+help = "Extract a TLS-inspecting proxy's CA into bin/corporate_ca.pem (manual, never automatic)"
+
+[tool.poe.tasks.export_context]
+cmd = "bash bin/export_repo_content.sh"
+help = "Flatten the repo into repo_context.txt for pasting into a web-UI LLM"
+
+[tool.poe.tasks.export_deps]
+cmd = "bash bin/export_deps.sh"
+help = "Export the locked set to requirements-lock.txt (hosts that can pip but not Poetry)"
