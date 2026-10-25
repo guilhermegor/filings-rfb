@@ -1,0 +1,14 @@
+:root,
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #0d2c54;
+  --md-primary-fg-color--light: #1f4577;
+  --md-primary-fg-color--dark: #081d38;
+  --md-typeset-a-color: #1f5fbf;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #0b2140;
+  --md-primary-fg-color--light: #1a3a66;
+  --md-primary-fg-color--dark: #06152b;
+  --md-typeset-a-color: #7fb0ff;
+}

@@ -146,6 +146,9 @@ logo/favicon (`theme.logo` / `theme.favicon` in `mkdocs.yml`) and as the landing
    `mkdocs.yml` paths and the `<img>` in `docs/index.md`).
 2. Tune size, position and border inline on the `<img>` — `width="200"` (scale),
    `align="right"` (position) and `style="border-radius: 15px;"` (rounded) — in `docs/index.md`.
+3. Set the header colour in `docs/stylesheets/brand.css`. It holds one `--md-primary-fg-color`
+   per colour scheme, so the header can match the logo; here it is the Receita Federal emblem's
+   navy.
 
 ## Repository protection & security (one-time, scripted)
 
