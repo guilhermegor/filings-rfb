@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "filings-rfb"
 version = "1.0.0"
-description = "Typed pandas readers for the Receita Federal do Brasil (RFB) CNPJ open data"
+description = "Simple and efficient Python library to interact with Secretariat of Federal Revenue of Brazil (Receita Federal Brasileira) public data"
 authors = ["guilhermegor"]
 readme = "README.md"
 license = "MIT"
