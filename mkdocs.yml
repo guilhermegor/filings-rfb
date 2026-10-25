@@ -1,5 +1,5 @@
 site_name: filings-rfb
-site_description: Documentation for filings-rfb
+site_description: Simple and efficient Python library to interact with Secretariat of Federal Revenue of Brazil (Receita Federal Brasileira) public data
 repo_url: https://github.com/guilhermegor/filings-rfb
 nav:
   - Home: index.md
