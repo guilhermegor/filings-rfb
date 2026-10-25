@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentation for filings-rfb">
+        <meta name="description" content="Simple and efficient Python library to interact with Secretariat of Federal Revenue of Brazil (Receita Federal Brasileira) public data">
       
       
       
@@ -51,6 +51,8 @@
       
     
     
+      <link rel="stylesheet" href="../stylesheets/brand.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -67,7 +69,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -126,7 +128,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -136,7 +138,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
@@ -1395,8 +1397,12 @@ pointed at an empty branch) and tells you to re-run it. So: cut the first releas
 Source: Deploy from a branch → <code>gh-pages</code> / <code>/</code></em>.</p>
 <h2 id="pull-requests">Pull requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Branch off the default branch following the prefix policy (<code>feat/…</code>, <code>fix/…</code>, …).</li>
-<li>Fill out the PR template completely.</li>
+<li><strong>Open an issue first</strong>, from the repository's issue template, stating what should change,
+   why, and the files it touches. Every branch and PR starts from one.</li>
+<li>Branch off the default branch as <code>&lt;type&gt;/&lt;issue-number&gt;-&lt;slug&gt;</code> (<code>feat/42-…</code>, <code>fix/57-…</code>).
+   The <code>branch-has-issue</code> check requires an issue number in contributor branch names;
+   <code>release/</code>, <code>dependabot/</code>, and <code>renovate/</code> branches are exempt.</li>
+<li>Fill out the PR template completely, with <code>Closes #&lt;issue-number&gt;</code> in the body.</li>
 <li>Ensure the CI checks (tests, lint, docs build) pass — they are the merge gate.</li>
 </ol>
 <h2 id="releasing">Releasing<a class="headerlink" href="#releasing" title="Permanent link">&para;</a></h2>
@@ -1463,6 +1469,9 @@ logo/favicon (<code>theme.logo</code> / <code>theme.favicon</code> in <code>mkdo
    <code>mkdocs.yml</code> paths and the <code>&lt;img&gt;</code> in <code>docs/index.md</code>).</li>
 <li>Tune size, position and border inline on the <code>&lt;img&gt;</code> — <code>width="200"</code> (scale),
    <code>align="right"</code> (position) and <code>style="border-radius: 15px;"</code> (rounded) — in <code>docs/index.md</code>.</li>
+<li>Set the header colour in <code>docs/stylesheets/brand.css</code>. It holds one <code>--md-primary-fg-color</code>
+   per colour scheme, so the header can match the logo; here it is the Receita Federal emblem's
+   navy.</li>
 </ol>
 <h2 id="repository-protection-security-one-time-scripted">Repository protection &amp; security (one-time, scripted)<a class="headerlink" href="#repository-protection-security-one-time-scripted" title="Permanent link">&para;</a></h2>
 <p><code>poe init</code> runs three admin-gated helpers. They are <strong>idempotent and non-blocking</strong>: without
