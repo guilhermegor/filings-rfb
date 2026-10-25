@@ -2,6 +2,11 @@
 
 Thank you for considering contributing to our project! Please take a moment to review these guidelines to ensure a smooth collaboration.
 
+> **First of all, open an issue.** Every change starts with an issue in
+> [GitHub Issues](../../issues), opened from the issue template, before any branch or PR. The
+> branch is named after it (`<type>/<issue-number>-<slug>`), and the PR body closes it
+> (`Closes #<N>`). The `branch-has-issue` check rejects a PR whose branch names no issue.
+
 ## Development Conventions
 
 ### Variable Naming Standards
