@@ -141,8 +141,8 @@ has already run.
    - Maintain the standard file structure:
      - Implementation: `src/<feat_name>.py`
      - Tests: `tests/test_<feat_name>.py`
-   - Run comprehensive validation with: `poetry run poe unit_tests -k <keyword>`
-        - This command runs the unit tests matching the keyword.
+   - Run the matching unit tests with: `poetry run poe unit_tests -k <keyword>`
+        - This command runs only the unit tests matching the keyword.
         - Ruff and Codespell run in `poetry run poe lint` and in the pre-commit hooks.
    - Ensure 100% test coverage for critical components
    - Run tests locally before pushing changes
