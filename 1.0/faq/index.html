@@ -992,12 +992,16 @@ entries as they come up in issues.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>filings-rfb
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"filings-rfb[parquet]"</span><span class="w">   </span><span class="c1"># optional Parquet export</span>
 </span></code></pre></div>
+<p>Or with Poetry:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>poetry<span class="w"> </span>add<span class="w"> </span>filings-rfb
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>poetry<span class="w"> </span>add<span class="w"> </span><span class="s2">"filings-rfb[parquet]"</span><span class="w">   </span><span class="c1"># optional Parquet export</span>
+</span></code></pre></div>
 <p>Until the first PyPI release is published, install from source:
 <code>pip install git+https://github.com/guilhermegor/filings-rfb.git</code>.</p>
 <h2 id="how-do-i-add-or-update-a-dependency">How do I add or update a dependency?<a class="headerlink" href="#how-do-i-add-or-update-a-dependency" title="Permanent link">&para;</a></h2>
 <p>Use Poetry so the lock file stays authoritative:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>poetry<span class="w"> </span>add<span class="w"> </span>&lt;package&gt;<span class="w">          </span><span class="c1"># runtime dependency</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>poetry<span class="w"> </span>add<span class="w"> </span>--group<span class="w"> </span>dev<span class="w"> </span>&lt;package&gt;<span class="w">   </span><span class="c1"># dev-only tool</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>poetry<span class="w"> </span>add<span class="w"> </span>&lt;package&gt;<span class="w">          </span><span class="c1"># runtime dependency</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>poetry<span class="w"> </span>add<span class="w"> </span>--group<span class="w"> </span>dev<span class="w"> </span>&lt;package&gt;<span class="w">   </span><span class="c1"># dev-only tool</span>
 </span></code></pre></div>
 <p>Every package the code imports must be a <strong>direct</strong> dependency — never rely on it arriving
 transitively through another package.</p>

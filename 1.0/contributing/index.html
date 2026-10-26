@@ -1323,15 +1323,29 @@
 </blockquote>
 <hr />
 <h2 id="setting-up-for-development">Setting up for development<a class="headerlink" href="#setting-up-for-development" title="Permanent link">&para;</a></h2>
-<p>The project ships both a <code>Makefile</code> and a parallel <code>tasks.sh</code>, so use whichever suits your
-machine — <strong><code>bash bin/venv.sh</code></strong>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bash<span class="w"> </span>bin/venv.sh<span class="w">        </span><span class="c1"># create the Poetry venv + install deps</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>bash<span class="w"> </span>bin/ensure_env.sh<span class="w">  </span><span class="c1"># seed .env from .env.example</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>bash<span class="w"> </span>bin/precommit.sh<span class="w">   </span><span class="c1"># install the git hooks</span>
+<p><code>poe</code> is a dev dependency, so it exists only once the virtualenv does. Bootstrap with the shell
+entry point first, then use <code>poetry run poe</code> for everything else:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bash<span class="w"> </span>bin/venv.sh<span class="w">              </span><span class="c1"># first time only: creates .venv; poe exists only after this</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>poetry<span class="w"> </span>run<span class="w"> </span>poe<span class="w"> </span>init<span class="w">           </span><span class="c1"># venv (idempotent), git hooks, repo rules, security, Pages</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>poetry<span class="w"> </span>run<span class="w"> </span>poe<span class="w"> </span>enable_pages<span class="w">   </span><span class="c1"># maintainers, one time, after the first PyPI release</span>
 </span></code></pre></div>
-<p><code>init</code> composes <code>ensure_env</code> (seed <code>.env</code>), <code>venv</code> (create the Poetry virtualenv, install <strong>all</strong>
-dependencies including dev + docs), and <code>precommit</code> (install the git hooks). Poetry is
-auto-installed if missing.</p>
+<p>If <code>bin/venv.sh</code> just installed Poetry into <code>~/.local/bin</code>, add that directory to <code>PATH</code> before
+<code>poetry run</code> works. The GitHub helpers in <code>init</code> (<code>enable_pages</code>, <code>enable_repo_rules</code>,
+<code>enable_security</code>) are maintainer steps that only warn on a fork, so contributors can ignore
+those warnings. <code>enable_pages</code> is already done for this repo.</p>
+<p><code>init</code> runs six steps, in order:</p>
+<ol>
+<li><code>ensure_env</code>: seed <code>.env</code> from <code>.env.example</code>. A library ships no <code>.env.example</code>, so here it
+   only prints an info line and moves on.</li>
+<li><code>venv</code>: create the Poetry virtualenv and install <strong>all</strong> dependencies, dev + docs included.
+   Poetry is auto-installed if missing.</li>
+<li><code>precommit</code>: install the git hooks.</li>
+<li><code>enable_pages</code>: point GitHub Pages at the <code>gh-pages</code> branch. Until the first release creates
+   that branch it only prints an info line, which is why a maintainer runs the third command
+   above once more after the first release (see <a href="#one-time-pages-setup">One-time Pages setup</a>).</li>
+<li><code>enable_repo_rules</code>: apply the GitHub repository rules.</li>
+<li><code>enable_security</code>: enable the GitHub security helpers.</li>
+</ol>
 <h2 id="tests-and-linting">Tests and linting<a class="headerlink" href="#tests-and-linting" title="Permanent link">&para;</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>poe<span class="w"> </span>unit_tests<span class="w">          </span><span class="c1"># poetry run pytest tests/unit/</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>poe<span class="w"> </span>integration_tests<span class="w">   </span><span class="c1"># poetry run pytest tests/integration/</span>
