@@ -20,7 +20,8 @@ from filings_rfb._internal.utils.typing import TypeChecker, type_checker
 __all__ = ["ParquetChunkWriter"]
 
 _MSG_NEEDS_PYARROW: str = (
-    "writing Parquet needs pyarrow; install the optional extra: pip install 'filings-rfb[parquet]'"
+    "writing Parquet needs pyarrow; install the optional extra: "
+    "pip install 'filings-rfb[parquet]' or poetry add 'filings-rfb[parquet]'"
 )
 _DECIMAL_PRECISION: int = 38
 

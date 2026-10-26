@@ -57,9 +57,12 @@ def test_missing_part_is_an_error(fake_share: Publish) -> None:
 def test_export_without_pyarrow_names_the_extra(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A missing pyarrow raises an ImportError that names ``filings-rfb[parquet]``."""
+    """A missing pyarrow raises an ImportError that names the pip and poetry forms."""
     monkeypatch.setitem(sys.modules, "pyarrow", None)
-    with pytest.raises(ImportError, match=r"filings-rfb\[parquet\]"):
+    with pytest.raises(
+        ImportError,
+        match=r"pip install 'filings-rfb\[parquet\]' or poetry add 'filings-rfb\[parquet\]'",
+    ):
         export_companies_parquet(STR_MONTH, tmp_path / "out.parquet")
 
 
