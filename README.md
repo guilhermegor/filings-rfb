@@ -49,7 +49,7 @@ The full documentation is published at <https://guilhermegor.github.io/filings-r
 - [FAQ](https://guilhermegor.github.io/filings-rfb/latest/faq/): common questions and troubleshooting
 - [Changelog](https://guilhermegor.github.io/filings-rfb/latest/changelog/): release history
 
-To serve it locally: `bash bin/poe_exec.sh docs_serve` (runs the project venv's `poe`, no activation needed).
+To serve it locally: `poetry run poe docs_serve`.
 
 <!-- slug: getting-started -->
 ## Getting Started
@@ -168,12 +168,22 @@ filings-rfb/
 ```bash
 git clone https://github.com/guilhermegor/filings-rfb.git
 cd filings-rfb
-bash bin/venv.sh                           # bootstrap: Poetry venv and all deps (poe included)
-bash bin/precommit.sh                      # install the git hooks
-bash bin/poe_exec.sh unit_tests            # unit suite
-bash bin/poe_exec.sh integration_tests     # integration suite
-bash bin/poe_exec.sh lint                  # ruff, codespell and the structure gates
-bash bin/poe_exec.sh docs_serve            # serve the docs locally
+bash bin/venv.sh                           # first time only: creates .venv; poe exists only after this
+poetry run poe init                        # venv, git hooks, repo rules, security, Pages
+poetry run poe enable_pages                # maintainers, one time, after the first PyPI release
+```
+
+If `bin/venv.sh` just installed Poetry into `~/.local/bin`, add that directory to `PATH` before
+`poetry run` works. `init` also runs GitHub helpers that only maintainers can use; on a fork they
+warn and continue. `enable_pages` is already done for this repo.
+
+Daily commands:
+
+```bash
+poetry run poe unit_tests                  # unit suite
+poetry run poe integration_tests           # integration suite
+poetry run poe lint                        # ruff, codespell and the structure gates
+poetry run poe docs_serve                  # serve the docs locally
 ```
 
 <!-- slug: public-api -->

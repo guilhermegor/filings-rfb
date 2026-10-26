@@ -1,7 +1,7 @@
 [tool.poe.tasks.init]
 sequence = ["ensure_env", "venv", "precommit", "enable_pages", "enable_repo_rules", "enable_security"]
 default_item_type = "ref"
-help = "Bootstrap everything: .env, venv, pre-commit hooks, GitHub Pages/rules/security"
+help = "Bootstrap everything: .env, venv, pre-commit hooks, GitHub Pages/rules/security (run 'bash bin/venv.sh' once first so poe exists)"
 
 [tool.poe.tasks.ensure_env]
 shell = "bash bin/ensure_env.sh || true"

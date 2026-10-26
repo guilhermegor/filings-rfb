@@ -9,18 +9,32 @@ Everything you need to develop, test, and release this library.
 
 ## Setting up for development
 
-The project ships both a `Makefile` and a parallel `tasks.sh`, so use whichever suits your
-machine — **`bash bin/venv.sh`**.
+`poe` is a dev dependency, so it exists only once the virtualenv does. Bootstrap with the shell
+entry point first, then use `poetry run poe` for everything else:
 
 ```bash
-bash bin/venv.sh        # create the Poetry venv + install deps
-bash bin/ensure_env.sh  # seed .env from .env.example
-bash bin/precommit.sh   # install the git hooks
+bash bin/venv.sh              # first time only: creates .venv; poe exists only after this
+poetry run poe init           # venv (idempotent), git hooks, repo rules, security, Pages
+poetry run poe enable_pages   # maintainers, one time, after the first PyPI release
 ```
 
-`init` composes `ensure_env` (seed `.env`), `venv` (create the Poetry virtualenv, install **all**
-dependencies including dev + docs), and `precommit` (install the git hooks). Poetry is
-auto-installed if missing.
+If `bin/venv.sh` just installed Poetry into `~/.local/bin`, add that directory to `PATH` before
+`poetry run` works. The GitHub helpers in `init` (`enable_pages`, `enable_repo_rules`,
+`enable_security`) are maintainer steps that only warn on a fork, so contributors can ignore
+those warnings. `enable_pages` is already done for this repo.
+
+`init` runs six steps, in order:
+
+1. `ensure_env`: seed `.env` from `.env.example`. A library ships no `.env.example`, so here it
+   only prints an info line and moves on.
+2. `venv`: create the Poetry virtualenv and install **all** dependencies, dev + docs included.
+   Poetry is auto-installed if missing.
+3. `precommit`: install the git hooks.
+4. `enable_pages`: point GitHub Pages at the `gh-pages` branch. Until the first release creates
+   that branch it only prints an info line, which is why a maintainer runs the third command
+   above once more after the first release (see [One-time Pages setup](#one-time-pages-setup)).
+5. `enable_repo_rules`: apply the GitHub repository rules.
+6. `enable_security`: enable the GitHub security helpers.
 
 ## Tests and linting
 

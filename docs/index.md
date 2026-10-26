@@ -23,9 +23,6 @@ Typed pandas readers for the Receita Federal do Brasil (RFB) CNPJ open data: Emp
 pip install filings-rfb
 ```
 
-Until the first PyPI release is published, install from source:
-`pip install git+https://github.com/guilhermegor/filings-rfb.git`.
-
 ```python
 from filings_rfb import read_companies
 

@@ -16,8 +16,8 @@ ensure_env_file() {
 	fi
 
 	if [[ ! -f "$path_example" ]]; then
-		print_status "error" ".env.example not found at $path_example — cannot seed .env"
-		return 1
+		print_status "info" "No .env.example in this project — nothing to seed, skipping .env"
+		return 0
 	fi
 
 	print_status "info" "No .env found — seeding it from .env.example..."
