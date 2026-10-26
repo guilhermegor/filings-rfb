@@ -168,12 +168,18 @@ filings-rfb/
 ```bash
 git clone https://github.com/guilhermegor/filings-rfb.git
 cd filings-rfb
-bash bin/venv.sh                           # bootstrap: Poetry venv and all deps (poe included)
-bash bin/precommit.sh                      # install the git hooks
-bash bin/poe_exec.sh unit_tests            # unit suite
-bash bin/poe_exec.sh integration_tests     # integration suite
-bash bin/poe_exec.sh lint                  # ruff, codespell and the structure gates
-bash bin/poe_exec.sh docs_serve            # serve the docs locally
+bash bin/venv.sh                           # first time only: creates .venv; poe exists only after this
+poetry run poe init                        # venv, git hooks, repo rules, security, Pages
+poetry run poe enable_pages                # once, after the first PyPI release creates gh-pages
+```
+
+Daily commands:
+
+```bash
+poetry run poe unit_tests                  # unit suite
+poetry run poe integration_tests           # integration suite
+poetry run poe lint                        # ruff, codespell and the structure gates
+poetry run poe docs_serve                  # serve the docs locally
 ```
 
 <!-- slug: public-api -->

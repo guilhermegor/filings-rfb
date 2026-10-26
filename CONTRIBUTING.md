@@ -114,10 +114,17 @@ has already run.
 1. **Dependency Management**:
    - Use Poetry (version specified in `requirements.txt`)
    - Avoid adding redundant libraries - check `pyproject.toml` first
-   - Run `poetry install` to set up the development environment
+   - Bootstrap the development environment with the sequence below. `poe` is a dev
+     dependency, so it exists only after `bash bin/venv.sh` has created the venv:
+
+     ```bash
+     bash bin/venv.sh              # first time only: creates .venv; poe exists only after this
+     poetry run poe init           # venv (idempotent), git hooks, repo rules, security, Pages
+     poetry run poe enable_pages   # once, after the first PyPI release creates gh-pages
+     ```
 
 2. **Pre-commit Hooks**:
-   - Install with `poe precommit`
+   - `poetry run poe init` installs them (`poetry run poe precommit` re-installs on its own)
    - This enables automatic:
      - Code linting
      - Formatting
@@ -129,7 +136,7 @@ has already run.
    - Maintain the standard file structure:
      - Implementation: `src/<feat_name>.py`
      - Tests: `tests/test_<feat_name>.py`
-   - Run comprehensive validation with: `poe unit_tests -k <keyword>`
+   - Run comprehensive validation with: `poetry run poe unit_tests -k <keyword>`
         - This command executes:
             - **Ruff**: Linting, formatting, and flagging deprecated Python features
             - **Codespell**: Spelling verification in comments and docstrings
