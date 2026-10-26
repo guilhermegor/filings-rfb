@@ -17,6 +17,7 @@ Or with Poetry:
 
 ```bash
 poetry add filings-rfb
+poetry add 'filings-rfb[parquet]'   # optional: Parquet export
 ```
 
 Until the first PyPI release is published, install from source:
@@ -105,6 +106,7 @@ pyarrow:
 
 ```bash
 pip install 'filings-rfb[parquet]'
+poetry add 'filings-rfb[parquet]'   # the same extra with Poetry
 ```
 
 Without it the call raises an `ImportError` that names the extra. Querying the Parquet lazily

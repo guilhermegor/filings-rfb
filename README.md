@@ -68,6 +68,7 @@ Or with Poetry:
 
 ```bash
 poetry add filings-rfb
+poetry add 'filings-rfb[parquet]'   # optional: Parquet export (pulls in pyarrow)
 ```
 
 To work on the library itself, see [CONTRIBUTING.md](CONTRIBUTING.md).

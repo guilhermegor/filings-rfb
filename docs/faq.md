@@ -14,6 +14,13 @@ pip install filings-rfb
 pip install "filings-rfb[parquet]"   # optional Parquet export
 ```
 
+Or with Poetry:
+
+```bash
+poetry add filings-rfb
+poetry add "filings-rfb[parquet]"   # optional Parquet export
+```
+
 Until the first PyPI release is published, install from source:
 `pip install git+https://github.com/guilhermegor/filings-rfb.git`.
 
