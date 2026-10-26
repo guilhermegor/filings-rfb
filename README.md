@@ -49,7 +49,7 @@ The full documentation is published at <https://guilhermegor.github.io/filings-r
 - [FAQ](https://guilhermegor.github.io/filings-rfb/latest/faq/): common questions and troubleshooting
 - [Changelog](https://guilhermegor.github.io/filings-rfb/latest/changelog/): release history
 
-To serve it locally: `bash bin/poe_exec.sh docs_serve` (runs the project venv's `poe`, no activation needed).
+To serve it locally: `poetry run poe docs_serve`.
 
 <!-- slug: getting-started -->
 ## Getting Started
@@ -170,8 +170,12 @@ git clone https://github.com/guilhermegor/filings-rfb.git
 cd filings-rfb
 bash bin/venv.sh                           # first time only: creates .venv; poe exists only after this
 poetry run poe init                        # venv, git hooks, repo rules, security, Pages
-poetry run poe enable_pages                # once, after the first PyPI release creates gh-pages
+poetry run poe enable_pages                # maintainers, one time, after the first PyPI release
 ```
+
+If `bin/venv.sh` just installed Poetry into `~/.local/bin`, add that directory to `PATH` before
+`poetry run` works. `init` also runs GitHub helpers that only maintainers can use; on a fork they
+warn and continue. `enable_pages` is already done for this repo.
 
 Daily commands:
 

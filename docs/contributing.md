@@ -15,8 +15,13 @@ entry point first, then use `poetry run poe` for everything else:
 ```bash
 bash bin/venv.sh              # first time only: creates .venv; poe exists only after this
 poetry run poe init           # venv (idempotent), git hooks, repo rules, security, Pages
-poetry run poe enable_pages   # once, after the first PyPI release creates gh-pages
+poetry run poe enable_pages   # maintainers, one time, after the first PyPI release
 ```
+
+If `bin/venv.sh` just installed Poetry into `~/.local/bin`, add that directory to `PATH` before
+`poetry run` works. The GitHub helpers in `init` (`enable_pages`, `enable_repo_rules`,
+`enable_security`) are maintainer steps that only warn on a fork, so contributors can ignore
+those warnings. `enable_pages` is already done for this repo.
 
 `init` runs six steps, in order:
 
@@ -26,8 +31,8 @@ poetry run poe enable_pages   # once, after the first PyPI release creates gh-pa
    Poetry is auto-installed if missing.
 3. `precommit`: install the git hooks.
 4. `enable_pages`: point GitHub Pages at the `gh-pages` branch. Until the first release creates
-   that branch it only prints an info line, which is why the third command above is run once
-   more after the first release (see [One-time Pages setup](#one-time-pages-setup)).
+   that branch it only prints an info line, which is why a maintainer runs the third command
+   above once more after the first release (see [One-time Pages setup](#one-time-pages-setup)).
 5. `enable_repo_rules`: apply the GitHub repository rules.
 6. `enable_security`: enable the GitHub security helpers.
 

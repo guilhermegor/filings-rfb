@@ -127,8 +127,8 @@ that failed. `export` is a *plugin* subcommand, so `requirements.txt` pins
 subcommand?".
 
 `bin/ensure_env.sh` seeds `.env` from `.env.example` for `init` (no-op if `.env`
-exists; an info-line no-op when the project ships no `.env.example`, as a library does). `bin/precommit.sh` installs the
-pre-commit hooks and **skips gracefully** when run off a git work tree (a shipped zip
+exists; an info-line no-op when the project ships no `.env.example`, as a library
+does). `bin/precommit.sh` installs the pre-commit hooks and **skips gracefully** when run off a git work tree (a shipped zip
 with no `.git`) so `init` still completes.
 
 ## Testing shell scripts

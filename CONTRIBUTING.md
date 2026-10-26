@@ -120,8 +120,13 @@ has already run.
      ```bash
      bash bin/venv.sh              # first time only: creates .venv; poe exists only after this
      poetry run poe init           # venv (idempotent), git hooks, repo rules, security, Pages
-     poetry run poe enable_pages   # once, after the first PyPI release creates gh-pages
+     poetry run poe enable_pages   # maintainers, one time, after the first PyPI release
      ```
+
+     If `bin/venv.sh` just installed Poetry into `~/.local/bin`, add that directory to `PATH`
+     before `poetry run` works. The GitHub helpers in `init` (`enable_pages`,
+     `enable_repo_rules`, `enable_security`) are maintainer steps that only warn on a fork, so
+     contributors can ignore those warnings. `enable_pages` is already done for this repo.
 
 2. **Pre-commit Hooks**:
    - `poetry run poe init` installs them (`poetry run poe precommit` re-installs on its own)
@@ -137,10 +142,8 @@ has already run.
      - Implementation: `src/<feat_name>.py`
      - Tests: `tests/test_<feat_name>.py`
    - Run comprehensive validation with: `poetry run poe unit_tests -k <keyword>`
-        - This command executes:
-            - **Ruff**: Linting, formatting, and flagging deprecated Python features
-            - **Codespell**: Spelling verification in comments and docstrings
-            - **Automated tests**: All test cases matching the project's testing standards
+        - This command runs the unit tests matching the keyword.
+        - Ruff and Codespell run in `poetry run poe lint` and in the pre-commit hooks.
    - Ensure 100% test coverage for critical components
    - Run tests locally before pushing changes
 
