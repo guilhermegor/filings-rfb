@@ -117,7 +117,8 @@ Releases are **tag-driven and secret-free** when the project is connected to a G
 
 - The version is the **git tag** (via `poetry-dynamic-versioning`), never `pyproject.toml`. Trigger
   a release from the Actions tab (`Release to PyPI` / `Release to Test PyPI`, `workflow_dispatch`
-  with the version), or by pushing a `vX.Y.Z` tag.
+  with the version); the workflow creates the `vX.Y.Z` tag. Pushing a tag yourself starts nothing.
+  Commitizen reads the version from the tags too (`version_provider = "scm"` in `.cz.toml`).
 - The build reads the latest tag matching `v$version`: on an exact tag the build is clean
   (`1.2.0`), off a tag it gets a PEP 440 dev version. The release workflows set
   `POETRY_DYNAMIC_VERSIONING_BYPASS` to build the exact version being released. Build with
@@ -125,9 +126,11 @@ Releases are **tag-driven and secret-free** when the project is connected to a G
 - `[tool.poetry] version` stays at the `0.0.0` stub, because nothing reads it. A real-looking number
   there invites a hand-bump that goes stale, so `bin/check_dynamic_version_stub.py` (pre-commit,
   `poe lint`, CI) fails any value other than `0.0.0` while dynamic versioning is enabled.
-- To read the current version, ask the tag or the installed package, not `pyproject.toml`:
-  `git describe --tags --abbrev=0 origin/main` (after `git fetch --tags`), or
-  `python -c 'import importlib.metadata as m; print(m.version("filings-rfb"))'`.
+- To read the current version, ask the tag, not `pyproject.toml`:
+  `git describe --tags --abbrev=0 origin/main` (after `git fetch --tags`). In a development venv
+  (`poetry install`) the installed metadata reports the `0.0.0` stub, so
+  `importlib.metadata.version("filings-rfb")` is meaningful only for a package installed from a
+  built wheel or from PyPI.
 - The release workflow runs the **full test suite** as a hard gate, builds with `python -m build`,
   and publishes via **OIDC trusted publishing** (`pypa/gh-action-pypi-publish`) — no token
   secrets are needed. Register the pending publishers below; GitHub creates the
