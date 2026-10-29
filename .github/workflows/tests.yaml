@@ -134,6 +134,10 @@ jobs:
         if: runner.os == 'Linux'
         run: poetry run python bin/check_comment_budget.py --require-baseline
 
+      - name: Run Dynamic Version Stub Gate
+        if: runner.os == 'Linux'
+        run: poetry run python bin/check_dynamic_version_stub.py
+
       - name: Run Gate Integrity Enforcement
         if: runner.os == 'Linux'
         run: poetry run python bin/check_gate_integrity.py

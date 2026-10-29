@@ -1,2 +1,2 @@
 scope 2
-4 pyproject.toml
+1 pyproject.toml

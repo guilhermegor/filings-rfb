@@ -39,6 +39,9 @@ $POETRY run python bin/check_comment_language.py
 print_status info "comment budget"
 $POETRY run python bin/check_comment_budget.py --require-baseline
 
+print_status info "dynamic version stub"
+$POETRY run python bin/check_dynamic_version_stub.py
+
 print_status info "env docs sync"
 $POETRY run python bin/check_env_docs_sync.py
 

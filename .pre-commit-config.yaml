@@ -299,6 +299,13 @@ repos:
         language: system
         pass_filenames: false
 
+      - id: check-dynamic-version-stub
+        name: dynamic version stub (pyproject version stays 0.0.0, the git tag is the version)
+        entry: bash bin/poetry_exec.sh run python bin/check_dynamic_version_stub.py
+        language: system
+        files: ^(pyproject\.toml|bin/check_dynamic_version_stub\.py)$
+        pass_filenames: false
+
       - id: check-env-docs-sync
         name: .env.example and docs/configuration.md list the same variables
         entry: bash bin/poetry_exec.sh run python bin/check_env_docs_sync.py
