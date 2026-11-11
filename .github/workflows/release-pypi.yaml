@@ -7,17 +7,24 @@ on:
         description: 'Version to release (e.g., 1.2.3, 1.2.3a1, 1.2.3b1, 1.2.3rc1)'
         required: true
         type: string
+      backfill:
+        description: 'Rebuild every vX.Y.Z tag under PACKAGE_NAME and upload the missing ones (version is ignored)'
+        required: false
+        type: boolean
+        default: false
 
 env:
-  PACKAGE_NAME: "filings-rfb"
+  PACKAGE_NAME: "opendata-rfb"
   OWNER: "guilhermegor"
 
 jobs:
   run_tests:
+    if: ${{ !inputs.backfill }}
     uses: ./.github/workflows/tests.yaml
     secrets: inherit
 
   details:
+    if: ${{ !inputs.backfill }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
@@ -266,3 +273,45 @@ jobs:
           MINOR_VERSION="$(echo "$NEW_VERSION" | cut -d. -f1-2)"
           poetry run mike deploy --update-aliases --push "$MINOR_VERSION" latest
           poetry run mike set-default --push latest
+
+  backfill:
+    if: ${{ inputs.backfill }}
+    runs-on: ubuntu-latest
+    environment:
+      name: release-pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set Up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Build Every Release Tag Under the New Name
+        run: |
+          python -m pip install --upgrade build
+          old="filings-rfb"
+          mkdir -p dist
+          failed=()
+          for tag in $(git tag --list 'v[0-9]*' --sort=v:refname); do
+            src=$(mktemp -d)
+            git archive "$tag" | tar -x -C "$src"
+            sed -i -E '0,/^name = ".*"/s//name = "'"$PACKAGE_NAME"'"/' "$src/pyproject.toml"
+            { grep -rlE "[\"']${old}[\"']" "$src/src" || true; } | xargs -r sed -i -E "s/([\"'])${old}([\"'])/\1$PACKAGE_NAME\2/g"
+            if POETRY_DYNAMIC_VERSIONING_BYPASS="${tag#v}" python -m build --outdir dist "$src" > "$src.log" 2>&1; then
+              echo "built $tag"
+            else
+              echo "::warning::$tag did not build; skipped"; tail -20 "$src.log"; failed+=("$tag")
+            fi
+          done
+          echo "Built $(ls dist/*.whl | wc -l) versions; skipped: ${failed[*]:-none}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true

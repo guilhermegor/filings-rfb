@@ -10,7 +10,7 @@ from .ingestion.cnpj.simples import read_simples
 
 
 try:
-    __version__ = version("filings-rfb")
+    __version__ = version("opendata-rfb")
 except PackageNotFoundError:  # pragma: no cover - source tree without an installed dist
     __version__ = "0.0.0"
 
