@@ -1,4 +1,4 @@
-"""Unit tests for the dynamic-version stub gate (filings-rfb#51)."""
+"""Unit tests for the dynamic-version stub gate (opendata-rfb#51)."""
 
 import importlib.util
 from pathlib import Path

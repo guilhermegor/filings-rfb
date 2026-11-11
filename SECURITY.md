@@ -18,7 +18,7 @@ problem to everyone, including people who would exploit it, before a fix exists.
 
 Instead, report it privately through GitHub:
 
-1. Go to the **Security** tab of [filings-rfb](https://github.com/guilhermegor/filings-rfb).
+1. Go to the **Security** tab of [opendata-rfb](https://github.com/guilhermegor/opendata-rfb).
 2. Choose **Report a vulnerability** (GitHub private vulnerability reporting).
 3. Describe the issue, the affected version(s), and — if you can — a minimal reproduction.
 

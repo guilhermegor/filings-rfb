@@ -4,7 +4,7 @@
 - [x] `read_table_chunks` seam in `tabular_reader` (contract + `apply_dtypes` per chunk)
 - [x] Per-part provenance: `stamp_source_etag` and a reusable run id
 - [x] `read_companies` with exact `Decimal` capital
-- [x] `export_companies_parquet` behind the optional `filings-rfb[parquet]` extra
+- [x] `export_companies_parquet` behind the optional `opendata-rfb[parquet]` extra
 - [x] A missing part is an error, never skipped
 - [x] Unit tests on a two-part fixture, docs and README
 - [ ] Merge the PR

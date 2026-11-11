@@ -10,8 +10,8 @@ import zipfile
 
 import pytest
 
-from filings_rfb._internal.utils.webdav_client import WebdavEntry
-from filings_rfb.ingestion.cnpj import _multipart
+from opendata_rfb._internal.utils.webdav_client import WebdavEntry
+from opendata_rfb.ingestion.cnpj import _multipart
 
 
 STR_MONTH = "2026-10"

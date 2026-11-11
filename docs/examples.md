@@ -15,7 +15,7 @@ Each chunk is a typed frame, so aggregate as you go and keep memory flat.
 ```python
 from decimal import Decimal
 
-from filings_rfb import read_companies
+from opendata_rfb import read_companies
 
 decimal_total = Decimal(0)
 for df_chunk in read_companies("2026-10"):
@@ -29,7 +29,7 @@ print(decimal_total)
 the non-active ones.
 
 ```python
-from filings_rfb import read_establishments
+from opendata_rfb import read_establishments
 
 int_invalid = int_inactive = 0
 for df_chunk in read_establishments("2026-10"):
@@ -49,7 +49,7 @@ from pathlib import Path
 
 import duckdb
 
-from filings_rfb import export_companies_parquet
+from opendata_rfb import export_companies_parquet
 
 path_parquet = export_companies_parquet("2026-10", Path("empresas_2026-10.parquet"))
 print(
@@ -68,7 +68,7 @@ them. Qualification codes are text and join to the `Qualificacoes` lookup.
 ```python
 import pandas as pd
 
-from filings_rfb import read_partners
+from opendata_rfb import read_partners
 
 list_legal_entities = [
     df_chunk[df_chunk["tipo_socio"] == "1"] for df_chunk in read_partners("2026-10")
@@ -84,7 +84,7 @@ stamped on every row, so a stored table says which upstream version produced it.
 ```python
 from pathlib import Path
 
-from filings_rfb import read_lookup
+from opendata_rfb import read_lookup
 
 
 df_cnaes = read_lookup(
@@ -105,7 +105,7 @@ Reduce each chunk as it arrives (count, aggregate or write it out) rather than c
 rows: the companies in the Simples alone run to millions.
 
 ```python
-from filings_rfb import read_simples
+from opendata_rfb import read_simples
 
 int_active = 0
 for df_chunk in read_simples("2026-10"):

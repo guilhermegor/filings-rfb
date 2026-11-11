@@ -11,9 +11,9 @@ import zipfile
 import pandas as pd
 import pytest
 
-from filings_rfb._internal.utils.webdav_client import WebdavEntry
-from filings_rfb.ingestion.cnpj import _multipart
-from filings_rfb.ingestion.cnpj.simples import read_simples
+from opendata_rfb._internal.utils.webdav_client import WebdavEntry
+from opendata_rfb.ingestion.cnpj import _multipart
+from opendata_rfb.ingestion.cnpj.simples import read_simples
 
 
 STR_MONTH = "2026-10"

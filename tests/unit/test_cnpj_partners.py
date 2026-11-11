@@ -11,10 +11,10 @@ import zipfile
 import pandas as pd
 import pytest
 
-from filings_rfb._internal.config.contracts import COLUMNS_PARTNERS
-from filings_rfb._internal.utils.webdav_client import WebdavEntry
-from filings_rfb.ingestion.cnpj import _multipart
-from filings_rfb.ingestion.cnpj.partners import read_partners
+from opendata_rfb._internal.config.contracts import COLUMNS_PARTNERS
+from opendata_rfb._internal.utils.webdav_client import WebdavEntry
+from opendata_rfb.ingestion.cnpj import _multipart
+from opendata_rfb.ingestion.cnpj.partners import read_partners
 from tests.unit.conftest import STR_MONTH
 
 

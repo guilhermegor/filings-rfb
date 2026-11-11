@@ -6,7 +6,7 @@ Public interface for this library.
 
 ---
 
-## Module: `filings_rfb.ingestion.cnpj.companies`
+## Module: `opendata_rfb.ingestion.cnpj.companies`
 
 ### `read_companies(str_month, int_chunk_rows=500_000, path_workdir=None) -> Iterator[pd.DataFrame]`
 
@@ -21,7 +21,7 @@ Writes the same rows to one Parquet file. Requires the `opendata-rfb[parquet]` e
 
 ---
 
-## Module: `filings_rfb.ingestion.cnpj.establishments`
+## Module: `opendata_rfb.ingestion.cnpj.establishments`
 
 ### `read_establishments(str_month, int_chunk_rows=500_000, path_workdir=None) -> Iterator[pd.DataFrame]`
 
@@ -33,7 +33,7 @@ of each part 0-9. Adds `cnpj_completo` (basic + order + check digits) and `cnpj_
 
 ---
 
-## Module: `filings_rfb.ingestion.cnpj.partners`
+## Module: `opendata_rfb.ingestion.cnpj.partners`
 
 ### `read_partners(str_month, int_chunk_rows=500_000, path_workdir=None) -> Iterator[pd.DataFrame]`
 
@@ -47,7 +47,7 @@ Raises `FileNotFoundError` when a part is not published.
 
 ---
 
-## Module: `filings_rfb.ingestion.cnpj.lookups`
+## Module: `opendata_rfb.ingestion.cnpj.lookups`
 
 Reads the six RFB CNPJ lookup tables: `Cnaes`, `Motivos`, `Municipios`, `Naturezas`, `Paises`
 and `Qualificacoes` (the partner/representative qualification, i.e. role).
@@ -77,7 +77,7 @@ Raises `ValueError` for an unknown table or an archive with zero or several file
 
 ---
 
-## Module: `filings_rfb.ingestion.cnpj.simples`
+## Module: `opendata_rfb.ingestion.cnpj.simples`
 
 ### `read_simples(str_month, int_chunk_rows=500_000, path_workdir=None) -> Iterator[pd.DataFrame]`
 
@@ -93,10 +93,10 @@ Raises `FileNotFoundError` when `Simples.zip` is not published.
 
 ## Adding new modules
 
-Place new modules under `src/filings_rfb/`. Export public symbols from `src/filings_rfb/__init__.py` (and its `__all__`) so callers can do:
+Place new modules under `src/opendata_rfb/`. Export public symbols from `src/opendata_rfb/__init__.py` (and its `__all__`) so callers can do:
 
 ```python
-from filings_rfb import read_companies
+from opendata_rfb import read_companies
 ```
 
 Follow the one-class-per-file convention: utility functions with no shared state belong at module level, not wrapped in a class.

@@ -3,7 +3,7 @@
 
 With ``[tool.poetry-dynamic-versioning] enable = true`` the build backend takes the version
 from the git tag and never reads ``[tool.poetry] version``. A real-looking number there invites
-a hand-bump that then goes stale (filings-rfb#30, #51), so the field must stay the ``0.0.0``
+a hand-bump that then goes stale (opendata-rfb#30, #51), so the field must stay the ``0.0.0``
 stub and the git tag stays the single source of truth.
 
 Usage::

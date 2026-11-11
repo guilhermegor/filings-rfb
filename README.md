@@ -1,23 +1,23 @@
 <!-- readme-archetype: library -->
-# filings-rfb
+# opendata-rfb
 
-<p align="center"><img src="https://raw.githubusercontent.com/guilhermegor/filings-rfb/main/assets/logo.png" width="200" alt="Receita Federal emblem"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/guilhermegor/opendata-rfb/main/assets/logo.png" width="200" alt="Receita Federal emblem"></p>
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 [![PyPI Version](https://img.shields.io/pypi/v/opendata-rfb)](https://pypi.org/project/opendata-rfb/)
-[![Docs](https://img.shields.io/badge/docs-mkdocs-blue)](https://guilhermegor.github.io/filings-rfb/)
+[![Docs](https://img.shields.io/badge/docs-mkdocs-blue)](https://guilhermegor.github.io/opendata-rfb/)
 [![Linting](https://img.shields.io/badge/linting-ruff_%7C_codespell-blue)](https://github.com/astral-sh/ruff)
 [![Type-checked: mypy](https://img.shields.io/badge/type--checked-mypy-blue)](https://mypy-lang.org/)
-![Test Coverage](https://raw.githubusercontent.com/guilhermegor/filings-rfb/main/coverage.svg)
+![Test Coverage](https://raw.githubusercontent.com/guilhermegor/opendata-rfb/main/coverage.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Open Issues](https://img.shields.io/github/issues/guilhermegor/filings-rfb)
+![Open Issues](https://img.shields.io/github/issues/guilhermegor/opendata-rfb)
 ![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-darkgreen.svg)
 
 <!-- slug: overview -->
 ## Overview
 
-`filings-rfb` reads the Receita Federal do Brasil (RFB) **CNPJ open data** (the company registry)
+`opendata-rfb` reads the Receita Federal do Brasil (RFB) **CNPJ open data** (the company registry)
 into typed pandas DataFrames. It covers every dataset the RFB publishes:
 
 | Dataset | Reader | Content |
@@ -41,13 +41,13 @@ run; pass `path_workdir=` to keep the ZIPs so a rerun resumes instead of downloa
 <!-- slug: documentation -->
 ## Documentation
 
-The full documentation is published at <https://guilhermegor.github.io/filings-rfb/>:
+The full documentation is published at <https://guilhermegor.github.io/opendata-rfb/>:
 
-- [Usage](https://guilhermegor.github.io/filings-rfb/latest/usage/): install, readers, basics
-- [Examples](https://guilhermegor.github.io/filings-rfb/latest/examples/): task-oriented recipes
-- [API Reference](https://guilhermegor.github.io/filings-rfb/latest/api/): every public function
-- [FAQ](https://guilhermegor.github.io/filings-rfb/latest/faq/): common questions and troubleshooting
-- [Changelog](https://guilhermegor.github.io/filings-rfb/latest/changelog/): release history
+- [Usage](https://guilhermegor.github.io/opendata-rfb/latest/usage/): install, readers, basics
+- [Examples](https://guilhermegor.github.io/opendata-rfb/latest/examples/): task-oriented recipes
+- [API Reference](https://guilhermegor.github.io/opendata-rfb/latest/api/): every public function
+- [FAQ](https://guilhermegor.github.io/opendata-rfb/latest/faq/): common questions and troubleshooting
+- [Changelog](https://guilhermegor.github.io/opendata-rfb/latest/changelog/): release history
 
 To serve it locally: `poetry run poe docs_serve`.
 
@@ -87,7 +87,7 @@ is small. Every row carries provenance columns (`url`,
 **Empresas.** `capital_social` is an exact `Decimal`, never a float.
 
 ```python
-from filings_rfb import read_companies
+from opendata_rfb import read_companies
 
 for df_chunk in read_companies("2026-10"):
     ...
@@ -97,7 +97,7 @@ for df_chunk in read_companies("2026-10"):
 (alphanumeric-aware).
 
 ```python
-from filings_rfb import read_establishments
+from opendata_rfb import read_establishments
 
 for df_chunk in read_establishments("2026-10"):
     ...
@@ -107,7 +107,7 @@ for df_chunk in read_establishments("2026-10"):
 representative document becomes null.
 
 ```python
-from filings_rfb import read_partners
+from opendata_rfb import read_partners
 
 for df_chunk in read_partners("2026-10"):
     ...
@@ -116,7 +116,7 @@ for df_chunk in read_partners("2026-10"):
 **Simples.** Booleans and real dates, with the RFB's `00000000` read as null.
 
 ```python
-from filings_rfb import read_simples
+from opendata_rfb import read_simples
 
 for df_chunk in read_simples("2026-10"):
     ...
@@ -127,9 +127,9 @@ for df_chunk in read_simples("2026-10"):
 ```python
 from pathlib import Path
 
-from filings_rfb import read_lookup
-from filings_rfb._internal.utils.stream_downloader import download_file_streaming
-from filings_rfb.ingestion.cnpj._share import file_url, latest_reference_month
+from opendata_rfb import read_lookup
+from opendata_rfb._internal.utils.stream_downloader import download_file_streaming
+from opendata_rfb.ingestion.cnpj._share import file_url, latest_reference_month
 
 str_url = file_url(latest_reference_month(), "Cnaes.zip")
 path_zip, str_etag = download_file_streaming(str_url, Path("data/raw/Cnaes.zip"))
@@ -146,12 +146,12 @@ latin-1 text.
 ## Project Structure
 
 ```text
-filings-rfb/
+opendata-rfb/
 ├── .github/              workflows, CODEOWNERS, PR template
 ├── assets/               logo
 ├── bin/                  gate scripts and helpers
 ├── docs/                 published documentation (mkdocs)
-├── src/filings_rfb/
+├── src/opendata_rfb/
 │   ├── __init__.py       the public API (__all__)
 │   ├── ingestion/cnpj/   one reader per RFB dataset
 │   └── _internal/        private: contracts, utils, ports
@@ -166,8 +166,8 @@ filings-rfb/
 ## Development
 
 ```bash
-git clone https://github.com/guilhermegor/filings-rfb.git
-cd filings-rfb
+git clone https://github.com/guilhermegor/opendata-rfb.git
+cd opendata-rfb
 bash bin/venv.sh                           # first time only: creates .venv; poe exists only after this
 poetry run poe init                        # venv, git hooks, repo rules, security, Pages
 poetry run poe enable_pages                # maintainers, one time, after the first PyPI release
@@ -226,10 +226,10 @@ This project is licensed under MIT; see [LICENSE](LICENSE).
 <!-- slug: useful-links -->
 ## Useful Links
 
-- [Documentation](https://guilhermegor.github.io/filings-rfb/)
+- [Documentation](https://guilhermegor.github.io/opendata-rfb/)
 - [PyPI](https://pypi.org/project/opendata-rfb/)
-- [GitHub Repository](https://github.com/guilhermegor/filings-rfb)
-- [Issue Tracker](https://github.com/guilhermegor/filings-rfb/issues)
+- [GitHub Repository](https://github.com/guilhermegor/opendata-rfb)
+- [Issue Tracker](https://github.com/guilhermegor/opendata-rfb/issues)
 
 ---
 

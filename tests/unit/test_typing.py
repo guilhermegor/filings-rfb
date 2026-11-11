@@ -2,7 +2,7 @@
 
 import pytest
 
-from filings_rfb._internal.utils.typing import TypeChecker, type_checker
+from opendata_rfb._internal.utils.typing import TypeChecker, type_checker
 
 
 class _Sample(metaclass=TypeChecker):

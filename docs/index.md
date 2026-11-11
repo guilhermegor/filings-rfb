@@ -1,4 +1,4 @@
-# **filings-rfb** <img src="assets/logo.png" align="right" width="200" style="border-radius: 15px;" alt="Receita Federal emblem">
+# **opendata-rfb** <img src="assets/logo.png" align="right" width="200" style="border-radius: 15px;" alt="Receita Federal emblem">
 
 Typed pandas readers for the Receita Federal do Brasil (RFB) CNPJ open data: Empresas, Estabelecimentos, Socios, Simples and the six lookup tables, read as memory-flat chunks.
 
@@ -24,7 +24,7 @@ pip install opendata-rfb
 ```
 
 ```python
-from filings_rfb import read_companies
+from opendata_rfb import read_companies
 
 for df_chunk in read_companies("2026-10"):
     ...

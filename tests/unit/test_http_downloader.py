@@ -12,7 +12,7 @@ from urllib import error
 import pytest
 from pytest_mock import MockerFixture
 
-from filings_rfb._internal.utils.http_downloader import download_file
+from opendata_rfb._internal.utils.http_downloader import download_file
 
 
 pytestmark = pytest.mark.allow_network
@@ -54,7 +54,7 @@ def redirect_url(mocker: MockerFixture) -> Iterator[str]:
         The URL that answers with a redirect.
     """
     mocker.patch("time.sleep")
-    mocker.patch("filings_rfb._internal.utils.http_downloader._assert_public_host")
+    mocker.patch("opendata_rfb._internal.utils.http_downloader._assert_public_host")
     cls_server = ThreadingHTTPServer(("127.0.0.1", 0), _RedirectHandler)
     cls_thread = threading.Thread(target=cls_server.serve_forever, daemon=True)
     cls_thread.start()
@@ -102,7 +102,7 @@ def test_download_file_redirect_raises_oserror_not_followed(
         The pytest-mock patcher.
     """
     mocker.patch("time.sleep")
-    mocker.patch("filings_rfb._internal.utils.http_downloader._assert_public_host")
+    mocker.patch("opendata_rfb._internal.utils.http_downloader._assert_public_host")
     cls_server = ThreadingHTTPServer(("127.0.0.1", 0), _RedirectHandler)
     cls_thread = threading.Thread(target=cls_server.serve_forever, daemon=True)
     cls_thread.start()

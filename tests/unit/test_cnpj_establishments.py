@@ -9,10 +9,10 @@ import zipfile
 import pandas as pd
 import pytest
 
-from filings_rfb._internal.utils.compact_dates import parse_compact_dates
-from filings_rfb._internal.utils.webdav_client import WebdavEntry
-from filings_rfb.ingestion.cnpj import _multipart
-from filings_rfb.ingestion.cnpj.establishments import read_establishments
+from opendata_rfb._internal.utils.compact_dates import parse_compact_dates
+from opendata_rfb._internal.utils.webdav_client import WebdavEntry
+from opendata_rfb.ingestion.cnpj import _multipart
+from opendata_rfb.ingestion.cnpj.establishments import read_establishments
 
 
 STR_MONTH = "2026-10"
