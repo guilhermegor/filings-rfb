@@ -5,7 +5,7 @@
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)
-[![PyPI Version](https://img.shields.io/pypi/v/filings-rfb)](https://pypi.org/project/filings-rfb/)
+[![PyPI Version](https://img.shields.io/pypi/v/opendata-rfb)](https://pypi.org/project/opendata-rfb/)
 [![Docs](https://img.shields.io/badge/docs-mkdocs-blue)](https://guilhermegor.github.io/filings-rfb/)
 [![Linting](https://img.shields.io/badge/linting-ruff_%7C_codespell-blue)](https://github.com/astral-sh/ruff)
 [![Type-checked: mypy](https://img.shields.io/badge/type--checked-mypy-blue)](https://mypy-lang.org/)
@@ -60,14 +60,14 @@ Python 3.10+ is the only prerequisite.
 ### Install
 
 ```bash
-pip install filings-rfb
+pip install opendata-rfb
 pip install 'filings-rfb[parquet]'   # optional: Parquet export (pulls in pyarrow)
 ```
 
 Or with Poetry:
 
 ```bash
-poetry add filings-rfb
+poetry add opendata-rfb
 poetry add 'filings-rfb[parquet]'   # optional: Parquet export (pulls in pyarrow)
 ```
 
@@ -227,7 +227,7 @@ This project is licensed under MIT; see [LICENSE](LICENSE).
 ## Useful Links
 
 - [Documentation](https://guilhermegor.github.io/filings-rfb/)
-- [PyPI](https://pypi.org/project/filings-rfb/)
+- [PyPI](https://pypi.org/project/opendata-rfb/)
 - [GitHub Repository](https://github.com/guilhermegor/filings-rfb)
 - [Issue Tracker](https://github.com/guilhermegor/filings-rfb/issues)
 

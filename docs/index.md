@@ -20,7 +20,7 @@ Typed pandas readers for the Receita Federal do Brasil (RFB) CNPJ open data: Emp
 ## Quick start
 
 ```bash
-pip install filings-rfb
+pip install opendata-rfb
 ```
 
 ```python
