@@ -1,1 +1,1 @@
-"""Readers that ingest public filings into typed frames."""
+"""Readers that ingest RFB open data into typed frames."""
