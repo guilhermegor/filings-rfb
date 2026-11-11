@@ -2,7 +2,7 @@
 
 The seam knows the vendor, the callers do not: a dataset exporter feeds DataFrame chunks to
 :class:`ParquetChunkWriter` and never imports ``pyarrow``. ``pyarrow`` ships only in the
-``filings-rfb[parquet]`` extra, so it is imported **lazily**, at construction, and its absence
+``opendata-rfb[parquet]`` extra, so it is imported **lazily**, at construction, and its absence
 raises an :class:`ImportError` that names the extra.
 """
 
@@ -21,7 +21,7 @@ __all__ = ["ParquetChunkWriter"]
 
 _MSG_NEEDS_PYARROW: str = (
     "writing Parquet needs pyarrow; install the optional extra: "
-    "pip install 'filings-rfb[parquet]' or poetry add 'filings-rfb[parquet]'"
+    "pip install 'opendata-rfb[parquet]' or poetry add 'opendata-rfb[parquet]'"
 )
 _DECIMAL_PRECISION: int = 38
 
@@ -38,7 +38,7 @@ def _load_pyarrow() -> tuple[ModuleType, ModuleType]:
     Raises
     ------
     ImportError
-        If ``pyarrow`` is not installed; the message names the ``filings-rfb[parquet]`` extra.
+        If ``pyarrow`` is not installed; the message names the ``opendata-rfb[parquet]`` extra.
     """
     try:
         import pyarrow as pa  # noqa: PLC0415 — optional extra, imported only when writing

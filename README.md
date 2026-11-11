@@ -61,14 +61,14 @@ Python 3.10+ is the only prerequisite.
 
 ```bash
 pip install opendata-rfb
-pip install 'filings-rfb[parquet]'   # optional: Parquet export (pulls in pyarrow)
+pip install 'opendata-rfb[parquet]'   # optional: Parquet export (pulls in pyarrow)
 ```
 
 Or with Poetry:
 
 ```bash
 poetry add opendata-rfb
-poetry add 'filings-rfb[parquet]'   # optional: Parquet export (pulls in pyarrow)
+poetry add 'opendata-rfb[parquet]'   # optional: Parquet export (pulls in pyarrow)
 ```
 
 To work on the library itself, see [CONTRIBUTING.md](CONTRIBUTING.md).
