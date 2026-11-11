@@ -40,7 +40,7 @@ __all__ = ["DEFAULT_CHUNK_ROWS", "DEFAULT_PARTS", "iter_part_chunks"]
 
 DEFAULT_PARTS: tuple[int, ...] = tuple(range(10))
 DEFAULT_CHUNK_ROWS: int = 500_000
-_PACKAGE_NAME: str = "filings-rfb"
+_PACKAGE_NAME: str = "opendata-rfb"
 _SINGLE_PART_BY_FLAG: dict[bool, tuple[int, ...]] = {False: (), True: (0,)}
 
 

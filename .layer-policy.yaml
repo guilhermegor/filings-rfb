@@ -27,7 +27,7 @@ layers:
         guarded import so a tier without numpy still loads. Legitimate here precisely
         because utils/ IS the seam layer.
       pyarrow: >-
-        Optional Parquet export (the filings-rfb[parquet] extra), wrapped by
+        Optional Parquet export (the opendata-rfb[parquet] extra), wrapped by
         utils.parquet_writer and imported lazily; absent from a core install.
       opentelemetry: "OTLP log export, wrapped by utils.otel_logging (opt-in, blueprintx#438)"
     deny_layers:

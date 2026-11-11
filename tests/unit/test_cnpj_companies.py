@@ -61,7 +61,7 @@ def test_export_without_pyarrow_names_the_extra(
     monkeypatch.setitem(sys.modules, "pyarrow", None)
     with pytest.raises(
         ImportError,
-        match=r"pip install 'filings-rfb\[parquet\]' or poetry add 'filings-rfb\[parquet\]'",
+        match=r"pip install 'opendata-rfb\[parquet\]' or poetry add 'opendata-rfb\[parquet\]'",
     ):
         export_companies_parquet(STR_MONTH, tmp_path / "out.parquet")
 

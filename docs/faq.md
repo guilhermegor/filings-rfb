@@ -10,15 +10,15 @@ entries as they come up in issues.
 ## How do I install it?
 
 ```bash
-pip install filings-rfb
-pip install "filings-rfb[parquet]"   # optional Parquet export
+pip install opendata-rfb
+pip install "opendata-rfb[parquet]"   # optional Parquet export
 ```
 
 Or with Poetry:
 
 ```bash
-poetry add filings-rfb
-poetry add "filings-rfb[parquet]"   # optional Parquet export
+poetry add opendata-rfb
+poetry add "opendata-rfb[parquet]"   # optional Parquet export
 ```
 
 Until the first PyPI release is published, install from source:

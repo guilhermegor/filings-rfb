@@ -16,7 +16,7 @@ not published.
 
 ### `export_companies_parquet(str_month, path_dest, int_chunk_rows=500_000, path_workdir=None) -> Path`
 
-Writes the same rows to one Parquet file. Requires the `filings-rfb[parquet]` extra and raises an
+Writes the same rows to one Parquet file. Requires the `opendata-rfb[parquet]` extra and raises an
 `ImportError` naming it otherwise.
 
 ---

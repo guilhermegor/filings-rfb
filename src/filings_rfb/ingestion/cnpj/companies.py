@@ -5,7 +5,7 @@ yields typed DataFrames (one per part chunk) instead of one frame. ``capital_soc
 from the source's decimal-comma text (``"120000000000,00"``) to an exact ``Decimal`` with no
 rounding. :func:`export_companies_parquet` drains the same iterator into one Parquet file for
 lazy querying (DuckDB, Polars ``scan_parquet``) on the consumer's side; it needs the optional
-``filings-rfb[parquet]`` extra.
+``opendata-rfb[parquet]`` extra.
 """
 
 from __future__ import annotations
@@ -103,7 +103,7 @@ def export_companies_parquet(
     Raises
     ------
     ImportError
-        If ``pyarrow`` is missing; install the ``filings-rfb[parquet]`` extra.
+        If ``pyarrow`` is missing; install the ``opendata-rfb[parquet]`` extra.
     """
     with ParquetChunkWriter(path_dest, {_COL_CAPITAL: _CAPITAL_SCALE}) as cls_writer:
         for df_chunk in read_companies(str_month, int_chunk_rows, path_workdir):

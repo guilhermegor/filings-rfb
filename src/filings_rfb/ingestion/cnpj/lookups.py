@@ -54,7 +54,7 @@ __all__ = ["CNPJ_LOOKUP_NAMES", "read_lookup"]
 _TUPLE_COLUMNS = ("code", "description")
 _DICT_DTYPES = {"code": "str", "description": "str"}
 _STR_ENCODING = "latin-1"
-_STR_DISTRIBUTION = "filings-rfb"
+_STR_DISTRIBUTION = "opendata-rfb"
 
 
 @type_checker

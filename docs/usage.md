@@ -9,15 +9,15 @@ Examples for installing and using this library.
 ## Installation
 
 ```bash
-pip install filings-rfb
-pip install 'filings-rfb[parquet]'   # optional: Parquet export
+pip install opendata-rfb
+pip install 'opendata-rfb[parquet]'   # optional: Parquet export
 ```
 
 Or with Poetry:
 
 ```bash
-poetry add filings-rfb
-poetry add 'filings-rfb[parquet]'   # optional: Parquet export
+poetry add opendata-rfb
+poetry add 'opendata-rfb[parquet]'   # optional: Parquet export
 ```
 
 Until the first PyPI release is published, install from source:
@@ -105,8 +105,8 @@ for df_chunk in read_companies("2026-10", int_chunk_rows=500_000):
 pyarrow:
 
 ```bash
-pip install 'filings-rfb[parquet]'
-poetry add 'filings-rfb[parquet]'   # the same extra with Poetry
+pip install 'opendata-rfb[parquet]'
+poetry add 'opendata-rfb[parquet]'   # the same extra with Poetry
 ```
 
 Without it the call raises an `ImportError` that names the extra. Querying the Parquet lazily
