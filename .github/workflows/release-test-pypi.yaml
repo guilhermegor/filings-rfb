@@ -17,6 +17,9 @@ env:
   PACKAGE_NAME: "opendata-rfb"
   OWNER: "guilhermegor"
 
+permissions:
+  contents: read
+
 jobs:
   run_tests:
     if: ${{ !inputs.backfill }}
