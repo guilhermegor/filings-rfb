@@ -13,7 +13,7 @@ from urllib import error
 import pytest
 from pytest_mock import MockerFixture
 
-from filings_rfb._internal.utils.stream_downloader import download_file_streaming
+from opendata_rfb._internal.utils.stream_downloader import download_file_streaming
 
 
 pytestmark = pytest.mark.allow_network
@@ -190,7 +190,7 @@ def stub(mocker: MockerFixture) -> Iterator[_Stub]:
     _Stub
         The running stub (URL + mutable state).
     """
-    mocker.patch("filings_rfb._internal.utils.http_downloader._assert_public_host")
+    mocker.patch("opendata_rfb._internal.utils.http_downloader._assert_public_host")
     cls_server = _StubServer(("127.0.0.1", 0), _Handler)
     cls_server.daemon_threads = True
     cls_server.state = _StubState()

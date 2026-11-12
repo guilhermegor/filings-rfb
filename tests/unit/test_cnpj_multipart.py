@@ -15,11 +15,11 @@ from urllib.request import Request
 import pandas as pd
 import pytest
 
-from filings_rfb._internal.config.contracts import CNPJ_COMPANIES, ContractError
-from filings_rfb._internal.utils import stream_downloader
-from filings_rfb._internal.utils.stream_downloader import download_file_streaming
-from filings_rfb.ingestion.cnpj import _multipart
-from filings_rfb.ingestion.cnpj._multipart import iter_part_chunks
+from opendata_rfb._internal.config.contracts import CNPJ_COMPANIES, ContractError
+from opendata_rfb._internal.utils import stream_downloader
+from opendata_rfb._internal.utils.stream_downloader import download_file_streaming
+from opendata_rfb.ingestion.cnpj import _multipart
+from opendata_rfb.ingestion.cnpj._multipart import iter_part_chunks
 from tests.unit.conftest import LIST_PART0_LINES, LIST_PART1_LINES, STR_MONTH
 
 

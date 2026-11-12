@@ -21,7 +21,7 @@ poetry add 'opendata-rfb[parquet]'   # optional: Parquet export
 ```
 
 Until the first PyPI release is published, install from source:
-`pip install git+https://github.com/guilhermegor/filings-rfb.git`.
+`pip install git+https://github.com/guilhermegor/opendata-rfb.git`.
 
 ---
 
@@ -32,7 +32,7 @@ Every dataset reader (`read_companies`, `read_establishments`, `read_partners`,
 exception: it takes `str_table, path_zip, str_url, str_etag` and returns a single DataFrame.
 
 ```python
-from filings_rfb import read_partners
+from opendata_rfb import read_partners
 
 for df_chunk in read_partners("2026-10"):
     ...
@@ -46,11 +46,11 @@ are the heaviest; keep `path_workdir=` to resume instead of re-downloading.
 ## Cataloguing the RFB CNPJ share
 
 The Receita Federal publishes the CNPJ open data as one folder per reference month
-(`YYYY-MM`) on a public WebDAV share. `filings_rfb.ingestion.cnpj._share` lists what is
+(`YYYY-MM`) on a public WebDAV share. `opendata_rfb.ingestion.cnpj._share` lists what is
 there, without authentication, so a reader never builds a URL by hand:
 
 ```python
-from filings_rfb.ingestion.cnpj._share import (
+from opendata_rfb.ingestion.cnpj._share import (
     file_url,
     latest_reference_month,
     list_files,
@@ -83,7 +83,7 @@ memory at once. Each ZIP is streamed to disk with the resumable downloader and i
 is read as a stream, never extracted.
 
 ```python
-from filings_rfb import read_companies
+from opendata_rfb import read_companies
 
 for df_chunk in read_companies("2026-10", int_chunk_rows=500_000):
     print(df_chunk[["cnpj_basico", "razao_social", "capital_social"]].head(1))
@@ -142,7 +142,7 @@ resume an interrupted transfer:
 ```python
 from pathlib import Path
 
-from filings_rfb._internal.utils.stream_downloader import download_file_streaming
+from opendata_rfb._internal.utils.stream_downloader import download_file_streaming
 
 path_zip, str_etag = download_file_streaming(
     "https://example.org/Estabelecimentos0.zip",
@@ -186,6 +186,6 @@ Register a **pending trusted publisher** once on each index:
 
 GitHub creates the environments on the first run.
 
-The docs site (<https://guilhermegor.github.io/filings-rfb/>) returns 404 until the first
+The docs site (<https://guilhermegor.github.io/opendata-rfb/>) returns 404 until the first
 `release-pypi.yaml` run's `deploy_docs` job (mike) creates the `gh-pages` branch. After that,
 run `poe enable_pages` once.

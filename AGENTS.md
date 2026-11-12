@@ -140,7 +140,7 @@ Register a **pending trusted publisher** once on each index before the first rel
 
 GitHub creates the environments on the first run.
 
-**First release and the docs site.** `https://guilhermegor.github.io/filings-rfb/` returns 404
+**First release and the docs site.** `https://guilhermegor.github.io/opendata-rfb/` returns 404
 until the first `release-pypi.yaml` run's `deploy_docs` job (mike) creates the `gh-pages`
 branch. After that, run `poe enable_pages` once.
 

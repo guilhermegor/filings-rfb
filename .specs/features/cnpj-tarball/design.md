@@ -5,7 +5,7 @@ Owner: Guilherme Rodrigues
 Created: 2026-10-22
 
 ## Objective
-Decide whether `filings-rfb` should support the `cnpj.tar.gz` archive that sits at the root
+Decide whether `opendata-rfb` should support the `cnpj.tar.gz` archive that sits at the root
 of the RFB share, next to the `YYYY-MM` folders (epic #2, sub-issue #10).
 
 **Recommendation: ignore it.** It is a redundant gzip snapshot of nine monthly

@@ -8,13 +8,13 @@ import zipfile
 import pandas as pd
 import pytest
 
-from filings_rfb._internal.config.contracts import (
+from opendata_rfb._internal.config.contracts import (
     CNPJ_LOOKUP_CONTRACTS,
     CNPJ_LOOKUP_NAMES,
     ContractError,
 )
-from filings_rfb._internal.utils.provenance import hash_artifact, stamp_source_etag
-from filings_rfb.ingestion.cnpj.lookups import read_lookup
+from opendata_rfb._internal.utils.provenance import hash_artifact, stamp_source_etag
+from opendata_rfb.ingestion.cnpj.lookups import read_lookup
 
 
 PATH_FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "cnpj"

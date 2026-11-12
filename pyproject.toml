@@ -5,11 +5,11 @@ description = "Simple and efficient Python library to interact with Secretariat 
 authors = ["guilhermegor"]
 readme = "README.md"
 license = "MIT"
-homepage = "https://guilhermegor.github.io/filings-rfb/"
-documentation = "https://guilhermegor.github.io/filings-rfb/"
-repository = "https://github.com/guilhermegor/filings-rfb"
-keywords = ["filings-rfb", "python", "library"]
-packages = [{ include = "filings_rfb", from = "src" }]
+homepage = "https://guilhermegor.github.io/opendata-rfb/"
+documentation = "https://guilhermegor.github.io/opendata-rfb/"
+repository = "https://github.com/guilhermegor/opendata-rfb"
+keywords = ["opendata-rfb", "python", "library"]
+packages = [{ include = "opendata_rfb", from = "src" }]
 exclude = ["src/**/CLAUDE.md"]
 package-mode = true
 classifiers = [
@@ -22,9 +22,9 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-"Bug Reports" = "https://github.com/guilhermegor/filings-rfb/issues"
-"Source" = "https://github.com/guilhermegor/filings-rfb"
-"Documentation" = "https://guilhermegor.github.io/filings-rfb/"
+"Bug Reports" = "https://github.com/guilhermegor/opendata-rfb/issues"
+"Source" = "https://github.com/guilhermegor/opendata-rfb"
+"Documentation" = "https://guilhermegor.github.io/opendata-rfb/"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"

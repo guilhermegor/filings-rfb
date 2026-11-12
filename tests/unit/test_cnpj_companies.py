@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 import pandas as pd
 import pytest
 
-from filings_rfb.ingestion.cnpj.companies import export_companies_parquet, read_companies
+from opendata_rfb.ingestion.cnpj.companies import export_companies_parquet, read_companies
 from tests.unit.conftest import LIST_PART0_LINES, LIST_PART1_LINES, STR_MONTH
 
 

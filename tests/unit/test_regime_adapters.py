@@ -11,10 +11,10 @@ same real-world evidence rather than an invented one.
 
 import pytest
 
-from filings_rfb._internal.utils.regime_adapter import RegimeBoundAdapter
-from filings_rfb._internal.utils.regime_registry import RegimeRegistry
-from filings_rfb._internal.utils.regime_window import RegimeWindow
-from filings_rfb._internal.utils.spec_gap_registry import SpecGapRegistry
+from opendata_rfb._internal.utils.regime_adapter import RegimeBoundAdapter
+from opendata_rfb._internal.utils.regime_registry import RegimeRegistry
+from opendata_rfb._internal.utils.regime_window import RegimeWindow
+from opendata_rfb._internal.utils.spec_gap_registry import SpecGapRegistry
 
 
 @pytest.fixture

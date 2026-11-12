@@ -129,7 +129,7 @@ Releases are **tag-driven and secret-free** when the project is connected to a G
 - To read the current version, ask the tag, not `pyproject.toml`:
   `git describe --tags --abbrev=0 origin/main` (after `git fetch --tags`). In a development venv
   (`poetry install`) the installed metadata reports the `0.0.0` stub, so
-  `importlib.metadata.version("filings-rfb")` is meaningful only for a package installed from a
+  `importlib.metadata.version("opendata-rfb")` is meaningful only for a package installed from a
   built wheel or from PyPI.
 - The release workflow runs the **full test suite** as a hard gate, builds with `python -m build`,
   and publishes via **OIDC trusted publishing** (`pypa/gh-action-pypi-publish`) — no token

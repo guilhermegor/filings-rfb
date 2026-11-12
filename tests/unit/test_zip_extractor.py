@@ -6,7 +6,7 @@ import zipfile
 
 import pytest
 
-from filings_rfb._internal.utils.zip_extractor import extract_all_to_memory
+from opendata_rfb._internal.utils.zip_extractor import extract_all_to_memory
 
 
 def _write_zip_with_names(path_zip: Path, list_names: list[str]) -> Path:

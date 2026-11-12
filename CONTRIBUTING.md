@@ -139,7 +139,7 @@ has already run.
 
 3. **Testing Framework**:
    - Maintain the standard file structure:
-     - Implementation: `src/filings_rfb/<feat_name>.py`
+     - Implementation: `src/opendata_rfb/<feat_name>.py`
      - Tests: `tests/unit/test_<feat_name>.py`, mirroring the package path
    - Run the matching unit tests with: `poetry run poe unit_tests -k <keyword>`
         - This command runs only the unit tests matching the keyword.

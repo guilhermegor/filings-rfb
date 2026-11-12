@@ -7,8 +7,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from filings_rfb.ingestion.cnpj import _share
-from filings_rfb.ingestion.cnpj._share import (
+from opendata_rfb.ingestion.cnpj import _share
+from opendata_rfb.ingestion.cnpj._share import (
     SHARE_ROOT_URL,
     SHARE_TOKEN,
     file_url,
